@@ -1,0 +1,85 @@
+# Every push to main is checked, built and deployed to the server, so the
+# PC never uploads anything by hand. One-time setup and how it works:
+# DEPLOY.md.
+name: Check and deploy
+
+on:
+  push:
+    branches: [main]
+  # "Run workflow" on the Actions tab redeploys without a new commit.
+  workflow_dispatch:
+
+# One deploy at a time; a newer push waits for the running one.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # Keep in step with the PC (flutter --version).
+  FLUTTER_VERSION: '3.47.7'
+
+jobs:
+  deploy:
+    name: Check, build and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Get packages
+        run: flutter pub get
+
+      # Errors and warnings stop the deploy; style hints do not.
+      - name: Analyse
+        run: flutter analyze --no-fatal-infos
+
+      # The widget tests predate sign-in and are not run until updated.
+      - name: Unit tests
+        run: flutter test test/cycle_engine_test.dart test/partner_test.dart
+
+      - name: Check the API code
+        run: |
+          node --check server/server.js
+          node --check server/tip-writer.js
+
+      - name: Build the website
+        run: flutter build web --release
+
+      # The key and the server's fingerprint come from the repository's
+      # secrets and are never printed.
+      - name: Prepare SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # The API first: the new website may rely on what it adds.
+      - name: Deploy the API
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy" \
+            server/server.js server/tip-writer.js server/tips-seed.json \
+            "deploy@$DEPLOY_HOST:/opt/mooncycle-api/"
+          ssh -i ~/.ssh/deploy "deploy@$DEPLOY_HOST" \
+            'sudo systemctl restart mooncycle-api && sleep 2 && systemctl is-active mooncycle-api'
+
+      - name: Deploy the website
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy" \
+            build/web/ "deploy@$DEPLOY_HOST:/var/www/mooncycle/"
