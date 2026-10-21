@@ -39,6 +39,26 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # Makes every app icon size from assets/icon/: run
+  # `dart run flutter_launcher_icons` after changing those images.
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
   uses-material-design: true
+
+# icon.png: 1024 x 1024, square edges, no transparency, no text.
+# icon_foreground.png: the artwork alone on a transparent background, kept
+# inside the middle two thirds, for Android's shaped icons.
+flutter_launcher_icons:
+  image_path: "assets/icon/icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 26
+  adaptive_icon_background: "#F8EDE6"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#F8EDE6"
+    theme_color: "#B5476B"

@@ -49,17 +49,43 @@ test group uses MoonCycle.
   "Embrace my next chapter" and "Feel more like myself" are hidden from the
   quiz (`hidden: true` in `lib/domain/quiz.dart`) because they would land on
   the cycle-tracking home. Remove that line once each has its own home.
-- **Privacy policy**, naming what the account holds and what partner sharing
-  sends.
+- **Bundle the Gelasio typeface** in the app instead of downloading it from
+  Google Fonts at run time (that shows the user's IP address to Google; the
+  privacy policy says so until it is fixed). Then remove that paragraph from
+  `web/privacy.html`.
+- **Data export** for her logs, so she can take her data elsewhere.
+
+## Legal and company (IONCODEX LTD, 16798601)
+
+- **Solicitor review** of `web/terms.html`, `web/privacy.html`,
+  `web/health.html` and `web/delete-account.html`, including the minimum age
+  (18 in the drafts; lowering it brings in the ICO Children's Code) and
+  whether a Data Protection Impact Assessment is needed (likely, for health
+  data). After any material change, bump `Legal.version` in `lib/legal.dart`:
+  everyone is then asked to agree again.
+- **ICO data protection fee** paid in the company's name, and its
+  registration number added to `web/privacy.html`.
+- **privacy@mooncycle.fit** must receive mail (named in every legal page).
+- **Hetzner** in the company's name, and its data processing agreement
+  concluded at accounts.hetzner.com/account/dpa.
+- **Medical device check**: confirm with the clinician or a regulatory
+  adviser that MoonCycle stays outside the MHRA's software-as-a-medical-device
+  rules (general information and estimates, no diagnosis, not contraception),
+  and keep store descriptions and marketing to those claims.
 
 ## Server
 
-- **Root SSH by password.** Logins currently use the root password. Switch to
-  key-only login.
+- **Server logs**: the privacy policy promises 14 days. Check
+  `/etc/logrotate.d/nginx` keeps no more (`rotate 14` with `daily`).
 - **Search engines.** nginx sends `X-Robots-Tag: noindex`. Decide whether the
   public site should be indexed.
 
-## Android
+## App stores
 
-- **App ID** is still `com.example.mooncycle`, and release builds are signed
-  with the debug key. Both must change for Google Play.
+- **App ID** `com.ioncodex.mooncycle` on both platforms. Permanent once the
+  first build is uploaded.
+- **App icon** from the logo: square, no text, no rounded corners (the stores
+  add their own). Put it in `assets/icon/` and run
+  `dart run flutter_launcher_icons`.
+- **Android release signing**: upload keystore on Codemagic (or
+  `android/key.properties` locally, never committed).

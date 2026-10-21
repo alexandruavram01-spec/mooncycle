@@ -15,6 +15,7 @@ import '../domain/profile.dart';
 import '../l10n/app_language.dart';
 import '../l10n/her_insights.dart';
 import '../l10n/partner_messages.dart';
+import '../legal.dart';
 import '../services/account_service.dart';
 import '../services/api_client.dart';
 import '../services/health_service.dart';
@@ -227,7 +228,9 @@ class SessionNotifier extends AsyncNotifier<String?> {
 
   Future<void> signUp(String email, String password) async {
     state = AsyncData(
-      await ref.read(accountServiceProvider).signUp(email, password),
+      await ref
+          .read(accountServiceProvider)
+          .signUp(email, password, termsVersion: Legal.version),
     );
   }
 
@@ -279,6 +282,43 @@ class SessionNotifier extends AsyncNotifier<String?> {
 
 final sessionProvider =
     AsyncNotifierProvider<SessionNotifier, String?>(SessionNotifier.new);
+
+/// Whether the signed-in account has agreed to the current terms and given
+/// consent for health data. Remembered per account on the device, so the
+/// app opens offline; asked from the server otherwise, so agreeing on one
+/// device counts on all of them.
+class LegalConsentNotifier extends AsyncNotifier<bool> {
+  String _key(String account) => 'mooncycle.legal.accepted.$account';
+
+  @override
+  Future<bool> build() async {
+    final account = ref.watch(sessionProvider).valueOrNull;
+    if (account == null) return false;
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getString(_key(account)) == Legal.version) return true;
+    try {
+      final accepted =
+          await ref.read(accountServiceProvider).acceptedTermsVersion();
+      if (accepted != Legal.version) return false;
+    } on ApiException {
+      return false;
+    }
+    await prefs.setString(_key(account), Legal.version);
+    return true;
+  }
+
+  Future<void> accept() async {
+    final account = ref.read(sessionProvider).valueOrNull;
+    if (account == null) return;
+    await ref.read(accountServiceProvider).recordConsent(Legal.version);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_key(account), Legal.version);
+    state = const AsyncData(true);
+  }
+}
+
+final legalConsentProvider =
+    AsyncNotifierProvider<LegalConsentNotifier, bool>(LegalConsentNotifier.new);
 
 /// Keeps her daily "today's tip for your partner" notification on while she
 /// shares her phase with a connected partner, and off otherwise. Phones only;

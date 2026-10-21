@@ -10,19 +10,52 @@ class AccountService {
 
   final ApiClient _api;
 
-  /// Both return the email as the server stored it.
-  Future<String> signUp(String email, String password) =>
-      _open('/account', email, password);
+  /// Both return the email as the server stored it. Signing up records that
+  /// she agreed to [termsVersion] and gave explicit consent for health data.
+  Future<String> signUp(
+    String email,
+    String password, {
+    required String termsVersion,
+  }) =>
+      _open(
+        '/account',
+        email,
+        password,
+        {'termsVersion': termsVersion, 'healthConsent': true},
+      );
 
   Future<String> signIn(String email, String password) =>
       _open('/session', email, password);
 
-  Future<String> _open(String path, String email, String password) async {
+  /// The terms version this account last agreed to, or null if never.
+  Future<String?> acceptedTermsVersion() async {
+    final response = await _api.send('GET', '/account');
+    if (response.statusCode != 200) throw ApiClient.failure(response);
+    return ApiClient.json(response)['termsVersion'] as String?;
+  }
+
+  /// Agreeing to [termsVersion] and giving consent for health data, for an
+  /// existing account.
+  Future<void> recordConsent(String termsVersion) async {
+    final response = await _api.send(
+      'POST',
+      '/account/consent',
+      body: {'termsVersion': termsVersion, 'healthConsent': true},
+    );
+    if (response.statusCode != 200) throw ApiClient.failure(response);
+  }
+
+  Future<String> _open(
+    String path,
+    String email,
+    String password, [
+    Map<String, Object?> extra = const {},
+  ]) async {
     final response = await _api.send(
       'POST',
       path,
       auth: false,
-      body: {'email': email.trim(), 'password': password},
+      body: {'email': email.trim(), 'password': password, ...extra},
     );
     if (response.statusCode != 200) throw ApiClient.failure(response);
 

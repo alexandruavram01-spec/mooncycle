@@ -7,7 +7,16 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Mooncycle</string>
+	<string>MoonCycle</string>
+	<!-- The app only uses standard HTTPS, so no export compliance paperwork. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<!-- Required because the health package links HealthKit. The app does not
+	     read Apple Health yet; Health Connect is Android only. -->
+	<key>NSHealthShareUsageDescription</key>
+	<string>MoonCycle can read sleep, heart rate and temperature from Apple Health to show them alongside your cycle. This stays on your phone.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>MoonCycle does not write to Apple Health.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +24,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>mooncycle</string>
+	<string>MoonCycle</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

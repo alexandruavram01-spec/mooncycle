@@ -6,6 +6,7 @@ import 'state/providers.dart';
 import 'ui/screens/account_screen.dart';
 import 'ui/screens/editor_home_screen.dart';
 import 'ui/screens/language_screen.dart';
+import 'ui/screens/legal_consent_screen.dart';
 import 'ui/screens/onboarding_screen.dart';
 import 'ui/screens/partner_view_screen.dart';
 import 'ui/shell.dart';
@@ -105,6 +106,12 @@ class _Gate extends ConsumerWidget {
     if (language.valueOrNull == null) return const LanguageScreen();
     // Everyone signs in first; the quiz and the app come after.
     if (session.valueOrNull == null) return const AccountScreen();
+    // Then agreement to the current terms and consent for health data, once.
+    final consent = ref.watch(legalConsentProvider);
+    if (consent.isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (consent.valueOrNull != true) return const LegalConsentScreen();
 
     final current = settings.valueOrNull;
     // Unreadable settings must not lock her out of her own data.

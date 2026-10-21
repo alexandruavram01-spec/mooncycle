@@ -16,9 +16,30 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Release builds are signed with the upload key: on Codemagic from its
+    // keystore settings (CM_KEYSTORE_* variables), on a PC from
+    // android/key.properties, which is never committed. Without either, the
+    // debug key is used, which Google Play rejects.
+    val keyProperties = java.util.Properties().apply {
+        val file = rootProject.file("key.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
+    }
+    val keystorePath = System.getenv("CM_KEYSTORE_PATH") ?: keyProperties.getProperty("storeFile")
+
+    signingConfigs {
+        if (keystorePath != null) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("CM_KEYSTORE_PASSWORD") ?: keyProperties.getProperty("storePassword")
+                keyAlias = System.getenv("CM_KEY_ALIAS") ?: keyProperties.getProperty("keyAlias")
+                keyPassword = System.getenv("CM_KEY_PASSWORD") ?: keyProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.mooncycle"
+        // Permanent once the app is on Google Play. Matches the iOS bundle ID.
+        applicationId = "com.ioncodex.mooncycle"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // Health Connect and the notification scheduler both need API 26.
@@ -30,9 +51,8 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
         }
     }
 }

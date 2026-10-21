@@ -105,6 +105,13 @@ const SCHEMA = `
   );
   CREATE INDEX IF NOT EXISTS pairings_partner_idx ON pairings (partner_id);
 
+  -- Proof of agreement: which version of the terms and privacy policy each
+  -- person accepted, and when they gave explicit consent for health data
+  -- (UK GDPR articles 7 and 9).
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_version text;
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_accepted_at timestamptz;
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS health_consent_at timestamptz;
+
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS ask text;
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS ask_at timestamptz;
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS reaction text;
@@ -214,6 +221,16 @@ async function verifyPassword(password, stored) {
   return key.length === expected.length && crypto.timingSafeEqual(key, expected);
 }
 
+// Both boxes on the sign-up screen: the terms (with the privacy policy) and
+// explicit consent for health data. Returns the terms version agreed to.
+function readConsent(body) {
+  const termsVersion = String(body.termsVersion || '').trim();
+  if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(termsVersion) || body.healthConsent !== true) {
+    throw httpError(400, 'Please agree to the terms and give your consent to continue.');
+  }
+  return termsVersion;
+}
+
 // Sign-up insists on an email address. Sign-in takes whatever name the account
 // has, which is what lets the test accounts in.
 function readCredentials(body, { requireEmail }) {
@@ -310,15 +327,18 @@ const routes = {
 
   'POST /api/account': async (req) => {
     throttle(`signup:${clientIp(req)}`, 10, 60 * 60 * 1000);
-    const { email, password } = readCredentials(await readJson(req), { requireEmail: true });
+    const body = await readJson(req);
+    const { email, password } = readCredentials(body, { requireEmail: true });
     if (password.length < MIN_PASSWORD_LENGTH || password.length > MAX_PASSWORD_LENGTH) {
       throw httpError(400, `Use a password of at least ${MIN_PASSWORD_LENGTH} characters.`);
     }
+    const termsVersion = readConsent(body);
     const id = crypto.randomUUID();
     const { rowCount } = await pool.query(
-      `INSERT INTO users (id, email, password_hash) VALUES ($1, $2, $3)
+      `INSERT INTO users (id, email, password_hash, terms_version, terms_accepted_at, health_consent_at)
+       VALUES ($1, $2, $3, $4, now(), now())
        ON CONFLICT (email) DO NOTHING`,
-      [id, email, await hashPassword(password)],
+      [id, email, await hashPassword(password), termsVersion],
     );
     if (rowCount === 0) throw httpError(409, 'An account with this email already exists.');
     return { email, token: await openSession(id) };
@@ -326,8 +346,27 @@ const routes = {
 
   'GET /api/account': async (req) => {
     const { userId } = await authenticate(req);
-    const { rows } = await pool.query('SELECT email FROM users WHERE id = $1', [userId]);
-    return { email: rows[0].email, admin: ADMIN_EMAILS.includes(rows[0].email) };
+    const { rows } = await pool.query(
+      'SELECT email, terms_version FROM users WHERE id = $1',
+      [userId],
+    );
+    return {
+      email: rows[0].email,
+      admin: ADMIN_EMAILS.includes(rows[0].email),
+      termsVersion: rows[0].terms_version,
+    };
+  },
+
+  // Agreeing to new terms, or for accounts made before consent was recorded.
+  'POST /api/account/consent': async (req) => {
+    const { userId } = await authenticate(req);
+    const termsVersion = readConsent(await readJson(req));
+    await pool.query(
+      `UPDATE users SET terms_version = $2, terms_accepted_at = now(), health_consent_at = now()
+        WHERE id = $1`,
+      [userId, termsVersion],
+    );
+    return { ok: true };
   },
 
   // ---- Daily tips ----------------------------------------------------------

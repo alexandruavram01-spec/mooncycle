@@ -1,33 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../domain/day_key.dart';
 import '../../domain/her_insights.dart';
 import '../../l10n/her_insights.dart';
 import '../../state/providers.dart';
 import '../screens/get_help_screen.dart';
-
-/// Opens a web page or the phone's dialler, with a message if it can't.
-Future<void> openExternal(
-  BuildContext context,
-  Uri uri,
-  String failedMessage,
-) async {
-  final messenger = ScaffoldMessenger.of(context);
-  var opened = false;
-  try {
-    opened = await launchUrl(
-      uri,
-      mode: uri.scheme == 'tel'
-          ? LaunchMode.platformDefault
-          : LaunchMode.externalApplication,
-    );
-  } catch (_) {
-    opened = false;
-  }
-  if (!opened) messenger.showSnackBar(SnackBar(content: Text(failedMessage)));
-}
+import 'links.dart';
 
 /// Today's insight card on her Today screen, chosen on her phone in the
 /// order she set: safety, what she logged, her own patterns, then general

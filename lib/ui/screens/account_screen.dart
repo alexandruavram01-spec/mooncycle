@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/enums.dart';
 import '../../state/providers.dart';
+import '../widgets/consent_boxes.dart';
 import '../widgets/moon_face.dart';
 import '../widgets/wordmark.dart';
 import 'language_screen.dart';
@@ -26,6 +27,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   bool _busy = false;
   String? _error;
 
+  /// The two consent boxes on sign-up. Never ticked in advance.
+  bool _terms = false;
+  bool _health = false;
+
   @override
   void dispose() {
     _email.dispose();
@@ -46,6 +51,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       problem = 'Use a password of at least $_minPasswordLength characters.';
     } else if (password.isEmpty) {
       problem = 'Enter your password.';
+    } else if (_creating && !(_terms && _health)) {
+      problem = 'Please tick both boxes to create your account.';
     }
     if (problem != null) {
       setState(() => _error = problem);
@@ -149,6 +156,16 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           'forgotten it, you will need a new account.',
                   style: muted,
                 ),
+                if (_creating) ...[
+                  const SizedBox(height: 12),
+                  ConsentBoxes(
+                    terms: _terms,
+                    health: _health,
+                    enabled: !_busy,
+                    onTerms: (v) => setState(() => _terms = v),
+                    onHealth: (v) => setState(() => _health = v),
+                  ),
+                ],
                 if (error != null) ...[
                   const SizedBox(height: 12),
                   Text(
@@ -158,7 +175,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ],
                 const SizedBox(height: 20),
                 FilledButton(
-                  onPressed: _busy ? null : _submit,
+                  onPressed:
+                      _busy || (_creating && !(_terms && _health))
+                          ? null
+                          : _submit,
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                   ),

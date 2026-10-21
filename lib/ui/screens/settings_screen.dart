@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/quiz.dart';
+import '../../legal.dart';
 import '../../state/providers.dart';
 import '../widgets/account_sheet.dart';
+import '../widgets/links.dart';
 import 'get_help_screen.dart';
 import 'language_screen.dart';
 import 'onboarding_screen.dart';
@@ -212,29 +215,32 @@ class SettingsScreen extends ConsumerWidget {
             icon: const Icon(Icons.notifications_outlined),
             label: const Text('Grant notification permission'),
           ),
-          const Divider(height: 40),
-          Text('Wearables', style: theme.textTheme.titleMedium),
-          const SizedBox(height: 4),
-          Text(
-            'MoonCycle reads sleep, resting heart rate, HRV and temperature '
-            'through Health Connect, which already aggregates Fitbit, Garmin, '
-            'Samsung Health, Oura and Whoop.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+          // Health Connect exists on Android only.
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
+            const Divider(height: 40),
+            Text('Wearables', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              'MoonCycle reads sleep, resting heart rate, HRV and temperature '
+              'through Health Connect, which already aggregates Fitbit, '
+              'Garmin, Samsung Health, Oura and Whoop.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          FilledButton.tonalIcon(
-            onPressed: () => _connectHealth(context, ref),
-            icon: const Icon(Icons.watch_outlined),
-            label: const Text('Connect Health Connect'),
-          ),
-          const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: () => _importHealth(context, ref),
-            icon: const Icon(Icons.download_outlined),
-            label: const Text('Import last 30 days'),
-          ),
+            const SizedBox(height: 12),
+            FilledButton.tonalIcon(
+              onPressed: () => _connectHealth(context, ref),
+              icon: const Icon(Icons.watch_outlined),
+              label: const Text('Connect Health Connect'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => _importHealth(context, ref),
+              icon: const Icon(Icons.download_outlined),
+              label: const Text('Import last 30 days'),
+            ),
+          ],
           const Divider(height: 40),
           Text('Your data', style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
@@ -243,6 +249,50 @@ class SettingsScreen extends ConsumerWidget {
             'holds only your email and your partner connection. If you turn '
             'on partner sharing, only the summary you choose is sent to the '
             'server.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.delete_outline),
+            title: const Text('Delete my account and data'),
+            subtitle: const Text(
+              'Removes your account from our server and everything MoonCycle '
+              'stored on this device.',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showAccountSheet(context),
+          ),
+          const Divider(height: 40),
+          Text('About MoonCycle', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            Legal.healthNotice,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          for (final (title, url) in [
+            ('Privacy policy', Legal.privacyUrl),
+            ('Terms of use', Legal.termsUrl),
+            ('Health information notice', Legal.healthUrl),
+          ])
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(title),
+              trailing: const Icon(Icons.open_in_new, size: 18),
+              onTap: () => openExternal(
+                context,
+                Uri.parse(url),
+                'Could not open the page.',
+              ),
+            ),
+          Text(
+            '${Legal.appName} is provided by ${Legal.company}, '
+            'company number ${Legal.companyNumber}, ${Legal.address}.',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),

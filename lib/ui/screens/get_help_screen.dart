@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../state/providers.dart';
-import '../widgets/her_insight_card.dart';
+import '../widgets/links.dart';
 
 /// Where to get help, always one tap away: from the Today screen's top bar,
 /// from Settings, and from any card with urgent advice. Crisis help lives
