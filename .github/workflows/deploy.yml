@@ -76,11 +76,17 @@ jobs:
           # which survives copy and paste exactly, or as the key file's
           # text. Text pasted on Windows can carry carriage returns, which
           # SSH rejects.
-          key="$(printf '%s' "$DEPLOY_SSH_KEY" | tr -d '\r')"
-          case "$key" in
-            -----BEGIN*) printf '%s\n' "$key" > ~/.ssh/deploy ;;
-            *) printf '%s' "$key" | tr -d '[:space:]' | base64 -d > ~/.ssh/deploy 2>/dev/null || true ;;
-          esac
+          raw="$(printf '%s' "$DEPLOY_SSH_KEY" | tr -d '\r')"
+          if printf '%s' "$raw" | grep -q 'BEGIN OPENSSH PRIVATE KEY'; then
+            # The key file's text: drop stray spaces and blank lines.
+            printf '%s\n' "$raw" \
+              | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' \
+              > ~/.ssh/deploy
+            format="the key file's text"
+          else
+            printf '%s' "$raw" | tr -d '[:space:]' | base64 -d > ~/.ssh/deploy 2>/dev/null || true
+            format="one line"
+          fi
           chmod 600 ~/.ssh/deploy
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
           echo "HOST=$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')" >> "$GITHUB_ENV"
@@ -94,8 +100,10 @@ jobs:
             elif head -n1 ~/.ssh/deploy | grep -q '^-----BEGIN OPENSSH PRIVATE KEY-----$'; then
               hint="The key looks cut short or changed. Copy it again as one line: DEPLOY.md, part D."
             else
-              hint="The secret does not look like a private key. Copy it again as one line: DEPLOY.md, part D."
+              hint="The secret does not look like a private key. As one line it should start with LS0tLS1CRUdJTi and be about 540 characters long: DEPLOY.md, part D."
             fi
+            # Size and shape only, never content.
+            echo "The secret has ${#raw} characters on $(printf '%s\n' "$raw" | wc -l) line(s) and was read as $format."
             echo "::error::DEPLOY_SSH_KEY cannot be used. $hint"
             exit 1
           fi

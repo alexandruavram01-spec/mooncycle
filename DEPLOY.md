@@ -80,7 +80,12 @@ It must print `active`.
    - `DEPLOY_SSH_KEY`: copy the private key as one line, which survives
      pasting exactly, then paste. Never paste this one anywhere else.
      ```
-     [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\src\mooncycle_deploy')) | Set-Clipboard
+     $k = [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\src\mooncycle_deploy')); "$($k.Length) characters, starts with $($k.Substring(0,14))"
+     ```
+     It should say about 540 characters, starting with `LS0tLS1CRUdJTi`
+     (that is only the encoded header line, not secret). Then copy it:
+     ```
+     $k | Set-Clipboard
      ```
      The key must have no passphrase: if section C asks for one, remove it
      with `ssh-keygen -p -f C:\src\mooncycle_deploy` (type the old one, then
