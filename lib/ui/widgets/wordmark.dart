@@ -47,6 +47,22 @@ class Wordmark extends StatelessWidget {
   }
 }
 
+/// The logo's artwork: a crescent moon around a couple. Used on the first
+/// screens (language, sign-in, consent) above the [Wordmark].
+class LogoMark extends StatelessWidget {
+  const LogoMark({super.key, this.size = 120});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+        'assets/brand/logo_mark.png',
+        height: size,
+        semanticLabel: 'MoonCycle logo',
+        filterQuality: FilterQuality.medium,
+      );
+}
+
 /// A crescent opening to the right, like the letter C it replaces.
 class _CrescentPainter extends CustomPainter {
   _CrescentPainter(this.color);

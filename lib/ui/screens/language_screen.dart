@@ -58,6 +58,8 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
               padding: const EdgeInsets.all(24),
               children: [
                 if (!widget.pushed) ...[
+                  const Center(child: LogoMark(size: 120)),
+                  const SizedBox(height: 8),
                   const Center(child: Wordmark(size: 32)),
                   const SizedBox(height: 20),
                   Text(

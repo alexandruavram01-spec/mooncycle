@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/enums.dart';
+import '../../legal.dart';
 import '../../state/providers.dart';
 import '../widgets/consent_boxes.dart';
-import '../widgets/moon_face.dart';
+import '../widgets/links.dart';
 import '../widgets/wordmark.dart';
 import 'language_screen.dart';
 
@@ -98,10 +98,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               shrinkWrap: true,
               padding: const EdgeInsets.all(24),
               children: [
-                const Center(
-                  child: MoonFace(phase: CyclePhase.ovulatory, size: 72),
-                ),
-                const SizedBox(height: 12),
+                const Center(child: LogoMark(size: 120)),
+                const SizedBox(height: 8),
                 const Center(child: Wordmark(size: 32)),
                 const SizedBox(height: 16),
                 Text(
@@ -229,6 +227,26 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     ),
                   ),
                 ),
+                // Sign-up shows these inside the consent boxes.
+                if (!_creating)
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      for (final (label, url) in [
+                        ('Privacy policy', Legal.privacyUrl),
+                        ('Terms of use', Legal.termsUrl),
+                        ('Health information', Legal.healthUrl),
+                      ])
+                        TextButton(
+                          onPressed: () => openExternal(
+                            context,
+                            Uri.parse(url),
+                            'Could not open the page.',
+                          ),
+                          child: Text(label, style: muted),
+                        ),
+                    ],
+                  ),
               ],
             ),
           ),

@@ -45,6 +45,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    # The logo's artwork (moon and couple), transparent, for the app's own
+    # screens. Made from the full logo; see assets/icon/ for the app icon.
+    - assets/brand/logo_mark.png
 
 # icon.png: 1024 x 1024, square edges, no transparency, no text.
 # icon_foreground.png: the artwork alone on a transparent background, kept
@@ -55,10 +59,10 @@ flutter_launcher_icons:
   ios: true
   remove_alpha_ios: true
   min_sdk_android: 26
-  adaptive_icon_background: "#F8EDE6"
+  adaptive_icon_background: "#FAEDE3"
   adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   web:
     generate: true
     image_path: "assets/icon/icon.png"
-    background_color: "#F8EDE6"
-    theme_color: "#B5476B"
+    background_color: "#FFF7F2"
+    theme_color: "#FFF7F2"

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,21 +18,62 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MoonCycle: period and cycle tracking that stays on your phone, with optional, consent-based sharing with a partner.">
+  <meta name="theme-color" content="#FFF7F2">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="mooncycle">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MoonCycle">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>mooncycle</title>
+  <title>MoonCycle</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* Shown while the app loads; removed once Flutter draws its first frame. */
+    html, body { margin: 0; height: 100%; background: #FFF7F2; }
+    #splash {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      color: #C2486A;
+      transition: opacity .35s ease;
+    }
+    #splash img { width: 168px; height: auto; }
+    #splash .name { font-size: 34px; letter-spacing: .5px; }
+    #splash .legal {
+      position: absolute; bottom: 18px; left: 0; right: 0;
+      text-align: center; font: 13px/1.5 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    #splash .legal a { color: #8A6F78; margin: 0 8px; text-decoration: none; }
+    #splash.gone { opacity: 0; pointer-events: none; }
+  </style>
 </head>
 <body>
+  <div id="splash" aria-label="MoonCycle is loading">
+    <img src="logo.png" alt="MoonCycle logo: a crescent moon around a couple">
+    <div class="name">MoonCycle</div>
+    <nav class="legal">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="health.html">Health information</a>
+    </nav>
+  </div>
+  <script>
+    // Hide the splash as soon as the app has drawn itself.
+    window.addEventListener('flutter-first-frame', function () {
+      var splash = document.getElementById('splash');
+      if (!splash) return;
+      splash.classList.add('gone');
+      setTimeout(function () { splash.remove(); }, 400);
+    });
+  </script>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader

@@ -52,6 +52,8 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
               shrinkWrap: true,
               padding: const EdgeInsets.all(24),
               children: [
+                const Center(child: LogoMark(size: 100)),
+                const SizedBox(height: 8),
                 const Center(child: Wordmark(size: 32)),
                 const SizedBox(height: 16),
                 Text(
