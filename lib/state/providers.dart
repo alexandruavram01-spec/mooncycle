@@ -501,6 +501,10 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
   Future<void> setScreeningReminders(bool on) =>
       save(_current.copyWith(screeningReminders: on));
 
+  /// Cards about sex and desire (C08). Off unless she turns them on.
+  Future<void> setSexualWellbeing(bool on) =>
+      save(_current.copyWith(sexualWellbeing: on));
+
   Future<void> clear() async {
     state = const AsyncData(InsightMemory());
     await _store.clear();
@@ -516,10 +520,17 @@ final insightMemoryProvider =
 final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {
   final logs = ref.watch(logsProvider).valueOrNull;
   final status = ref.watch(cycleStatusProvider);
-  final screening = ref.watch(
-    insightMemoryProvider.select((m) => m.valueOrNull?.screeningReminders),
+  final (screening, sexualWellbeing) = ref.watch(
+    insightMemoryProvider.select(
+      (m) => (m.valueOrNull?.screeningReminders, m.valueOrNull?.sexualWellbeing),
+    ),
   );
-  if (logs == null || status == null || screening == null) return const [];
+  if (logs == null ||
+      status == null ||
+      screening == null ||
+      sexualWellbeing == null) {
+    return const [];
+  }
   return const HerInsightPicker().candidates(
     InsightContext(
       today: status.today,
@@ -527,6 +538,7 @@ final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {
       logs: logs,
       profile: ref.watch(profileProvider),
       screeningReminders: screening,
+      sexualWellbeing: sexualWellbeing,
       engine: ref.watch(cycleEngineProvider),
     ),
   );

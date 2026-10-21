@@ -1,9 +1,14 @@
 MOONCYCLE — INSIGHT CARDS FOR HER — en-GB
 Built 21 October 2026 — NOT CLINICALLY APPROVED: shown to the test accounts only
 
-Source of truth for the wording: the reviewed pack
-"MoonCycle_Her_Insights_en-GB_curated" (30 cards, 23 sources), copied word for
-word into lib/l10n/her_insights_en_gb.dart. Change both together.
+Source of truth for the wording, copied word for word into
+lib/l10n/her_insights_en_gb.dart (change both together):
+• "MoonCycle_Her_Insights_en-GB_curated": the 30 I/NEW cards, 23 sources.
+• Stage 1 editorial review (her-insights-en-GB-stage1-reviewed.txt and .json
+  in this folder): L, C and M cards, second wordings (I01b...), opening lines
+  (P01...), sources S24–S41. Not built from it: L20 and C02 (blocked until
+  clinical sign-off), C07 (merged), M03 (to become a "log the last day"
+  prompt, not a card), P13 (a plain cycle-day label).
 
 ========================================================================================
 HOW A CARD IS CHOSEN (lib/domain/her_insights.dart)
@@ -13,11 +18,29 @@ Order, most important first:
    • I21: bleeding logged on a day that is not part of a logged period, after
      her first logged period. Never from predicted dates.
 2. What she logged — today, or yesterday if today has nothing yet.
-   • Cramps on or near a period → I01   • Heavy flow → I02
-   • Tiredness → I19, or I05 if heavy flow this cycle   • Ovulation pain → I10
-   • Headache → I16   • Bloating → I17   • Breast tenderness → I18
-   • Sad / Anxious / Irritable / Sensitive → I20
-   • Egg-white discharge, trying to conceive → I30
+   Two things logged the same day, before either on its own:
+   • Cramps + heavy flow → C01   • Headache + feeling sick → C03
+   • Two of bloating, cravings, tender breasts, before her period → C04
+   • Sad/anxious/irritable + under 6 hours' sleep → C05
+   • Tiredness or energy 1–2 + under 6 hours' sleep → C06
+   • Low desire + sad/anxious, only with "Cards about sex and desire" on → C08
+   One thing (a card with a personal opening line first):
+   • Cramps: near her period → I01, otherwise → L01   • Heavy flow → I02
+   • Tiredness → I19 (I05 if heavy flow this cycle); energy 1–2 → I19
+   • Headache: near her period → L05, otherwise → I16
+   • Backache: near her period → L02, otherwise → L03
+   • Ovulation pain → I10   • Bloating → I17   • Breast tenderness → I18
+   • Sad/anxious/irritable/sensitive → I20; sad or anxious on 4+ days over
+     2+ weeks → L07
+   • Egg-white discharge: trying to conceive → I30; fertility on → L18;
+     otherwise → L17   • Dry/sticky/creamy/watery → L17
+   • Joint pain L04 · Spots L09 · Feeling sick L10 · Dizziness L11 (not with a
+     heavy flow: that is C02, on hold) · Hot flush L12 · Cravings L13 ·
+     Constipation L14 · Diarrhoea L15 · Appetite L16 · Low desire L19 ·
+     Under 6 hours' sleep on 2 of the last 3 nights L21
+   • Happy/calm/confident → L06, only when nothing else applies
+   • No card: protected or unprotected sex (L20 blocked), high drive
+   "Near her period" = during it, or up to 2 days before the estimate.
 3. Her own history.
    • Period 3+ days late, prediction confidence medium or high → I22
      (I23 instead if trying to conceive)
@@ -25,19 +48,38 @@ Order, most important first:
    • 2 of the last 3 cycles outside 21–35 days, or the last 2 far from her
      usual → I25
    • Tiredness with heavy flow in 2 or more cycles → I05
+   • Mood changes in the last 7 days of 3+ recorded cycles, and now in that
+     part of her cycle → L08
    • H01–H03 below (drafts)
-4. Cycle education.
+4. Moments in her cycle (once a cycle), then general information.
+   • Period day 1–2 → M01   • Day 3+, bleeding logged today, not heavy → M02
+   • Estimated fertile window starts (fertility on) → M04
+   • 1–2 days before the estimated period → M05
    • Period: I01, I02, I03   • After the period: I06, I07, I11*
-   • Mid-cycle: I09*, I10*, I11*   • Before the period: I12, I13, I14 (2+ cycles)
-   • Any day: NEW01 (after 1st cycle), NEW02 (hormonal contraception),
-     I08 (only if she turned on screening reminders in Settings)
+   • Mid-cycle: I09*, I10*, I11*
+   • Before the period: I12, I13 (3–7 days before the estimate), I14 (2+ cycles)
+   • Estimated day to 2 days after: NEW01   • NEW02 (hormonal contraception)
+   • I08 only if she turned on screening reminders in Settings
    • Trying to conceive: I26, I27, I29, I28 (trying over 12 months)
    * only with the fertility journey or fertile days on
 
+Opening lines (P01–P12): the first that fits, only from entries she made.
+• About what she logged: P02 (same part of the cycle in 2+ of 3+ recorded
+  cycles), P01 (days in a row), P03 (same point last cycle), P04 (first time).
+  None for sleep numbers or sex.
+• Otherwise by card: period day and history P05, estimate P06, past the
+  estimate P07, start versus estimate P08 (not when trying to conceive),
+  cycle lengths P09, sleep P10, energy P11, fertile window P12.
+• The same line about the same thing rests 21 days. None on safety cards.
+
 Rules:
 • One card a day; a second only when the first is a safety card.
-• Today's card stays the same all day unless something more important comes up.
-• Within a tier: never shown first, then shown longest ago. Cooldowns from the pack.
+• Today's card stays the same all day unless something more important comes
+  up, or what it answered is no longer logged (then the next card shows).
+• Within a tier: combinations, then cards with a personal line, then the
+  rest; never shown first, then shown longest ago. Rest periods from the
+  packs; a second wording shares its card's rest period.
+• Nothing new to say: no card.
 • × hides a card for today. "Not relevant to me" hides it until she brings
   hidden cards back in Settings.
 • Hormonal contraception, pregnancy/breastfeeding, hysterectomy or HRT (from her
@@ -99,7 +141,13 @@ shock syndrome).
 ========================================================================================
 BEFORE THE CARDS GO BEYOND THE TEST ACCOUNTS
 ========================================================================================
-1. Clinical sign-off of the 30 cards, H01–H03 and the "Get help now" page.
+1. Clinical sign-off of the 30 cards, the stage 1 cards and opening lines,
+   H01–H03 and the "Get help now" page. The stage 1 review also asks for:
+   • "Get help now" text on L01, L03, L05, L10, L15, C01 and C03 to show only
+     after she answers clinician-approved warning-sign questions. For testing
+     it sits folded away inside the card, as on the 30 cards.
+   • L20 (emergency contraception) and C02 (dizziness with heavy bleeding):
+     clinician-designed routes before they are built.
 2. The International edition, with urgent advice adapted for outside the UK.
 3. Then switch herInsightsEnabledProvider in lib/state/providers.dart from
    "test accounts" to "everyone tracking her cycle".

@@ -1,0 +1,384 @@
+MOONCYCLE — HER INSIGHTS — STAGE 1 / UK EDITORIAL REVIEW
+21 October 2026 | en-GB
+
+IMPORTANT: EDITORIAL REVIEW ONLY. Not medically approved. These are candidate messages, NOT production-ready emergency triage rules.
+
+REVIEW SUMMARY
+Original expansion items: 53
+  EDIT: 32
+  HOLD: 1
+  KEEP: 18
+  MERGE: 1
+  MOVE: 1
+
+KEY DECISIONS
+• Quiet days: no forced insight. Keep an optional plain cycle-day heading.
+• Seven-day repeat: too frequent as a default; aim 14–30 days for common symptoms, unless new information justifies it.
+• High sex drive: no automatic card or assumption. L06 is for positive feelings the user actually logged.
+• C07 merged: cannot infer night sweats from hot flushes + short sleep.
+• L20 and C02 BLOCKED pending individual clinician-reviewed urgent-care logic and privacy review.
+• M03 becomes an unobtrusive UI prompt, not an “insight” and never silently completes a period.
+• Pattern (P02) is a descriptive log statistic, NOT medically validated inference.
+• Personal opening lines are optional and must never crowd out clear safety advice.
+• Correct links for new NHS menopause and headache pages are in structured JSON.
+
+DETAILED REVIEW: ALL ORIGINAL IDS
+
+[EDIT] P01  Multi-day entry
+Type: opening | Trigger: Same symptom deliberately logged on at least 2 consecutive calendar days; do not infer an unlogged day.
+Text: You logged {symptom} on {consecutive_logged_days} days in a row.
+Editor: Do not imply symptoms persisted continuously; deduplicate with P02.
+
+[EDIT] P02  Repeated cycle-window pattern
+Type: opening | Trigger: At least 3 completed cycles WITH entries in relevant comparison windows, 2+ qualifying windows; never treat missing logs as negative observations.
+Text: You logged {symptom} around {cycle_window} in {matching_cycles} of your last {eligible_cycles} recorded cycles.
+Editor: A minimum 60% heuristic is only a UI signal, not a clinically validated pattern. Show fraction and log coverage; no diagnosis.
+
+[EDIT] P03  Similar time last cycle
+Type: opening | Trigger: Previous complete cycle has a real logged event within ±2 cycle days; only when dates make comparison meaningful.
+Text: You logged {symptom} around this point in your previous recorded cycle too.
+Editor: Do not claim a recurring pattern from one comparison.
+
+[EDIT] P04  New log type
+Type: opening | Trigger: First recorded occurrence of an entry type in the available history.
+Text: This is the first time you’ve logged {symptom} in MoonCycle.
+Editor: “First time you’ve logged” is not first time experienced.
+
+[EDIT] P05  Period history
+Type: opening | Trigger: Today is a CONFIRMED period day; at least 2 completed logged periods with explicit ends.
+Text: Day {period_day} of your period. Your {completed_period_count} recorded periods have lasted between {min_days} and {max_days} days.
+Editor: Do not use in progress periods for historic duration or publish min-max from guessed end dates.
+
+[KEEP] P06  Upcoming period estimate
+Type: opening | Trigger: Estimated start in next 7 days, user has predictions enabled; do not show if exclusions apply.
+Text: Your next period is estimated to start {friendly_date}.
+Editor: Never imply certainty, preferably include viewable how-estimated details.
+
+[EDIT] P07  After estimated date
+Type: opening | Trigger: Estimated start passed and no confirmed new period start logged; predictions enabled.
+Text: Your period has not been logged yet. Its estimated start was {days_past_estimate} days ago.
+Editor: Never label the person as late or assert a missed period; if not logging, observation is unknown.
+
+[KEEP] P08  Confirmed period start versus estimate
+Type: opening | Trigger: Confirmed bleed start with available comparable estimate.
+Text: Your period started {relative_to_estimate}.
+Editor: On-time or early/late refers to estimate only; avoid on TTC prompts.
+
+[EDIT] P09  Recent cycle length
+Type: opening | Trigger: At least 3 fully recorded completed cycles with reliable starts.
+Text: Your last recorded cycle was {last_cycle_days} days. Across {completed_cycles} completed cycles, the median was {median_cycle_days} days.
+Editor: Use median; do not call 1 or 2 observations “usual”.
+
+[KEEP] P10  Sleep entry
+Type: opening | Trigger: User deliberately entered sleep duration, with a reliable last-night date.
+Text: You logged {sleep_hours} hours of sleep last night.
+Editor: Repeated-night copy only when exact entries exist.
+
+[EDIT] P11  Energy entry
+Type: opening | Trigger: Self-reported rating exists today.
+Text: You logged your energy as {energy_rating} out of 5 today.
+Editor: Avoid superlative “lowest this cycle” based on 3 sparse entries.
+
+[EDIT] P12  Fertile window estimate
+Type: opening | Trigger: Opt-in fertility content, meaningful recent cycles and no exclusions; never imply confirmed ovulation.
+Text: Your estimated fertile window is {start_date} to {end_date}. These dates are not a reliable way to prevent pregnancy.
+Sources: S7, S39
+Editor: Calendar predictions are estimates; never label a particular day safe/unprotected. Suppress when method makes estimates unreliable.
+
+[KEEP] P13  Cycle day heading
+Type: opening | Trigger: Confirmed last period start exists; can appear as passive dashboard label, NOT generate a generic insight card.
+Text: Cycle day {cycle_day}.
+Editor: Only display as passive contextual label in UI.
+
+[EDIT] L01  Cramps outside your period?
+Type: logged_symptom | Trigger: Cramps logged outside a confirmed period; do not rule out period pain based on an estimated date.
+Text: Pelvic cramps can have several causes, and an app cannot tell what is behind them. Make a note of when they happen and any other symptoms.
+See a GP: Speak with a GP if pelvic pain returns or does not go away.
+Get help now (CLINICIAN REVIEW REQUIRED): Seek urgent advice via NHS 111 for pelvic pain with unusual discharge or bleeding, pain when peeing, fever, or possible pregnancy. Call 999 or go to A&E for severe/worsening pelvic pain, faintness, shoulder-tip pain or heavy bleeding.
+Sources: S37, S8
+Editor: Urgent copy is NOT auto-fired solely because cramps were logged; requires explicitly reported warning sign(s).
+
+[KEEP] L02  Backache around your period?
+Type: logged_symptom | Trigger: Backache logged during confirmed period or shortly beforehand, without independently reported warning signs.
+Text: Period pain can spread to your lower back or thighs. A covered hot water bottle, warm bath, gentle movement or lower-back massage may help.
+See a GP: See a GP if the pain affects daily activities or is getting worse.
+Sources: S2
+Editor: Do not assume unrelated backache is menstrual.
+
+[EDIT] L03  A sore back today?
+Type: logged_symptom | Trigger: Backache logged outside confirmed period context.
+Text: Back pain often improves with time. Keeping gently active can help; a wrapped heat or cold pack may ease discomfort.
+See a GP: Seek GP advice if it persists, disrupts daily life or is worse at night.
+Get help now (CLINICIAN REVIEW REQUIRED): Call 999 or go to A&E for back pain with new weakness or numbness in both legs, loss of sensation around the genitals or bottom, or new bladder/bowel problems.
+Sources: S36
+Editor: Urgent red flags require explicit responses; plain “backache” log is not an urgent trigger.
+
+[EDIT] L04  Aching joints?
+Type: logged_symptom | Trigger: Joint or muscle aches specifically logged; do not label as PMS/PMDD.
+Text: Joint or muscle aches can have many causes. If you notice them repeatedly, keeping a note of timing, severity and what else is happening can help you discuss them with a GP.
+See a GP: Speak with a GP if aches keep returning or affect everyday activities.
+Sources: S4
+Editor: NHS lists aches in severe premenstrual symptoms, not proof of hormonal cause. Consider a more specific MSK NHS source before publishing.
+
+[EDIT] L05  Headache around your period?
+Type: logged_symptom | Trigger: Headache logged within a confirmed period or 2 days before predicted start; do not diagnose menstrual migraine.
+Text: Headaches sometimes occur around a period, although they can have other causes. Water, regular meals and rest may help; a pharmacist can advise on suitable pain relief.
+See a GP: Speak with a GP if headaches regularly return, get worse or affect your life.
+Get help now (CLINICIAN REVIEW REQUIRED): Call 999 or go to A&E for a sudden extremely painful headache, one-sided weakness, problems speaking, loss of vision, confusion or seizures.
+Sources: S33, S41
+Editor: Emergency signs need an explicit safety flow; do not show scary paragraph for a normal logged headache.
+
+[KEEP] L06  Good days count too
+Type: logged_symptom | Trigger: Happy/calm/confident logged, and no more useful context card. Never use high libido as a proxy for wellbeing.
+Text: Logging a good day matters too. Over time, your entries may reveal what tends to work well for you — without assuming every cycle will be the same.
+Editor: Source is personal data, not NHS evidence.
+
+[EDIT] L07  If low moods keep returning
+Type: logged_symptom | Trigger: Several deliberately logged sad/anxious entries across at least 14 calendar days; must not infer continuous symptoms from sparse entries.
+Text: You have logged feeling low or anxious several times recently. That can be hard. Talking to someone you trust, looking after sleep and seeking support are options if you need them.
+See a GP: See a GP if low mood has lasted more than two weeks, you are struggling to cope, or you would like support. Adults may be able to self-refer to NHS talking therapies.
+Sources: S38
+Editor: Never imply depression diagnosis; permanently accessible urgent mental-health help must remain independent of mood recommendations.
+
+[EDIT] L08  A premenstrual mood pattern?
+Type: logged_symptom | Trigger: Similar logged emotions in comparable pre-period windows over at least 3 completed observed cycles, with enough data coverage; optional.
+Text: You have noticed similar mood changes before more than one period. Your log may be useful if you want to discuss their effect on daily life with a GP. Support and treatment are available for difficult premenstrual symptoms.
+See a GP: Speak with a GP if premenstrual symptoms affect your daily life.
+Sources: S4
+Editor: Do not auto-mention PMDD from a pattern or display a clinical label; clinical review required if future PMDD education added.
+
+[KEEP] L09  Spots flaring up?
+Type: logged_symptom | Trigger: Acne/spots logged.
+Text: Hormonal changes may contribute to spots, but there are other causes too. A gentle cleanser, non-comedogenic products and avoiding picking can help. Ask a pharmacist about suitable treatments.
+See a GP: See a GP if spots are deep, painful, leave scars, do not improve or affect your wellbeing.
+Sources: S26, S4
+Editor: No material additional concerns beyond clinical review.
+
+[EDIT] L10  Feeling sick today?
+Type: logged_symptom | Trigger: Nausea logged.
+Text: Feeling sick can have several causes. Fresh air, small sips of water or cold drinks, and small meals may help. You do not have to work out the cause on your own.
+See a GP: See a GP if nausea persists for several days or keeps returning.
+Get help now (CLINICIAN REVIEW REQUIRED): Call 999 if sudden nausea is accompanied by heavy or tight chest pain, pain spreading into the arms, back, neck or jaw, or shortness of breath.
+Sources: S27
+Editor: Only surface urgent guidance after explicit warning-sign input, not from nausea alone.
+
+[KEEP] L11  Feeling dizzy?
+Type: logged_symptom | Trigger: Dizziness logged with no other urgently concerning explicit symptoms.
+Text: Sit or lie down until the dizziness passes. Get up slowly, drink water, and avoid driving while it continues. There are different possible causes.
+See a GP: See a GP if dizziness keeps coming back, you faint, or you notice hearing or vision changes.
+Sources: S28
+Editor: Combination with heavy bleeding routed separately; never diagnose iron deficiency.
+
+[EDIT] L12  Hot flushes today?
+Type: logged_symptom | Trigger: Hot flushes explicitly logged; do not use age-specific menopausal assumption.
+Text: A sudden feeling of heat can be uncomfortable. Light layers, a fan and a cool drink may help. Hot flushes have different possible causes; changes around perimenopause are only one possibility.
+See a GP: See a GP if flushes worry you, are frequent, or are accompanied by palpitations or a change in your bleeding pattern.
+Sources: S29, S30, S40
+Editor: Age unknown: no “you may be menopausal” personalised diagnosis; current NHS menopause pages have moved.
+
+[KEEP] L13  Cravings today?
+Type: logged_symptom | Trigger: Cravings logged; phase relationship should be conditional.
+Text: Changes in appetite and cravings can happen before a period, but not everyone gets them. If it helps, try smaller regular meals and keep logging what works for you.
+Sources: S4
+Editor: No material additional concerns beyond clinical review.
+
+[KEEP] L14  Constipated?
+Type: logged_symptom | Trigger: Constipation logged.
+Text: Adding fibre gradually, drinking enough and moving about can help. Try not to ignore the urge to go. A pharmacist can suggest short-term options if needed.
+See a GP: See a GP if it persists, frequently returns or is accompanied by blood in your poo or unexpected weight loss.
+Sources: S34
+Editor: No material additional concerns beyond clinical review.
+
+[EDIT] L15  An upset stomach?
+Type: logged_symptom | Trigger: Diarrhoea logged.
+Text: If you have diarrhoea, rest and keep drinking fluids, taking small sips if you feel sick. A pharmacist can advise about rehydration.
+Get help now (CLINICIAN REVIEW REQUIRED): Contact NHS 111 if you have bloody diarrhoea, diarrhoea lasting over 7 days, signs of dehydration despite rehydration, or vomiting so often you cannot keep fluids down.
+Sources: S35
+Editor: Do not claim all cases clear in exactly 5–7 days; extra urgent trigger inputs required.
+
+[EDIT] L16  Appetite changing?
+Type: logged_symptom | Trigger: Appetite increased or decreased logged, not just cravings.
+Text: You have logged a change in appetite. It may have many causes; if it keeps happening, your notes can help you spot when it occurs.
+See a GP: See a GP if low appetite persists or you lose weight without trying.
+Sources: S4, S37
+Editor: Avoid attributing every appetite shift to hormones.
+
+[EDIT] L17  Discharge changes through your cycle
+Type: logged_symptom | Trigger: Dry/sticky/creamy/watery selected; do not infer ovulation based on texture alone.
+Text: Vaginal discharge can be thick or sticky, or wetter and more slippery. Changes are often normal, and what is usual for you matters.
+See a GP: Contact NHS 111, a GP or a sexual health clinic if you notice a concerning change in smell, colour or texture, or itching, soreness or pelvic pain.
+Sources: S25
+Editor: Do not show alarming safety text unless user explicitly records a red flag.
+
+[EDIT] L18  Noticed stretchy discharge?
+Type: logged_symptom | Trigger: Egg-white discharge logged. If fertility off, show only non-fertility description or prefer L17.
+Text: Clear, stretchy discharge can occur around ovulation, but it cannot tell you the exact day. If you want to learn about fertility, you can switch on fertility insights.
+Sources: S7, S39
+Editor: Do not surprise users who opted out of fertility content; fertility-awareness methods require specific training and are not the same as a calendar guess.
+
+[KEEP] L19  Less interest in sex?
+Type: logged_symptom | Trigger: Low sex drive explicitly logged; keep private by default.
+Text: Sex drive varies from person to person and over time. Stress, sleep, mood, medicines and other factors can play a part. There is no right amount of desire.
+See a GP: Talk to a GP if a change in desire concerns you, or you think a medicine or contraception may be involved.
+Sources: S32
+Editor: Never assume consent, partner entitlement or an obligation to have sex.
+
+[EDIT] L20  Emergency contraception: your options
+Type: logged_symptom | Trigger: An explicit pregnancy-risk/contraceptive-failure entry AND a user preference to avoid pregnancy OR user opens a neutral “options after sex” help action; show promptly within relevant window. Do not exclude hormonal contraception users or infer a failure from missing logs.
+Text: If you have had sex without effective contraception, or think your contraception may have failed, emergency contraception may help. The copper IUD is the most effective option and can be fitted within 5 days; emergency pills have 3-day or 5-day windows depending on the type. The sooner you seek advice, the better.
+Get help now (CLINICIAN REVIEW REQUIRED): Contact a pharmacy, sexual health clinic or GP promptly to check which emergency option fits your circumstances.
+Sources: S24
+Editor: HIGH-PRIORITY CLINICAL/PRIVACY REVIEW. No push notification revealing sex history. Do not use if TTC. Explicit user context needed; always available as on-demand info. Include time since sex, contraception failure and service availability.
+
+[EDIT] L21  Short nights lately?
+Type: logged_symptom | Trigger: Under 6h explicitly logged on at least two of the last three nights; do not assume missing days are short.
+Text: You logged short nights recently. Many adults need around 7–9 hours of sleep. A regular waking time, quiet wind-down and a dark room can help.
+See a GP: See a GP if sleep problems continue for months or significantly affect your daily life.
+Sources: S31
+Editor: Sleep advice is not proof symptoms are sleep-caused.
+
+[EDIT] C01  A heavy, painful period
+Type: combination | Trigger: Confirmed period: both heavy flow and cramps explicitly logged in same day. Not any “today or yesterday” match unless related to same confirmed bleed episode.
+Text: Strong cramps alongside heavy bleeding can make everyday life harder. Warmth, rest when you need it and advice from a pharmacist may help; treatments are available if this keeps happening.
+See a GP: See a GP if heavy or painful periods affect daily life or are worsening.
+Get help now (CLINICIAN REVIEW REQUIRED): Seek urgent GP or NHS 111 advice if pain is severe or worse than usual and usual pain relief has not helped.
+Sources: S3, S2
+Editor: Only show urgent warning when actual severity/worsening is logged; avoid using combination as emergency classifier.
+
+[HOLD] C02  Dizziness with heavy bleeding
+Type: combination | Trigger: Both heavy bleeding and dizziness logged during the same event; clinical triage must determine thresholds.
+Text: If you feel dizzy while bleeding heavily, seek medical advice promptly. Sit or lie down while arranging help.
+See a GP: Speak to a clinician promptly; do not assume low iron caused symptoms.
+Get help now (CLINICIAN REVIEW REQUIRED): Heavy vaginal bleeding with pelvic pain, faintness or collapse can need emergency assessment: NHS guidance advises 999 or A&E.
+Sources: S3, S28, S37
+Editor: Not safe to auto-publish without clinician-approved decision tree: heavy bleeding with dizziness can require urgent evaluation and could have causes other than iron deficiency.
+
+[EDIT] C03  Headache with nausea?
+Type: combination | Trigger: Headache and nausea logged on same day; do not diagnose migraine.
+Text: A headache with nausea can sometimes happen with migraine, although there are other causes. Resting in a calm, dim room may help. Keep notes if this happens repeatedly.
+See a GP: See a GP if these headaches repeat, worsen or affect your activities.
+Get help now (CLINICIAN REVIEW REQUIRED): Call 999 or go to A&E for a sudden extremely painful headache, confusion, difficulty speaking, one-sided weakness, loss of vision or seizures.
+Sources: S33, S41
+Editor: Only display red-flag section if explicitly reported separately; do not duplicate L05 unnecessarily.
+
+[KEEP] C04  A few changes before your period
+Type: combination | Trigger: Two or more of bloating/cravings/breast tenderness explicitly logged in same pre-period window.
+Text: Bloating, food cravings or tender breasts can happen in the days before a period. Not everyone experiences these, and your own pattern is what matters.
+Sources: S4, S1
+Editor: No diagnosis of PMS from one combination.
+
+[EDIT] C05  Low mood and short nights
+Type: combination | Trigger: Sad/anxious/irritable today plus explicitly logged short sleep last night; no inference of causality.
+Text: A difficult mood and too little sleep can be a lot to deal with. If it helps, talk with someone you trust and make space for a gentle wind-down tonight.
+See a GP: Speak with a GP if low mood lasts more than two weeks or poor sleep affects daily life.
+Sources: S38, S31
+Editor: Do not infer psychological symptoms from one short night.
+
+[KEEP] C06  Tired after short nights?
+Type: combination | Trigger: Low energy/tiredness logged today AND short sleep actually logged in relevant preceding night(s).
+Text: You logged tiredness and short sleep. A calming routine and earlier wind-down might help tonight, if that is possible for you.
+See a GP: Speak with a GP if tiredness is ongoing or is accompanied by heavy periods.
+Sources: S31, S10
+Editor: Do not diagnose sleep debt, anaemia or sleep disorders from two values.
+
+[MERGE] C07  Hot flushes and broken sleep
+Type: combination | Trigger: Do not create a separate combination card from hot flush + sleep alone; reuse L12 and L21 or a user-confirmed night-sweats card later.
+Text: (No standalone card)
+Sources: S29, S30
+Editor: Original falsely assumes “night sweats” from a hot-flush log and short sleep. Needs a new explicit night-sweats log field before separate card.
+
+[EDIT] C08  Low mood and less desire
+Type: combination | Trigger: Low sex drive AND sadness/anxiety logged in the same day, if user explicitly opted in to sexual wellbeing insights.
+Text: Changes in desire can happen alongside difficult feelings, but one does not necessarily cause the other. You can focus on what feels right for you, at your own pace.
+See a GP: Speak to a GP if changes in mood or desire worry you or affect everyday life.
+Sources: S32, S38
+Editor: Make especially discreet; no partner-facing prompt or inferred obligation to intimacy.
+
+[KEEP] M01  Your period has started
+Type: moment | Trigger: Only after confirmed period start, not predicted start.
+Text: Your period has started. Bleeding is often heaviest in the first couple of days, but your experience may be different.
+Sources: S1
+Editor: Avoid negative TTC language; do not imply flow or length has been observed.
+
+[EDIT] M02  Your period may be changing
+Type: moment | Trigger: Confirmed period day 3 or later; do not imply current actual flow is lighter unless logged.
+Text: Flow often gets lighter after the first couple of days, though it is different for everyone. You can keep logging what you notice.
+Sources: S1
+Editor: Avoid saying “lighter days” when heavy flow is still logged.
+
+[MOVE] M03  Have you finished your period?
+Type: moment | Trigger: Only shown as a quiet, dismissible data-entry prompt after a plausible period length, not as a health/insight card.
+Text: Has your period ended? If so, you can tap to log the final day.
+Editor: Do not automatically end a period or increase prediction accuracy claims without validated model.
+
+[EDIT] M04  Your estimated fertile window
+Type: moment | Trigger: Fertility tracking explicitly opted in, and estimated window begins; only when estimation is appropriate.
+Text: Your app-estimated fertile window starts around now. Ovulation can happen earlier or later than predicted. Do not use a calendar estimate as contraception.
+Sources: S7, S39
+Editor: Avoid authoritative “starts today”. Never treat a forecast as confirmation or pregnancy prevention.
+
+[KEEP] M05  Your period may be due soon
+Type: moment | Trigger: 1–2 days before estimated start, predictions enabled, no exclusions.
+Text: Your next period is estimated to start soon. If it is useful, you could pop your preferred period products in your bag.
+Sources: S1
+Editor: Helpful, gentle, non-alarmist. Prefer only one pre-period reminder.
+
+[KEEP] I01b  Cramps today?
+Type: variant | Trigger: Same as I01; alternating copy only.
+Text: A warm shower, gentle movement, or a little lower-back massage may help if you have cramps. Ask a pharmacist about pain relief that suits you.
+Sources: S2
+Editor: Inherit all clinically validated red-flag and advice fields from I01. Do not have independent trigger.
+
+[KEEP] I12b  Before your period
+Type: variant | Trigger: Same as I12; alternating copy only.
+Text: Some people notice changes before their period — perhaps bloating, breast tenderness or a headache. Others notice very little. Both are normal experiences.
+Sources: S4
+Editor: No assumptions about emotional state.
+
+[EDIT] I16b  A headache today?
+Type: variant | Trigger: Same as I16; alternating copy only.
+Text: Headaches have many possible causes. Rest, regular meals and water may help, and a log can help you notice when they recur.
+Sources: S41
+Editor: Remove “another” from title unless truly repeated; use “A headache today?” for a first episode.
+
+[EDIT] I17b  Feeling bloated?
+Type: variant | Trigger: Same as I17; alternating copy only.
+Text: Bloating can have different causes. Smaller meals and gentle movement may help; if it persists or you also feel full unusually quickly, speak with a GP.
+See a GP: See a GP if bloating persists, you quickly feel full or you have unexplained weight loss.
+Sources: S4, S37
+Editor: Inherit baseline support fields; title should become “Feeling bloated?” without evidence of recurrence.
+
+[KEEP] I19b  Running low today?
+Type: variant | Trigger: Same as I19; alternating copy only.
+Text: If you are feeling tired, rest if you can and take things at your own pace. If exhaustion keeps returning, a GP can help check for possible causes.
+Sources: S4, S10
+Editor: Do not presume cycle link.
+
+[EDIT] I20b  A difficult day deserves care
+Type: variant | Trigger: Same as I20; alternating copy only.
+Text: If you are feeling upset, anxious or irritable, you do not need an explanation from your cycle. A walk, some space or a chat with someone you trust might help.
+Sources: S38
+Editor: No automatic PMS inference or crisis prompt from a mood-only log.
+
+DISPLAY/RUNTIME LOGIC
+• For ordinary content show at most one contextual card per day; no forced filler on quiet days. Safety alert uses its own clinician-reviewed route and may pre-empt ordinary content.
+• User must explicitly log the symptom that triggers a symptom card; missing data is unknown, not a negative finding.
+• The order is: clinician-approved urgent red-flag routing based on explicit responses > relevant time-sensitive optional guidance > same-day matching symptom > meaningful personal-pattern insight > opted-in phase/cycle education.
+• Combination cards require both symptoms explicitly logged in the relevant same-day event; never infer causation or severity from their coexistence.
+• Opening lines optional; show only if data quality supports them. Never assert medical interpretations, outcomes or “first ever” beyond MoonCycle records.
+• Allow dismiss, “not relevant”, snooze and per-topic opt-outs; avoid repeating a card merely because it has a different wording.
+• Use concept-level cooldowns: ordinary symptoms 14–30 days (or a material change); phase education once per cycle, general education 30–90 days, safety only when supported by clinically reviewed red flags.
+• If no relevant card meets selection rules, show no card; the dashboard can still show a neutral cycle-day label.
+• Distinguish predicted dates from confirmed period starts; require observation completeness and avoid clinical conclusions from cycle estimates.
+• Fertility information only when opted in, and never recommend calendar dates for avoiding pregnancy; apply pregnancy/contraception/postpartum/breastfeeding/HRT and other relevant model exclusions with clinician input.
+• One-tap partner unpairing and sharing preferences remain independent of Her card selection. Her sensitive card contents must not be shared or shown in lock-screen push notifications without separate opt-in.
+• For emergency-contraception help, include contraceptive failure even if hormonal contraception is used; expose accessible on-demand advice without disclosing sex history.
+• For UK use correct NHS contact routing; international versions need separately approved service advice rather than just translated UK 111/999 text.
+• Maintain always-accessible urgent mental-health help, but do not automatically push crisis messaging simply because sad/anxious mood was logged.
+• Clinician must sign off on red-flag symptom questions, severity thresholds, displayed emergency text and operational triage before production.
+
+PROVENANCE
+New Stage 1 draft: Pasted text(2).txt (user-supplied)
+Previous 30-card UK library: MoonCycle_Her_Insights_en-GB_curated.json
+NHS links carried forward from the draft and checked selectively (see sources in JSON).
+Medical and safety rules are NOT independently clinically validated.

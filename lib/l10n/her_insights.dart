@@ -65,6 +65,10 @@ class HerInsightTexts {
     required this.when,
     required this.labels,
     required this.becauseYouLogged,
+    required this.openings,
+    required this.windowPhrase,
+    required this.weekdays,
+    required this.months,
     required this.ui,
     required this.help,
     required this.helpIntro,
@@ -91,8 +95,23 @@ class HerInsightTexts {
   /// With `{x}`.
   final String becauseYouLogged;
 
+  /// The personal line a card opens with (P01...), with `{placeholders}`
+  /// named as in the reviewed pack.
+  final Map<String, String> openings;
+
+  /// For "around {cycle_window}": "the days before your period"...
+  final Map<CyclePhase, String> windowPhrase;
+
+  /// Monday first.
+  final List<String> weekdays;
+
+  /// January first.
+  final List<String> months;
+
   /// Buttons and headings: `seeGp`, `helpNow`, `notRelevant`, `hide`,
-  /// `source`, `ownLog`, `openHelp`, `linkFailed`, `notRelevantDone`.
+  /// `source`, `ownLog`, `openHelp`, `linkFailed`, `notRelevantDone`; and
+  /// the pieces of the opening lines: `today`, `tomorrow`, `onDay`,
+  /// `onEstimate`, `earlierThanEstimate`, `laterThanEstimate`.
   final Map<String, String> ui;
 
   final List<HelpOption> help;

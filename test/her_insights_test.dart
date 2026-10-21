@@ -232,12 +232,164 @@ void main() {
   test('every card the picker can choose has wording in every language', () {
     for (final language in AppLanguage.values) {
       final texts = HerInsightTexts.of(language);
-      for (final id in insightCooldownDays.keys) {
+      for (final id in allInsightCards) {
         expect(texts.cards[id], isNotNull, reason: '${language.code} $id');
         for (final source in texts.cards[id]!.sources) {
           expect(texts.sources[source], isNotNull, reason: '$id $source');
         }
       }
+      for (final id in insightOpeningIds) {
+        expect(texts.openings[id], isNotNull, reason: '${language.code} $id');
+      }
+      for (final symptom in SymptomCatalog.all) {
+        expect(texts.loggedPhrase[symptom] ?? '', isNot(contains('{')));
+      }
     }
+  });
+
+  // ---- Stage 1 -------------------------------------------------------------
+
+  /// The history, with [logs] replacing any entry on the same day.
+  InsightContext contextWith(
+    DayKey today,
+    List<DayLog> logs, {
+    UserProfile profile = const UserProfile(),
+    bool sexualWellbeing = false,
+  }) {
+    final days = {for (final log in logs) log.date};
+    final all = [
+      for (final log in history)
+        if (!days.contains(log.date)) log,
+      ...logs,
+    ];
+    return InsightContext(
+      today: today,
+      status: engine.status(all, today: today),
+      logs: all,
+      profile: profile,
+      sexualWellbeing: sexualWellbeing,
+    );
+  }
+
+  test('almost everything she can log has a card', () {
+    const noCard = {'Protected', 'Unprotected', 'High drive'};
+    for (final symptom in SymptomCatalog.all) {
+      if (noCard.contains(symptom)) continue;
+      final found = picker.candidates(
+        contextWith(midCycle, [DayLog(date: midCycle, symptoms: {symptom})]),
+      );
+      expect(
+        found.where((c) => c.symptom == symptom),
+        isNotEmpty,
+        reason: symptom,
+      );
+    }
+  });
+
+  test('two things logged together come before either on its own', () {
+    const day = DayKey(2024, 2, 27);
+    final c = contextWith(day, [
+      DayLog(date: day, flow: FlowIntensity.heavy, symptoms: const {'Cramps'}),
+    ]);
+    final (picks, _) =
+        HerInsightPicker.choose(picker.candidates(c), const InsightMemory(), day);
+    expect(picks.single.id, 'C01');
+    expect(picks.single.candidate.alsoLogged, heavyFlow);
+  });
+
+  test('the card about sex and desire needs her opt-in', () {
+    final logs = [
+      DayLog(date: midCycle, symptoms: const {'Low drive', 'Sad'}),
+    ];
+    expect(ids(contextWith(midCycle, logs)), isNot(contains('C08')));
+    expect(
+      ids(contextWith(midCycle, logs, sexualWellbeing: true)),
+      contains('C08'),
+    );
+  });
+
+  test('a card with two wordings shows them in turn', () {
+    final candidates = picker.candidates(
+      contextWith(
+        beforePeriod,
+        [DayLog(date: beforePeriod, symptoms: const {'Bloating'})],
+      ),
+    );
+    final (first, _) =
+        HerInsightPicker.choose(candidates, const InsightMemory(), beforePeriod);
+    expect(first.single.wording, 'I17');
+    final (next, _) = HerInsightPicker.choose(
+      candidates,
+      const InsightMemory(lastWording: {'I17': 'I17'}),
+      beforePeriod,
+    );
+    expect(next.single.wording, 'I17b');
+  });
+
+  test('a card opens with what she has logged before', () {
+    final c = contextWith(beforePeriod, [
+      DayLog(date: beforePeriod.addDays(-1), symptoms: const {'Bloating'}),
+      DayLog(date: beforePeriod, symptoms: const {'Bloating'}),
+    ]);
+    final (picks, saved) =
+        HerInsightPicker.choose(picker.candidates(c), const InsightMemory(), beforePeriod);
+    final opening = picks.single.opening!;
+    expect(opening.id, 'P01');
+    expect(opening.values['consecutive_logged_days'], 2);
+    // The same line about the same thing then rests.
+    expect(saved!.lastShown['P01:Bloating'], beforePeriod);
+  });
+
+  test('removing what a card answered brings up the next card', () {
+    final logged = contextWith(
+      beforePeriod,
+      [DayLog(date: beforePeriod, symptoms: const {'Bloating'})],
+    );
+    final (morning, saved) = HerInsightPicker.choose(
+      picker.candidates(logged),
+      const InsightMemory(),
+      beforePeriod,
+    );
+    expect(morning.single.id, 'I17');
+    final (after, _) = HerInsightPicker.choose(
+      picker.candidates(context(beforePeriod)),
+      saved!,
+      beforePeriod,
+    );
+    expect(after, hasLength(1));
+    expect(after.single.id, isNot('I17'));
+  });
+
+  test('a moment in her cycle shows once a cycle', () {
+    const dayOne = DayKey(2024, 2, 26);
+    final (picks, _) = HerInsightPicker.choose(
+      picker.candidates(context(dayOne)),
+      const InsightMemory(),
+      dayOne,
+    );
+    expect(picks.single.id, 'M01');
+    // Compared with the estimate made before it started.
+    expect(picks.single.opening?.id, 'P08');
+    expect(picks.single.opening?.values['relative_to_estimate'], 0);
+
+    final dayTwo = dayOne.addDays(1);
+    final (next, _) = HerInsightPicker.choose(
+      picker.candidates(context(dayTwo)),
+      InsightMemory(lastShown: {'M01': dayOne}),
+      dayTwo,
+    );
+    expect(next.single.id, isNot('M01'));
+  });
+
+  test('a quiet day with everything resting shows no card', () {
+    final candidates = picker.candidates(context(beforePeriod));
+    final (picks, _) = HerInsightPicker.choose(
+      candidates,
+      InsightMemory(
+        lastShown: {for (final c in candidates) c.id: beforePeriod.addDays(-1)},
+      ),
+      beforePeriod,
+    );
+    expect(picks, isEmpty);
   });
 }

@@ -1,0 +1,1427 @@
+{
+  "collection": "MoonCycle — Her insights, Stage 1 expansion",
+  "locale": "en-GB",
+  "review_date": "2026-10-21",
+  "review_status": "Editorial rewrite plus source spot-check. NOT clinically reviewed or approved. Safety routing blocked until clinician sign-off.",
+  "previous_library_file": "MoonCycle_Her_Insights_en-GB_curated.json",
+  "status_meanings": {
+    "KEEP": "Keep concept; still requires clinical validation if medical",
+    "EDIT": "Use revised copy and trigger subject to review",
+    "HOLD": "Exclude from production pending clinical triage/sign-off",
+    "MERGE": "Covered elsewhere; no independent card",
+    "MOVE": "Move to non-medical UI action, not a health insight"
+  },
+  "delivery_rules": [
+    "For ordinary content show at most one contextual card per day; no forced filler on quiet days. Safety alert uses its own clinician-reviewed route and may pre-empt ordinary content.",
+    "User must explicitly log the symptom that triggers a symptom card; missing data is unknown, not a negative finding.",
+    "The order is: clinician-approved urgent red-flag routing based on explicit responses > relevant time-sensitive optional guidance > same-day matching symptom > meaningful personal-pattern insight > opted-in phase/cycle education.",
+    "Combination cards require both symptoms explicitly logged in the relevant same-day event; never infer causation or severity from their coexistence.",
+    "Opening lines optional; show only if data quality supports them. Never assert medical interpretations, outcomes or “first ever” beyond MoonCycle records.",
+    "Allow dismiss, “not relevant”, snooze and per-topic opt-outs; avoid repeating a card merely because it has a different wording.",
+    "Use concept-level cooldowns: ordinary symptoms 14–30 days (or a material change); phase education once per cycle, general education 30–90 days, safety only when supported by clinically reviewed red flags.",
+    "If no relevant card meets selection rules, show no card; the dashboard can still show a neutral cycle-day label.",
+    "Distinguish predicted dates from confirmed period starts; require observation completeness and avoid clinical conclusions from cycle estimates.",
+    "Fertility information only when opted in, and never recommend calendar dates for avoiding pregnancy; apply pregnancy/contraception/postpartum/breastfeeding/HRT and other relevant model exclusions with clinician input.",
+    "One-tap partner unpairing and sharing preferences remain independent of Her card selection. Her sensitive card contents must not be shared or shown in lock-screen push notifications without separate opt-in.",
+    "For emergency-contraception help, include contraceptive failure even if hormonal contraception is used; expose accessible on-demand advice without disclosing sex history.",
+    "For UK use correct NHS contact routing; international versions need separately approved service advice rather than just translated UK 111/999 text.",
+    "Maintain always-accessible urgent mental-health help, but do not automatically push crisis messaging simply because sad/anxious mood was logged.",
+    "Clinician must sign off on red-flag symptom questions, severity thresholds, displayed emergency text and operational triage before production."
+  ],
+  "review_counts": {
+    "EDIT": 32,
+    "KEEP": 18,
+    "HOLD": 1,
+    "MERGE": 1,
+    "MOVE": 1
+  },
+  "items": [
+    {
+      "id": "P01",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Multi-day entry",
+      "body": "You logged {symptom} on {consecutive_logged_days} days in a row.",
+      "show_when": "Same symptom deliberately logged on at least 2 consecutive calendar days; do not infer an unlogged day.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Do not imply symptoms persisted continuously; deduplicate with P02.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P02",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Repeated cycle-window pattern",
+      "body": "You logged {symptom} around {cycle_window} in {matching_cycles} of your last {eligible_cycles} recorded cycles.",
+      "show_when": "At least 3 completed cycles WITH entries in relevant comparison windows, 2+ qualifying windows; never treat missing logs as negative observations.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "A minimum 60% heuristic is only a UI signal, not a clinically validated pattern. Show fraction and log coverage; no diagnosis.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "not_diagnostic": true
+    },
+    {
+      "id": "P03",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Similar time last cycle",
+      "body": "You logged {symptom} around this point in your previous recorded cycle too.",
+      "show_when": "Previous complete cycle has a real logged event within ±2 cycle days; only when dates make comparison meaningful.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Do not claim a recurring pattern from one comparison.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P04",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "New log type",
+      "body": "This is the first time you’ve logged {symptom} in MoonCycle.",
+      "show_when": "First recorded occurrence of an entry type in the available history.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "“First time you’ve logged” is not first time experienced.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P05",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Period history",
+      "body": "Day {period_day} of your period. Your {completed_period_count} recorded periods have lasted between {min_days} and {max_days} days.",
+      "show_when": "Today is a CONFIRMED period day; at least 2 completed logged periods with explicit ends.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Do not use in progress periods for historic duration or publish min-max from guessed end dates.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P06",
+      "decision": "KEEP",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Upcoming period estimate",
+      "body": "Your next period is estimated to start {friendly_date}.",
+      "show_when": "Estimated start in next 7 days, user has predictions enabled; do not show if exclusions apply.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Never imply certainty, preferably include viewable how-estimated details.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P07",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "After estimated date",
+      "body": "Your period has not been logged yet. Its estimated start was {days_past_estimate} days ago.",
+      "show_when": "Estimated start passed and no confirmed new period start logged; predictions enabled.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Never label the person as late or assert a missed period; if not logging, observation is unknown.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P08",
+      "decision": "KEEP",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Confirmed period start versus estimate",
+      "body": "Your period started {relative_to_estimate}.",
+      "show_when": "Confirmed bleed start with available comparable estimate.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "On-time or early/late refers to estimate only; avoid on TTC prompts.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P09",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Recent cycle length",
+      "body": "Your last recorded cycle was {last_cycle_days} days. Across {completed_cycles} completed cycles, the median was {median_cycle_days} days.",
+      "show_when": "At least 3 fully recorded completed cycles with reliable starts.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Use median; do not call 1 or 2 observations “usual”.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P10",
+      "decision": "KEEP",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Sleep entry",
+      "body": "You logged {sleep_hours} hours of sleep last night.",
+      "show_when": "User deliberately entered sleep duration, with a reliable last-night date.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Repeated-night copy only when exact entries exist.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P11",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Energy entry",
+      "body": "You logged your energy as {energy_rating} out of 5 today.",
+      "show_when": "Self-reported rating exists today.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Avoid superlative “lowest this cycle” based on 3 sparse entries.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P12",
+      "decision": "EDIT",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Fertile window estimate",
+      "body": "Your estimated fertile window is {start_date} to {end_date}. These dates are not a reliable way to prevent pregnancy.",
+      "show_when": "Opt-in fertility content, meaningful recent cycles and no exclusions; never imply confirmed ovulation.",
+      "sources": [
+        {
+          "code": "S7",
+          "name": "NHS — Fertility in the menstrual cycle",
+          "url": "https://www.nhs.uk/conditions/periods/fertility-in-the-menstrual-cycle/"
+        },
+        {
+          "code": "S39",
+          "name": "NHS — Natural family planning",
+          "url": "https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Calendar predictions are estimates; never label a particular day safe/unprotected. Suppress when method makes estimates unreliable.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "P13",
+      "decision": "KEEP",
+      "kind": "opening",
+      "locale": "en-GB",
+      "title": "Cycle day heading",
+      "body": "Cycle day {cycle_day}.",
+      "show_when": "Confirmed last period start exists; can appear as passive dashboard label, NOT generate a generic insight card.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Only display as passive contextual label in UI.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L01",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Cramps outside your period?",
+      "body": "Pelvic cramps can have several causes, and an app cannot tell what is behind them. Make a note of when they happen and any other symptoms.",
+      "show_when": "Cramps logged outside a confirmed period; do not rule out period pain based on an estimated date.",
+      "sources": [
+        {
+          "code": "S37",
+          "name": "NHS — Pelvic pain",
+          "url": "https://www.nhs.uk/symptoms/pelvic-pain/"
+        },
+        {
+          "code": "S8",
+          "name": "NHS — Ovulation pain",
+          "url": "https://www.nhs.uk/symptoms/ovulation-pain/"
+        }
+      ],
+      "see_gp_if": "Speak with a GP if pelvic pain returns or does not go away.",
+      "get_help_now_if": "Seek urgent advice via NHS 111 for pelvic pain with unusual discharge or bleeding, pain when peeing, fever, or possible pregnancy. Call 999 or go to A&E for severe/worsening pelvic pain, faintness, shoulder-tip pain or heavy bleeding.",
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Urgent copy is NOT auto-fired solely because cramps were logged; requires explicitly reported warning sign(s).",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L02",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Backache around your period?",
+      "body": "Period pain can spread to your lower back or thighs. A covered hot water bottle, warm bath, gentle movement or lower-back massage may help.",
+      "show_when": "Backache logged during confirmed period or shortly beforehand, without independently reported warning signs.",
+      "sources": [
+        {
+          "code": "S2",
+          "name": "NHS — Period pain",
+          "url": "https://www.nhs.uk/symptoms/period-pain/"
+        }
+      ],
+      "see_gp_if": "See a GP if the pain affects daily activities or is getting worse.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Do not assume unrelated backache is menstrual.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L03",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "A sore back today?",
+      "body": "Back pain often improves with time. Keeping gently active can help; a wrapped heat or cold pack may ease discomfort.",
+      "show_when": "Backache logged outside confirmed period context.",
+      "sources": [
+        {
+          "code": "S36",
+          "name": "NHS — Back pain",
+          "url": "https://www.nhs.uk/conditions/back-pain/"
+        }
+      ],
+      "see_gp_if": "Seek GP advice if it persists, disrupts daily life or is worse at night.",
+      "get_help_now_if": "Call 999 or go to A&E for back pain with new weakness or numbness in both legs, loss of sensation around the genitals or bottom, or new bladder/bowel problems.",
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Urgent red flags require explicit responses; plain “backache” log is not an urgent trigger.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L04",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Aching joints?",
+      "body": "Joint or muscle aches can have many causes. If you notice them repeatedly, keeping a note of timing, severity and what else is happening can help you discuss them with a GP.",
+      "show_when": "Joint or muscle aches specifically logged; do not label as PMS/PMDD.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        }
+      ],
+      "see_gp_if": "Speak with a GP if aches keep returning or affect everyday activities.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "NHS lists aches in severe premenstrual symptoms, not proof of hormonal cause. Consider a more specific MSK NHS source before publishing.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L05",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Headache around your period?",
+      "body": "Headaches sometimes occur around a period, although they can have other causes. Water, regular meals and rest may help; a pharmacist can advise on suitable pain relief.",
+      "show_when": "Headache logged within a confirmed period or 2 days before predicted start; do not diagnose menstrual migraine.",
+      "sources": [
+        {
+          "code": "S33",
+          "name": "NHS — Migraine",
+          "url": "https://www.nhs.uk/conditions/migraine/"
+        },
+        {
+          "code": "S41",
+          "name": "NHS — Headaches",
+          "url": "https://www.nhs.uk/symptoms/headaches/"
+        }
+      ],
+      "see_gp_if": "Speak with a GP if headaches regularly return, get worse or affect your life.",
+      "get_help_now_if": "Call 999 or go to A&E for a sudden extremely painful headache, one-sided weakness, problems speaking, loss of vision, confusion or seizures.",
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Emergency signs need an explicit safety flow; do not show scary paragraph for a normal logged headache.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L06",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Good days count too",
+      "body": "Logging a good day matters too. Over time, your entries may reveal what tends to work well for you — without assuming every cycle will be the same.",
+      "show_when": "Happy/calm/confident logged, and no more useful context card. Never use high libido as a proxy for wellbeing.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "wellbeing",
+      "cooldown_days": 35,
+      "editor_notes": "Source is personal data, not NHS evidence.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L07",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "If low moods keep returning",
+      "body": "You have logged feeling low or anxious several times recently. That can be hard. Talking to someone you trust, looking after sleep and seeking support are options if you need them.",
+      "show_when": "Several deliberately logged sad/anxious entries across at least 14 calendar days; must not infer continuous symptoms from sparse entries.",
+      "sources": [
+        {
+          "code": "S38",
+          "name": "NHS — Low mood, sadness and depression",
+          "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/low-mood-sadness-depression/"
+        }
+      ],
+      "see_gp_if": "See a GP if low mood has lasted more than two weeks, you are struggling to cope, or you would like support. Adults may be able to self-refer to NHS talking therapies.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 30,
+      "editor_notes": "Never imply depression diagnosis; permanently accessible urgent mental-health help must remain independent of mood recommendations.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L08",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "A premenstrual mood pattern?",
+      "body": "You have noticed similar mood changes before more than one period. Your log may be useful if you want to discuss their effect on daily life with a GP. Support and treatment are available for difficult premenstrual symptoms.",
+      "show_when": "Similar logged emotions in comparable pre-period windows over at least 3 completed observed cycles, with enough data coverage; optional.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        }
+      ],
+      "see_gp_if": "Speak with a GP if premenstrual symptoms affect your daily life.",
+      "get_help_now_if": null,
+      "priority": "personal_pattern",
+      "cooldown_days": 60,
+      "editor_notes": "Do not auto-mention PMDD from a pattern or display a clinical label; clinical review required if future PMDD education added.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L09",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Spots flaring up?",
+      "body": "Hormonal changes may contribute to spots, but there are other causes too. A gentle cleanser, non-comedogenic products and avoiding picking can help. Ask a pharmacist about suitable treatments.",
+      "show_when": "Acne/spots logged.",
+      "sources": [
+        {
+          "code": "S26",
+          "name": "NHS — Acne",
+          "url": "https://www.nhs.uk/conditions/acne/"
+        },
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        }
+      ],
+      "see_gp_if": "See a GP if spots are deep, painful, leave scars, do not improve or affect your wellbeing.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L10",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Feeling sick today?",
+      "body": "Feeling sick can have several causes. Fresh air, small sips of water or cold drinks, and small meals may help. You do not have to work out the cause on your own.",
+      "show_when": "Nausea logged.",
+      "sources": [
+        {
+          "code": "S27",
+          "name": "NHS — Feeling sick (nausea)",
+          "url": "https://www.nhs.uk/symptoms/feeling-sick-nausea/"
+        }
+      ],
+      "see_gp_if": "See a GP if nausea persists for several days or keeps returning.",
+      "get_help_now_if": "Call 999 if sudden nausea is accompanied by heavy or tight chest pain, pain spreading into the arms, back, neck or jaw, or shortness of breath.",
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Only surface urgent guidance after explicit warning-sign input, not from nausea alone.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L11",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Feeling dizzy?",
+      "body": "Sit or lie down until the dizziness passes. Get up slowly, drink water, and avoid driving while it continues. There are different possible causes.",
+      "show_when": "Dizziness logged with no other urgently concerning explicit symptoms.",
+      "sources": [
+        {
+          "code": "S28",
+          "name": "NHS — Dizziness",
+          "url": "https://www.nhs.uk/symptoms/dizziness/"
+        }
+      ],
+      "see_gp_if": "See a GP if dizziness keeps coming back, you faint, or you notice hearing or vision changes.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Combination with heavy bleeding routed separately; never diagnose iron deficiency.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L12",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Hot flushes today?",
+      "body": "A sudden feeling of heat can be uncomfortable. Light layers, a fan and a cool drink may help. Hot flushes have different possible causes; changes around perimenopause are only one possibility.",
+      "show_when": "Hot flushes explicitly logged; do not use age-specific menopausal assumption.",
+      "sources": [
+        {
+          "code": "S29",
+          "name": "NHS — Menopause symptoms",
+          "url": "https://www.nhs.uk/conditions/menopause-and-perimenopause/symptoms/"
+        },
+        {
+          "code": "S30",
+          "name": "NHS — Menopause: things you can do",
+          "url": "https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/"
+        },
+        {
+          "code": "S40",
+          "name": "NHS — Early menopause",
+          "url": "https://www.nhs.uk/conditions/early-menopause/"
+        }
+      ],
+      "see_gp_if": "See a GP if flushes worry you, are frequent, or are accompanied by palpitations or a change in your bleeding pattern.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Age unknown: no “you may be menopausal” personalised diagnosis; current NHS menopause pages have moved.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L13",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Cravings today?",
+      "body": "Changes in appetite and cravings can happen before a period, but not everyone gets them. If it helps, try smaller regular meals and keep logging what works for you.",
+      "show_when": "Cravings logged; phase relationship should be conditional.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 35,
+      "editor_notes": "",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L14",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Constipated?",
+      "body": "Adding fibre gradually, drinking enough and moving about can help. Try not to ignore the urge to go. A pharmacist can suggest short-term options if needed.",
+      "show_when": "Constipation logged.",
+      "sources": [
+        {
+          "code": "S34",
+          "name": "NHS — Constipation",
+          "url": "https://www.nhs.uk/conditions/constipation/"
+        }
+      ],
+      "see_gp_if": "See a GP if it persists, frequently returns or is accompanied by blood in your poo or unexpected weight loss.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L15",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "An upset stomach?",
+      "body": "If you have diarrhoea, rest and keep drinking fluids, taking small sips if you feel sick. A pharmacist can advise about rehydration.",
+      "show_when": "Diarrhoea logged.",
+      "sources": [
+        {
+          "code": "S35",
+          "name": "NHS — Diarrhoea and vomiting",
+          "url": "https://www.nhs.uk/symptoms/diarrhoea-and-vomiting/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": "Contact NHS 111 if you have bloody diarrhoea, diarrhoea lasting over 7 days, signs of dehydration despite rehydration, or vomiting so often you cannot keep fluids down.",
+      "priority": "symptom",
+      "cooldown_days": 21,
+      "editor_notes": "Do not claim all cases clear in exactly 5–7 days; extra urgent trigger inputs required.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L16",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Appetite changing?",
+      "body": "You have logged a change in appetite. It may have many causes; if it keeps happening, your notes can help you spot when it occurs.",
+      "show_when": "Appetite increased or decreased logged, not just cravings.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        },
+        {
+          "code": "S37",
+          "name": "NHS — Pelvic pain",
+          "url": "https://www.nhs.uk/symptoms/pelvic-pain/"
+        }
+      ],
+      "see_gp_if": "See a GP if low appetite persists or you lose weight without trying.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 35,
+      "editor_notes": "Avoid attributing every appetite shift to hormones.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L17",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Discharge changes through your cycle",
+      "body": "Vaginal discharge can be thick or sticky, or wetter and more slippery. Changes are often normal, and what is usual for you matters.",
+      "show_when": "Dry/sticky/creamy/watery selected; do not infer ovulation based on texture alone.",
+      "sources": [
+        {
+          "code": "S25",
+          "name": "NHS — Vaginal discharge",
+          "url": "https://www.nhs.uk/symptoms/vaginal-discharge/"
+        }
+      ],
+      "see_gp_if": "Contact NHS 111, a GP or a sexual health clinic if you notice a concerning change in smell, colour or texture, or itching, soreness or pelvic pain.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 60,
+      "editor_notes": "Do not show alarming safety text unless user explicitly records a red flag.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L18",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Noticed stretchy discharge?",
+      "body": "Clear, stretchy discharge can occur around ovulation, but it cannot tell you the exact day. If you want to learn about fertility, you can switch on fertility insights.",
+      "show_when": "Egg-white discharge logged. If fertility off, show only non-fertility description or prefer L17.",
+      "sources": [
+        {
+          "code": "S7",
+          "name": "NHS — Fertility in the menstrual cycle",
+          "url": "https://www.nhs.uk/conditions/periods/fertility-in-the-menstrual-cycle/"
+        },
+        {
+          "code": "S39",
+          "name": "NHS — Natural family planning",
+          "url": "https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 60,
+      "editor_notes": "Do not surprise users who opted out of fertility content; fertility-awareness methods require specific training and are not the same as a calendar guess.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L19",
+      "decision": "KEEP",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Less interest in sex?",
+      "body": "Sex drive varies from person to person and over time. Stress, sleep, mood, medicines and other factors can play a part. There is no right amount of desire.",
+      "show_when": "Low sex drive explicitly logged; keep private by default.",
+      "sources": [
+        {
+          "code": "S32",
+          "name": "NHS — Loss of libido",
+          "url": "https://www.nhs.uk/conditions/loss-of-libido/"
+        }
+      ],
+      "see_gp_if": "Talk to a GP if a change in desire concerns you, or you think a medicine or contraception may be involved.",
+      "get_help_now_if": null,
+      "priority": "wellbeing",
+      "cooldown_days": 45,
+      "editor_notes": "Never assume consent, partner entitlement or an obligation to have sex.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "L20",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Emergency contraception: your options",
+      "body": "If you have had sex without effective contraception, or think your contraception may have failed, emergency contraception may help. The copper IUD is the most effective option and can be fitted within 5 days; emergency pills have 3-day or 5-day windows depending on the type. The sooner you seek advice, the better.",
+      "show_when": "An explicit pregnancy-risk/contraceptive-failure entry AND a user preference to avoid pregnancy OR user opens a neutral “options after sex” help action; show promptly within relevant window. Do not exclude hormonal contraception users or infer a failure from missing logs.",
+      "sources": [
+        {
+          "code": "S24",
+          "name": "NHS — Emergency contraception",
+          "url": "https://www.nhs.uk/contraception/emergency-contraception/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": "Contact a pharmacy, sexual health clinic or GP promptly to check which emergency option fits your circumstances.",
+      "priority": "time_sensitive",
+      "cooldown_days": 0,
+      "editor_notes": "HIGH-PRIORITY CLINICAL/PRIVACY REVIEW. No push notification revealing sex history. Do not use if TTC. Explicit user context needed; always available as on-demand info. Include time since sex, contraception failure and service availability.",
+      "clinical_status": "blocked pending clinical sign-off",
+      "editorially_selected": false,
+      "production_enabled": false
+    },
+    {
+      "id": "L21",
+      "decision": "EDIT",
+      "kind": "logged_symptom",
+      "locale": "en-GB",
+      "title": "Short nights lately?",
+      "body": "You logged short nights recently. Many adults need around 7–9 hours of sleep. A regular waking time, quiet wind-down and a dark room can help.",
+      "show_when": "Under 6h explicitly logged on at least two of the last three nights; do not assume missing days are short.",
+      "sources": [
+        {
+          "code": "S31",
+          "name": "NHS — Insomnia",
+          "url": "https://www.nhs.uk/conditions/insomnia/"
+        }
+      ],
+      "see_gp_if": "See a GP if sleep problems continue for months or significantly affect your daily life.",
+      "get_help_now_if": null,
+      "priority": "symptom",
+      "cooldown_days": 14,
+      "editor_notes": "Sleep advice is not proof symptoms are sleep-caused.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "C01",
+      "decision": "EDIT",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "A heavy, painful period",
+      "body": "Strong cramps alongside heavy bleeding can make everyday life harder. Warmth, rest when you need it and advice from a pharmacist may help; treatments are available if this keeps happening.",
+      "show_when": "Confirmed period: both heavy flow and cramps explicitly logged in same day. Not any “today or yesterday” match unless related to same confirmed bleed episode.",
+      "sources": [
+        {
+          "code": "S3",
+          "name": "NHS — Heavy periods",
+          "url": "https://www.nhs.uk/conditions/heavy-periods/"
+        },
+        {
+          "code": "S2",
+          "name": "NHS — Period pain",
+          "url": "https://www.nhs.uk/symptoms/period-pain/"
+        }
+      ],
+      "see_gp_if": "See a GP if heavy or painful periods affect daily life or are worsening.",
+      "get_help_now_if": "Seek urgent GP or NHS 111 advice if pain is severe or worse than usual and usual pain relief has not helped.",
+      "priority": "combination",
+      "cooldown_days": 21,
+      "editor_notes": "Only show urgent warning when actual severity/worsening is logged; avoid using combination as emergency classifier.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "C02",
+      "decision": "HOLD",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "Dizziness with heavy bleeding",
+      "body": "If you feel dizzy while bleeding heavily, seek medical advice promptly. Sit or lie down while arranging help.",
+      "show_when": "Both heavy bleeding and dizziness logged during the same event; clinical triage must determine thresholds.",
+      "sources": [
+        {
+          "code": "S3",
+          "name": "NHS — Heavy periods",
+          "url": "https://www.nhs.uk/conditions/heavy-periods/"
+        },
+        {
+          "code": "S28",
+          "name": "NHS — Dizziness",
+          "url": "https://www.nhs.uk/symptoms/dizziness/"
+        },
+        {
+          "code": "S37",
+          "name": "NHS — Pelvic pain",
+          "url": "https://www.nhs.uk/symptoms/pelvic-pain/"
+        }
+      ],
+      "see_gp_if": "Speak to a clinician promptly; do not assume low iron caused symptoms.",
+      "get_help_now_if": "Heavy vaginal bleeding with pelvic pain, faintness or collapse can need emergency assessment: NHS guidance advises 999 or A&E.",
+      "priority": "safety",
+      "cooldown_days": 0,
+      "editor_notes": "Not safe to auto-publish without clinician-approved decision tree: heavy bleeding with dizziness can require urgent evaluation and could have causes other than iron deficiency.",
+      "clinical_status": "blocked pending clinical sign-off",
+      "editorially_selected": false,
+      "production_enabled": false
+    },
+    {
+      "id": "C03",
+      "decision": "EDIT",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "Headache with nausea?",
+      "body": "A headache with nausea can sometimes happen with migraine, although there are other causes. Resting in a calm, dim room may help. Keep notes if this happens repeatedly.",
+      "show_when": "Headache and nausea logged on same day; do not diagnose migraine.",
+      "sources": [
+        {
+          "code": "S33",
+          "name": "NHS — Migraine",
+          "url": "https://www.nhs.uk/conditions/migraine/"
+        },
+        {
+          "code": "S41",
+          "name": "NHS — Headaches",
+          "url": "https://www.nhs.uk/symptoms/headaches/"
+        }
+      ],
+      "see_gp_if": "See a GP if these headaches repeat, worsen or affect your activities.",
+      "get_help_now_if": "Call 999 or go to A&E for a sudden extremely painful headache, confusion, difficulty speaking, one-sided weakness, loss of vision or seizures.",
+      "priority": "combination",
+      "cooldown_days": 21,
+      "editor_notes": "Only display red-flag section if explicitly reported separately; do not duplicate L05 unnecessarily.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "C04",
+      "decision": "KEEP",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "A few changes before your period",
+      "body": "Bloating, food cravings or tender breasts can happen in the days before a period. Not everyone experiences these, and your own pattern is what matters.",
+      "show_when": "Two or more of bloating/cravings/breast tenderness explicitly logged in same pre-period window.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        },
+        {
+          "code": "S1",
+          "name": "NHS — Periods",
+          "url": "https://www.nhs.uk/conditions/periods/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "combination",
+      "cooldown_days": 35,
+      "editor_notes": "No diagnosis of PMS from one combination.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "C05",
+      "decision": "EDIT",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "Low mood and short nights",
+      "body": "A difficult mood and too little sleep can be a lot to deal with. If it helps, talk with someone you trust and make space for a gentle wind-down tonight.",
+      "show_when": "Sad/anxious/irritable today plus explicitly logged short sleep last night; no inference of causality.",
+      "sources": [
+        {
+          "code": "S38",
+          "name": "NHS — Low mood, sadness and depression",
+          "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/low-mood-sadness-depression/"
+        },
+        {
+          "code": "S31",
+          "name": "NHS — Insomnia",
+          "url": "https://www.nhs.uk/conditions/insomnia/"
+        }
+      ],
+      "see_gp_if": "Speak with a GP if low mood lasts more than two weeks or poor sleep affects daily life.",
+      "get_help_now_if": null,
+      "priority": "combination",
+      "cooldown_days": 21,
+      "editor_notes": "Do not infer psychological symptoms from one short night.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "C06",
+      "decision": "KEEP",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "Tired after short nights?",
+      "body": "You logged tiredness and short sleep. A calming routine and earlier wind-down might help tonight, if that is possible for you.",
+      "show_when": "Low energy/tiredness logged today AND short sleep actually logged in relevant preceding night(s).",
+      "sources": [
+        {
+          "code": "S31",
+          "name": "NHS — Insomnia",
+          "url": "https://www.nhs.uk/conditions/insomnia/"
+        },
+        {
+          "code": "S10",
+          "name": "NHS — Iron deficiency anaemia",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/"
+        }
+      ],
+      "see_gp_if": "Speak with a GP if tiredness is ongoing or is accompanied by heavy periods.",
+      "get_help_now_if": null,
+      "priority": "combination",
+      "cooldown_days": 21,
+      "editor_notes": "Do not diagnose sleep debt, anaemia or sleep disorders from two values.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "C07",
+      "decision": "MERGE",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "Hot flushes and broken sleep",
+      "body": "",
+      "show_when": "Do not create a separate combination card from hot flush + sleep alone; reuse L12 and L21 or a user-confirmed night-sweats card later.",
+      "sources": [
+        {
+          "code": "S29",
+          "name": "NHS — Menopause symptoms",
+          "url": "https://www.nhs.uk/conditions/menopause-and-perimenopause/symptoms/"
+        },
+        {
+          "code": "S30",
+          "name": "NHS — Menopause: things you can do",
+          "url": "https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "combination",
+      "cooldown_days": 21,
+      "editor_notes": "Original falsely assumes “night sweats” from a hot-flush log and short sleep. Needs a new explicit night-sweats log field before separate card.",
+      "clinical_status": "not selected",
+      "editorially_selected": false,
+      "production_enabled": false
+    },
+    {
+      "id": "C08",
+      "decision": "EDIT",
+      "kind": "combination",
+      "locale": "en-GB",
+      "title": "Low mood and less desire",
+      "body": "Changes in desire can happen alongside difficult feelings, but one does not necessarily cause the other. You can focus on what feels right for you, at your own pace.",
+      "show_when": "Low sex drive AND sadness/anxiety logged in the same day, if user explicitly opted in to sexual wellbeing insights.",
+      "sources": [
+        {
+          "code": "S32",
+          "name": "NHS — Loss of libido",
+          "url": "https://www.nhs.uk/conditions/loss-of-libido/"
+        },
+        {
+          "code": "S38",
+          "name": "NHS — Low mood, sadness and depression",
+          "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/low-mood-sadness-depression/"
+        }
+      ],
+      "see_gp_if": "Speak to a GP if changes in mood or desire worry you or affect everyday life.",
+      "get_help_now_if": null,
+      "priority": "combination",
+      "cooldown_days": 60,
+      "editor_notes": "Make especially discreet; no partner-facing prompt or inferred obligation to intimacy.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "M01",
+      "decision": "KEEP",
+      "kind": "moment",
+      "locale": "en-GB",
+      "title": "Your period has started",
+      "body": "Your period has started. Bleeding is often heaviest in the first couple of days, but your experience may be different.",
+      "show_when": "Only after confirmed period start, not predicted start.",
+      "sources": [
+        {
+          "code": "S1",
+          "name": "NHS — Periods",
+          "url": "https://www.nhs.uk/conditions/periods/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "moment",
+      "cooldown_days": 0,
+      "editor_notes": "Avoid negative TTC language; do not imply flow or length has been observed.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "M02",
+      "decision": "EDIT",
+      "kind": "moment",
+      "locale": "en-GB",
+      "title": "Your period may be changing",
+      "body": "Flow often gets lighter after the first couple of days, though it is different for everyone. You can keep logging what you notice.",
+      "show_when": "Confirmed period day 3 or later; do not imply current actual flow is lighter unless logged.",
+      "sources": [
+        {
+          "code": "S1",
+          "name": "NHS — Periods",
+          "url": "https://www.nhs.uk/conditions/periods/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "moment",
+      "cooldown_days": 0,
+      "editor_notes": "Avoid saying “lighter days” when heavy flow is still logged.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "M03",
+      "decision": "MOVE",
+      "kind": "moment",
+      "locale": "en-GB",
+      "title": "Have you finished your period?",
+      "body": "Has your period ended? If so, you can tap to log the final day.",
+      "show_when": "Only shown as a quiet, dismissible data-entry prompt after a plausible period length, not as a health/insight card.",
+      "sources": [],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "ui_action",
+      "cooldown_days": 0,
+      "editor_notes": "Do not automatically end a period or increase prediction accuracy claims without validated model.",
+      "clinical_status": "not medical content",
+      "editorially_selected": false,
+      "production_enabled": false
+    },
+    {
+      "id": "M04",
+      "decision": "EDIT",
+      "kind": "moment",
+      "locale": "en-GB",
+      "title": "Your estimated fertile window",
+      "body": "Your app-estimated fertile window starts around now. Ovulation can happen earlier or later than predicted. Do not use a calendar estimate as contraception.",
+      "show_when": "Fertility tracking explicitly opted in, and estimated window begins; only when estimation is appropriate.",
+      "sources": [
+        {
+          "code": "S7",
+          "name": "NHS — Fertility in the menstrual cycle",
+          "url": "https://www.nhs.uk/conditions/periods/fertility-in-the-menstrual-cycle/"
+        },
+        {
+          "code": "S39",
+          "name": "NHS — Natural family planning",
+          "url": "https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "moment",
+      "cooldown_days": 0,
+      "editor_notes": "Avoid authoritative “starts today”. Never treat a forecast as confirmation or pregnancy prevention.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "M05",
+      "decision": "KEEP",
+      "kind": "moment",
+      "locale": "en-GB",
+      "title": "Your period may be due soon",
+      "body": "Your next period is estimated to start soon. If it is useful, you could pop your preferred period products in your bag.",
+      "show_when": "1–2 days before estimated start, predictions enabled, no exclusions.",
+      "sources": [
+        {
+          "code": "S1",
+          "name": "NHS — Periods",
+          "url": "https://www.nhs.uk/conditions/periods/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "moment",
+      "cooldown_days": 0,
+      "editor_notes": "Helpful, gentle, non-alarmist. Prefer only one pre-period reminder.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false
+    },
+    {
+      "id": "I01b",
+      "decision": "KEEP",
+      "kind": "variant",
+      "locale": "en-GB",
+      "title": "Cramps today?",
+      "body": "A warm shower, gentle movement, or a little lower-back massage may help if you have cramps. Ask a pharmacist about pain relief that suits you.",
+      "show_when": "Same as I01; alternating copy only.",
+      "sources": [
+        {
+          "code": "S2",
+          "name": "NHS — Period pain",
+          "url": "https://www.nhs.uk/symptoms/period-pain/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Inherit all clinically validated red-flag and advice fields from I01. Do not have independent trigger.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "variant_of": "I01"
+    },
+    {
+      "id": "I12b",
+      "decision": "KEEP",
+      "kind": "variant",
+      "locale": "en-GB",
+      "title": "Before your period",
+      "body": "Some people notice changes before their period — perhaps bloating, breast tenderness or a headache. Others notice very little. Both are normal experiences.",
+      "show_when": "Same as I12; alternating copy only.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "No assumptions about emotional state.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "variant_of": "I12"
+    },
+    {
+      "id": "I16b",
+      "decision": "EDIT",
+      "kind": "variant",
+      "locale": "en-GB",
+      "title": "A headache today?",
+      "body": "Headaches have many possible causes. Rest, regular meals and water may help, and a log can help you notice when they recur.",
+      "show_when": "Same as I16; alternating copy only.",
+      "sources": [
+        {
+          "code": "S41",
+          "name": "NHS — Headaches",
+          "url": "https://www.nhs.uk/symptoms/headaches/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Remove “another” from title unless truly repeated; use “A headache today?” for a first episode.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "variant_of": "I16"
+    },
+    {
+      "id": "I17b",
+      "decision": "EDIT",
+      "kind": "variant",
+      "locale": "en-GB",
+      "title": "Feeling bloated?",
+      "body": "Bloating can have different causes. Smaller meals and gentle movement may help; if it persists or you also feel full unusually quickly, speak with a GP.",
+      "show_when": "Same as I17; alternating copy only.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        },
+        {
+          "code": "S37",
+          "name": "NHS — Pelvic pain",
+          "url": "https://www.nhs.uk/symptoms/pelvic-pain/"
+        }
+      ],
+      "see_gp_if": "See a GP if bloating persists, you quickly feel full or you have unexplained weight loss.",
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Inherit baseline support fields; title should become “Feeling bloated?” without evidence of recurrence.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "variant_of": "I17"
+    },
+    {
+      "id": "I19b",
+      "decision": "KEEP",
+      "kind": "variant",
+      "locale": "en-GB",
+      "title": "Running low today?",
+      "body": "If you are feeling tired, rest if you can and take things at your own pace. If exhaustion keeps returning, a GP can help check for possible causes.",
+      "show_when": "Same as I19; alternating copy only.",
+      "sources": [
+        {
+          "code": "S4",
+          "name": "NHS — PMS",
+          "url": "https://www.nhs.uk/conditions/pre-menstrual-syndrome/"
+        },
+        {
+          "code": "S10",
+          "name": "NHS — Iron deficiency anaemia",
+          "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "Do not presume cycle link.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "variant_of": "I19"
+    },
+    {
+      "id": "I20b",
+      "decision": "EDIT",
+      "kind": "variant",
+      "locale": "en-GB",
+      "title": "A difficult day deserves care",
+      "body": "If you are feeling upset, anxious or irritable, you do not need an explanation from your cycle. A walk, some space or a chat with someone you trust might help.",
+      "show_when": "Same as I20; alternating copy only.",
+      "sources": [
+        {
+          "code": "S38",
+          "name": "NHS — Low mood, sadness and depression",
+          "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/low-mood-sadness-depression/"
+        }
+      ],
+      "see_gp_if": null,
+      "get_help_now_if": null,
+      "priority": "routine",
+      "cooldown_days": 21,
+      "editor_notes": "No automatic PMS inference or crisis prompt from a mood-only log.",
+      "clinical_status": "clinical review needed",
+      "editorially_selected": true,
+      "production_enabled": false,
+      "variant_of": "I20"
+    }
+  ],
+  "new_sources": {
+    "S24": {
+      "code": "S24",
+      "name": "NHS — Emergency contraception",
+      "url": "https://www.nhs.uk/contraception/emergency-contraception/"
+    },
+    "S25": {
+      "code": "S25",
+      "name": "NHS — Vaginal discharge",
+      "url": "https://www.nhs.uk/symptoms/vaginal-discharge/"
+    },
+    "S26": {
+      "code": "S26",
+      "name": "NHS — Acne",
+      "url": "https://www.nhs.uk/conditions/acne/"
+    },
+    "S27": {
+      "code": "S27",
+      "name": "NHS — Feeling sick (nausea)",
+      "url": "https://www.nhs.uk/symptoms/feeling-sick-nausea/"
+    },
+    "S28": {
+      "code": "S28",
+      "name": "NHS — Dizziness",
+      "url": "https://www.nhs.uk/symptoms/dizziness/"
+    },
+    "S29": {
+      "code": "S29",
+      "name": "NHS — Menopause symptoms",
+      "url": "https://www.nhs.uk/conditions/menopause-and-perimenopause/symptoms/"
+    },
+    "S30": {
+      "code": "S30",
+      "name": "NHS — Menopause: things you can do",
+      "url": "https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/"
+    },
+    "S31": {
+      "code": "S31",
+      "name": "NHS — Insomnia",
+      "url": "https://www.nhs.uk/conditions/insomnia/"
+    },
+    "S32": {
+      "code": "S32",
+      "name": "NHS — Loss of libido",
+      "url": "https://www.nhs.uk/conditions/loss-of-libido/"
+    },
+    "S33": {
+      "code": "S33",
+      "name": "NHS — Migraine",
+      "url": "https://www.nhs.uk/conditions/migraine/"
+    },
+    "S34": {
+      "code": "S34",
+      "name": "NHS — Constipation",
+      "url": "https://www.nhs.uk/conditions/constipation/"
+    },
+    "S35": {
+      "code": "S35",
+      "name": "NHS — Diarrhoea and vomiting",
+      "url": "https://www.nhs.uk/symptoms/diarrhoea-and-vomiting/"
+    },
+    "S36": {
+      "code": "S36",
+      "name": "NHS — Back pain",
+      "url": "https://www.nhs.uk/conditions/back-pain/"
+    },
+    "S37": {
+      "code": "S37",
+      "name": "NHS — Pelvic pain",
+      "url": "https://www.nhs.uk/symptoms/pelvic-pain/"
+    },
+    "S38": {
+      "code": "S38",
+      "name": "NHS — Low mood, sadness and depression",
+      "url": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/low-mood-sadness-depression/"
+    },
+    "S39": {
+      "code": "S39",
+      "name": "NHS — Natural family planning",
+      "url": "https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/"
+    },
+    "S40": {
+      "code": "S40",
+      "name": "NHS — Early menopause",
+      "url": "https://www.nhs.uk/conditions/early-menopause/"
+    },
+    "S41": {
+      "code": "S41",
+      "name": "NHS — Headaches",
+      "url": "https://www.nhs.uk/symptoms/headaches/"
+    }
+  }
+}

@@ -5,8 +5,11 @@ import 'her_insights.dart';
 ///
 /// Cards I01 to NEW02 are the reviewed selection
 /// (MoonCycle_Her_Insights_en-GB_curated, 21 October 2026), word for word.
-/// H01 to H03 are drafts awaiting review. None of it is clinically approved
-/// yet: see `content/her-insights-en-GB.txt` and BEFORE_LAUNCH.md.
+/// L, C and M cards, the second wordings (I01b...) and the opening lines
+/// (P01...) are the stage 1 editorial review of the same date, word for
+/// word (`content/her-insights-en-GB-stage1-reviewed.txt`). H01 to H03 are
+/// drafts awaiting review. None of it is clinically approved yet: see
+/// `content/her-insights-en-GB.txt` and BEFORE_LAUNCH.md.
 const enGbHerInsights = HerInsightTexts(
   cards: {
     'I01': InsightText(
@@ -192,6 +195,219 @@ const enGbHerInsights = HerInsightTexts(
       title: 'Your energy across your cycle',
       body: "In what you've logged, your energy has tended to be highest {high} and lowest {low}. Everyone's pattern is different.",
     ),
+    // Stage 1: a card for what she logged.
+    'L01': InsightText(
+      title: 'Cramps outside your period?',
+      body: 'Pelvic cramps can have several causes, and an app cannot tell what is behind them. Make a note of when they happen and any other symptoms.',
+      seeGp: 'Speak with a GP if pelvic pain returns or does not go away.',
+      helpNow: 'Seek urgent advice via NHS 111 for pelvic pain with unusual discharge or bleeding, pain when peeing, fever, or possible pregnancy. Call 999 or go to A&E for severe/worsening pelvic pain, faintness, shoulder-tip pain or heavy bleeding.',
+      sources: ['S37', 'S8'],
+    ),
+    'L02': InsightText(
+      title: 'Backache around your period?',
+      body: 'Period pain can spread to your lower back or thighs. A covered hot water bottle, warm bath, gentle movement or lower-back massage may help.',
+      seeGp: 'See a GP if the pain affects daily activities or is getting worse.',
+      sources: ['S2'],
+    ),
+    'L03': InsightText(
+      title: 'A sore back today?',
+      body: 'Back pain often improves with time. Keeping gently active can help; a wrapped heat or cold pack may ease discomfort.',
+      seeGp: 'Seek GP advice if it persists, disrupts daily life or is worse at night.',
+      helpNow: 'Call 999 or go to A&E for back pain with new weakness or numbness in both legs, loss of sensation around the genitals or bottom, or new bladder/bowel problems.',
+      sources: ['S36'],
+    ),
+    'L04': InsightText(
+      title: 'Aching joints?',
+      body: 'Joint or muscle aches can have many causes. If you notice them repeatedly, keeping a note of timing, severity and what else is happening can help you discuss them with a GP.',
+      seeGp: 'Speak with a GP if aches keep returning or affect everyday activities.',
+      sources: ['S4'],
+    ),
+    'L05': InsightText(
+      title: 'Headache around your period?',
+      body: 'Headaches sometimes occur around a period, although they can have other causes. Water, regular meals and rest may help; a pharmacist can advise on suitable pain relief.',
+      seeGp: 'Speak with a GP if headaches regularly return, get worse or affect your life.',
+      helpNow: 'Call 999 or go to A&E for a sudden extremely painful headache, one-sided weakness, problems speaking, loss of vision, confusion or seizures.',
+      sources: ['S33', 'S41'],
+    ),
+    'L06': InsightText(
+      title: 'Good days count too',
+      body: 'Logging a good day matters too. Over time, your entries may reveal what tends to work well for you — without assuming every cycle will be the same.',
+      sources: [],
+    ),
+    'L07': InsightText(
+      title: 'If low moods keep returning',
+      body: 'You have logged feeling low or anxious several times recently. That can be hard. Talking to someone you trust, looking after sleep and seeking support are options if you need them.',
+      seeGp: 'See a GP if low mood has lasted more than two weeks, you are struggling to cope, or you would like support. Adults may be able to self-refer to NHS talking therapies.',
+      sources: ['S38'],
+    ),
+    'L08': InsightText(
+      title: 'A premenstrual mood pattern?',
+      body: 'You have noticed similar mood changes before more than one period. Your log may be useful if you want to discuss their effect on daily life with a GP. Support and treatment are available for difficult premenstrual symptoms.',
+      seeGp: 'Speak with a GP if premenstrual symptoms affect your daily life.',
+      sources: ['S4'],
+    ),
+    'L09': InsightText(
+      title: 'Spots flaring up?',
+      body: 'Hormonal changes may contribute to spots, but there are other causes too. A gentle cleanser, non-comedogenic products and avoiding picking can help. Ask a pharmacist about suitable treatments.',
+      seeGp: 'See a GP if spots are deep, painful, leave scars, do not improve or affect your wellbeing.',
+      sources: ['S26', 'S4'],
+    ),
+    'L10': InsightText(
+      title: 'Feeling sick today?',
+      body: 'Feeling sick can have several causes. Fresh air, small sips of water or cold drinks, and small meals may help. You do not have to work out the cause on your own.',
+      seeGp: 'See a GP if nausea persists for several days or keeps returning.',
+      helpNow: 'Call 999 if sudden nausea is accompanied by heavy or tight chest pain, pain spreading into the arms, back, neck or jaw, or shortness of breath.',
+      sources: ['S27'],
+    ),
+    'L11': InsightText(
+      title: 'Feeling dizzy?',
+      body: 'Sit or lie down until the dizziness passes. Get up slowly, drink water, and avoid driving while it continues. There are different possible causes.',
+      seeGp: 'See a GP if dizziness keeps coming back, you faint, or you notice hearing or vision changes.',
+      sources: ['S28'],
+    ),
+    'L12': InsightText(
+      title: 'Hot flushes today?',
+      body: 'A sudden feeling of heat can be uncomfortable. Light layers, a fan and a cool drink may help. Hot flushes have different possible causes; changes around perimenopause are only one possibility.',
+      seeGp: 'See a GP if flushes worry you, are frequent, or are accompanied by palpitations or a change in your bleeding pattern.',
+      sources: ['S29', 'S30', 'S40'],
+    ),
+    'L13': InsightText(
+      title: 'Cravings today?',
+      body: 'Changes in appetite and cravings can happen before a period, but not everyone gets them. If it helps, try smaller regular meals and keep logging what works for you.',
+      sources: ['S4'],
+    ),
+    'L14': InsightText(
+      title: 'Constipated?',
+      body: 'Adding fibre gradually, drinking enough and moving about can help. Try not to ignore the urge to go. A pharmacist can suggest short-term options if needed.',
+      seeGp: 'See a GP if it persists, frequently returns or is accompanied by blood in your poo or unexpected weight loss.',
+      sources: ['S34'],
+    ),
+    'L15': InsightText(
+      title: 'An upset stomach?',
+      body: 'If you have diarrhoea, rest and keep drinking fluids, taking small sips if you feel sick. A pharmacist can advise about rehydration.',
+      helpNow: 'Contact NHS 111 if you have bloody diarrhoea, diarrhoea lasting over 7 days, signs of dehydration despite rehydration, or vomiting so often you cannot keep fluids down.',
+      sources: ['S35'],
+    ),
+    'L16': InsightText(
+      title: 'Appetite changing?',
+      body: 'You have logged a change in appetite. It may have many causes; if it keeps happening, your notes can help you spot when it occurs.',
+      seeGp: 'See a GP if low appetite persists or you lose weight without trying.',
+      sources: ['S4', 'S37'],
+    ),
+    'L17': InsightText(
+      title: 'Discharge changes through your cycle',
+      body: 'Vaginal discharge can be thick or sticky, or wetter and more slippery. Changes are often normal, and what is usual for you matters.',
+      seeGp: 'Contact NHS 111, a GP or a sexual health clinic if you notice a concerning change in smell, colour or texture, or itching, soreness or pelvic pain.',
+      sources: ['S25'],
+    ),
+    'L18': InsightText(
+      title: 'Noticed stretchy discharge?',
+      body: 'Clear, stretchy discharge can occur around ovulation, but it cannot tell you the exact day. If you want to learn about fertility, you can switch on fertility insights.',
+      sources: ['S7', 'S39'],
+    ),
+    'L19': InsightText(
+      title: 'Less interest in sex?',
+      body: 'Sex drive varies from person to person and over time. Stress, sleep, mood, medicines and other factors can play a part. There is no right amount of desire.',
+      seeGp: 'Talk to a GP if a change in desire concerns you, or you think a medicine or contraception may be involved.',
+      sources: ['S32'],
+    ),
+    'L21': InsightText(
+      title: 'Short nights lately?',
+      body: 'You logged short nights recently. Many adults need around 7–9 hours of sleep. A regular waking time, quiet wind-down and a dark room can help.',
+      seeGp: 'See a GP if sleep problems continue for months or significantly affect your daily life.',
+      sources: ['S31'],
+    ),
+    // Stage 1: two things logged together.
+    'C01': InsightText(
+      title: 'A heavy, painful period',
+      body: 'Strong cramps alongside heavy bleeding can make everyday life harder. Warmth, rest when you need it and advice from a pharmacist may help; treatments are available if this keeps happening.',
+      seeGp: 'See a GP if heavy or painful periods affect daily life or are worsening.',
+      helpNow: 'Seek urgent GP or NHS 111 advice if pain is severe or worse than usual and usual pain relief has not helped.',
+      sources: ['S3', 'S2'],
+    ),
+    'C03': InsightText(
+      title: 'Headache with nausea?',
+      body: 'A headache with nausea can sometimes happen with migraine, although there are other causes. Resting in a calm, dim room may help. Keep notes if this happens repeatedly.',
+      seeGp: 'See a GP if these headaches repeat, worsen or affect your activities.',
+      helpNow: 'Call 999 or go to A&E for a sudden extremely painful headache, confusion, difficulty speaking, one-sided weakness, loss of vision or seizures.',
+      sources: ['S33', 'S41'],
+    ),
+    'C04': InsightText(
+      title: 'A few changes before your period',
+      body: 'Bloating, food cravings or tender breasts can happen in the days before a period. Not everyone experiences these, and your own pattern is what matters.',
+      sources: ['S4', 'S1'],
+    ),
+    'C05': InsightText(
+      title: 'Low mood and short nights',
+      body: 'A difficult mood and too little sleep can be a lot to deal with. If it helps, talk with someone you trust and make space for a gentle wind-down tonight.',
+      seeGp: 'Speak with a GP if low mood lasts more than two weeks or poor sleep affects daily life.',
+      sources: ['S38', 'S31'],
+    ),
+    'C06': InsightText(
+      title: 'Tired after short nights?',
+      body: 'You logged tiredness and short sleep. A calming routine and earlier wind-down might help tonight, if that is possible for you.',
+      seeGp: 'Speak with a GP if tiredness is ongoing or is accompanied by heavy periods.',
+      sources: ['S31', 'S10'],
+    ),
+    'C08': InsightText(
+      title: 'Low mood and less desire',
+      body: 'Changes in desire can happen alongside difficult feelings, but one does not necessarily cause the other. You can focus on what feels right for you, at your own pace.',
+      seeGp: 'Speak to a GP if changes in mood or desire worry you or affect everyday life.',
+      sources: ['S32', 'S38'],
+    ),
+    // Stage 1: moments in her cycle, once a cycle.
+    'M01': InsightText(
+      title: 'Your period has started',
+      body: 'Your period has started. Bleeding is often heaviest in the first couple of days, but your experience may be different.',
+      sources: ['S1'],
+    ),
+    'M02': InsightText(
+      title: 'Your period may be changing',
+      body: 'Flow often gets lighter after the first couple of days, though it is different for everyone. You can keep logging what you notice.',
+      sources: ['S1'],
+    ),
+    'M04': InsightText(
+      title: 'Your estimated fertile window',
+      body: 'Your app-estimated fertile window starts around now. Ovulation can happen earlier or later than predicted. Do not use a calendar estimate as contraception.',
+      sources: ['S7', 'S39'],
+    ),
+    'M05': InsightText(
+      title: 'Your period may be due soon',
+      body: 'Your next period is estimated to start soon. If it is useful, you could pop your preferred period products in your bag.',
+      sources: ['S1'],
+    ),
+    // Stage 1: second wordings. Without their own "See a GP" or "Get help now", the first wording's is shown.
+    'I01b': InsightText(
+      title: 'Cramps today?',
+      body: 'A warm shower, gentle movement, or a little lower-back massage may help if you have cramps. Ask a pharmacist about pain relief that suits you.',
+      sources: ['S2'],
+    ),
+    'I12b': InsightText(
+      title: 'Before your period',
+      body: 'Some people notice changes before their period — perhaps bloating, breast tenderness or a headache. Others notice very little. Both are normal experiences.',
+      sources: ['S4'],
+    ),
+    'I16b': InsightText(
+      title: 'A headache today?',
+      body: 'Headaches have many possible causes. Rest, regular meals and water may help, and a log can help you notice when they recur.',
+      sources: ['S41'],
+    ),
+    'I17b': InsightText(
+      title: 'Feeling bloated?',
+      body: 'Bloating can have different causes. Smaller meals and gentle movement may help; if it persists or you also feel full unusually quickly, speak with a GP.',
+      seeGp: 'See a GP if bloating persists, you quickly feel full or you have unexplained weight loss.',
+      sources: ['S4', 'S37'],
+    ),
+    'I19b': InsightText(
+      title: 'Running low today?',
+      body: 'If you are feeling tired, rest if you can and take things at your own pace. If exhaustion keeps returning, a GP can help check for possible causes.',
+      sources: ['S4', 'S10'],
+    ),
+    'I20b': InsightText(
+      title: 'A difficult day deserves care',
+      body: 'If you are feeling upset, anxious or irritable, you do not need an explanation from your cycle. A walk, some space or a chat with someone you trust might help.',
+      sources: ['S38'],
+    ),
   },
   sources: {
     'S1': InsightSource('NHS — Periods', 'https://www.nhs.uk/conditions/periods/'),
@@ -217,6 +433,24 @@ const enGbHerInsights = HerInsightTexts(
     'S21': InsightSource('NHS — How contraception affects periods', 'https://www.nhs.uk/contraception/choosing-contraception/effects-on-periods/'),
     'S22': InsightSource('NHS — Pregnancy vitamins and supplements', 'https://www.nhs.uk/pregnancy/keeping-well/pregnancy-vitamins-and-supplements/'),
     'S23': InsightSource('NHS — Ectopic pregnancy', 'https://www.nhs.uk/conditions/ectopic-pregnancy/'),
+    'S24': InsightSource('NHS — Emergency contraception', 'https://www.nhs.uk/contraception/emergency-contraception/'),
+    'S25': InsightSource('NHS — Vaginal discharge', 'https://www.nhs.uk/symptoms/vaginal-discharge/'),
+    'S26': InsightSource('NHS — Acne', 'https://www.nhs.uk/conditions/acne/'),
+    'S27': InsightSource('NHS — Feeling sick (nausea)', 'https://www.nhs.uk/symptoms/feeling-sick-nausea/'),
+    'S28': InsightSource('NHS — Dizziness', 'https://www.nhs.uk/symptoms/dizziness/'),
+    'S29': InsightSource('NHS — Menopause symptoms', 'https://www.nhs.uk/conditions/menopause-and-perimenopause/symptoms/'),
+    'S30': InsightSource('NHS — Menopause: things you can do', 'https://www.nhs.uk/conditions/menopause-and-perimenopause/things-you-can-do/'),
+    'S31': InsightSource('NHS — Insomnia', 'https://www.nhs.uk/conditions/insomnia/'),
+    'S32': InsightSource('NHS — Loss of libido', 'https://www.nhs.uk/conditions/loss-of-libido/'),
+    'S33': InsightSource('NHS — Migraine', 'https://www.nhs.uk/conditions/migraine/'),
+    'S34': InsightSource('NHS — Constipation', 'https://www.nhs.uk/conditions/constipation/'),
+    'S35': InsightSource('NHS — Diarrhoea and vomiting', 'https://www.nhs.uk/symptoms/diarrhoea-and-vomiting/'),
+    'S36': InsightSource('NHS — Back pain', 'https://www.nhs.uk/conditions/back-pain/'),
+    'S37': InsightSource('NHS — Pelvic pain', 'https://www.nhs.uk/symptoms/pelvic-pain/'),
+    'S38': InsightSource('NHS — Low mood, sadness and depression', 'https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/low-mood-sadness-depression/'),
+    'S39': InsightSource('NHS — Natural family planning', 'https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/'),
+    'S40': InsightSource('NHS — Early menopause', 'https://www.nhs.uk/conditions/early-menopause/'),
+    'S41': InsightSource('NHS — Headaches', 'https://www.nhs.uk/symptoms/headaches/'),
   },
   loggedPhrase: {
     'Cramps': 'cramps',
@@ -231,6 +465,27 @@ const enGbHerInsights = HerInsightTexts(
     'Sensitive': 'feeling sensitive',
     'Egg white': 'egg-white discharge',
     'heavy flow': 'a heavy flow',
+    'Backache': 'backache',
+    'Joint pain': 'joint pain',
+    'Happy': 'feeling happy',
+    'Calm': 'feeling calm',
+    'Confident': 'feeling confident',
+    'Acne': 'spots',
+    'Nausea': 'feeling sick',
+    'Dizziness': 'dizziness',
+    'Hot flush': 'a hot flush',
+    'Food cravings': 'food cravings',
+    'Constipation': 'constipation',
+    'Diarrhoea': 'diarrhoea',
+    'Appetite up': 'a bigger appetite',
+    'Appetite down': 'a smaller appetite',
+    'Dry': 'dryness',
+    'Sticky': 'sticky discharge',
+    'Creamy': 'creamy discharge',
+    'Watery': 'watery discharge',
+    'Low drive': 'low desire',
+    'short sleep': 'short sleep',
+    'low energy': 'low energy',
   },
   patternPhrase: {
     'Cramps': 'cramps',
@@ -253,6 +508,17 @@ const enGbHerInsights = HerInsightTexts(
     'Dizziness': 'dizziness',
     'Hot flush': 'hot flushes',
     'Food cravings': 'food cravings',
+    'Constipation': 'constipation',
+    'Diarrhoea': 'diarrhoea',
+    'Appetite up': 'a bigger appetite',
+    'Appetite down': 'a smaller appetite',
+    'Dry': 'dryness',
+    'Sticky': 'sticky discharge',
+    'Creamy': 'creamy discharge',
+    'Watery': 'watery discharge',
+    'Egg white': 'egg-white discharge',
+    'heavy flow': 'a heavy flow',
+    'low energy': 'low energy',
   },
   when: {
     CyclePhase.menstrual: 'during your period',
@@ -274,6 +540,36 @@ const enGbHerInsights = HerInsightTexts(
     'NEW02': 'Contraception',
   },
   becauseYouLogged: 'Because you logged {x}',
+  openings: {
+    'P01': 'You logged {symptom} on {consecutive_logged_days} days in a row.',
+    'P02': 'You logged {symptom} around {cycle_window} in {matching_cycles} of your last {eligible_cycles} recorded cycles.',
+    'P03': 'You logged {symptom} around this point in your previous recorded cycle too.',
+    'P04': 'This is the first time you’ve logged {symptom} in MoonCycle.',
+    'P05': 'Day {period_day} of your period. Your {completed_period_count} recorded periods have lasted between {min_days} and {max_days} days.',
+    'P06': 'Your next period is estimated to start {friendly_date}.',
+    'P07': 'Your period has not been logged yet. Its estimated start was {days_past_estimate} days ago.',
+    'P08': 'Your period started {relative_to_estimate}.',
+    'P09': 'Your last recorded cycle was {last_cycle_days} days. Across {completed_cycles} completed cycles, the median was {median_cycle_days} days.',
+    'P10': 'You logged {sleep_hours} hours of sleep last night.',
+    'P11': 'You logged your energy as {energy_rating} out of 5 today.',
+    'P12': 'Your estimated fertile window is {start_date} to {end_date}. These dates are not a reliable way to prevent pregnancy.',
+    // P05 when every recorded period lasted the same number of days.
+    'P05_same': 'Day {period_day} of your period. Your {completed_period_count} recorded periods have each lasted {min_days} days.',
+  },
+  windowPhrase: {
+    CyclePhase.menstrual: 'your period',
+    CyclePhase.follicular: 'the days after your period',
+    CyclePhase.ovulatory: 'the middle of your cycle',
+    CyclePhase.luteal: 'the days before your period',
+  },
+  weekdays: [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
+    'Sunday',
+  ],
+  months: [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December',
+  ],
   ui: {
     'helpNow': 'When to get help now',
     'notRelevant': 'Not relevant to me',
@@ -284,6 +580,12 @@ const enGbHerInsights = HerInsightTexts(
     'linkFailed': 'Could not open the link.',
     'notRelevantDone': "You won't see this card again. You can bring hidden cards back in Settings.",
     'and': 'and',
+    'today': 'today',
+    'tomorrow': 'tomorrow',
+    'onDay': 'on {day}',
+    'onEstimate': 'on the day it was estimated',
+    'earlierThanEstimate': '{n} days earlier than estimated',
+    'laterThanEstimate': '{n} days later than estimated',
   },
   helpIntro: 'If you need help now, these are the services in the UK. MoonCycle cannot give medical advice or check on you.',
   help: [

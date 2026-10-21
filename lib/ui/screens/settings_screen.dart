@@ -323,6 +323,16 @@ class SettingsScreen extends ConsumerWidget {
         ),
         onChanged: notifier.setScreeningReminders,
       ),
+      SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        value: memory.sexualWellbeing,
+        title: const Text('Cards about sex and desire'),
+        subtitle: const Text(
+          'For example when you log low desire and low mood on the same '
+          'day. Only you see them.',
+        ),
+        onChanged: notifier.setSexualWellbeing,
+      ),
       if (hidden > 0)
         ListTile(
           contentPadding: EdgeInsets.zero,

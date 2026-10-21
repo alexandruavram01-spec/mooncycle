@@ -31,9 +31,11 @@ test group uses MoonCycle.
   or midwife.
 - **Insight cards for her are test-accounts only.** Before switching them on
   for everyone (`herInsightsEnabledProvider` in `lib/state/providers.dart`):
-  clinical sign-off of the cards, the pattern cards H01–H03 and the "Get help
-  now" page, plus an International edition with urgent advice adapted for
-  outside the UK. See `content/her-insights-en-GB.txt`.
+  clinical sign-off of the cards (the 30, stage 1 and H01–H03), the opening
+  lines and the "Get help now" page; warning-sign questions before urgent
+  advice shows on the stage 1 cards; and an International edition with
+  urgent advice adapted for outside the UK. See
+  `content/her-insights-en-GB.txt` (last section).
 - **Check the "Pulled" list** in the tip library for anything flagged.
 
 ## Still to build
