@@ -74,6 +74,56 @@ const insightOpeningIds = [
 /// The same opening line, about the same thing, rests this long.
 const openingCooldownDays = 21;
 
+/// Cards that always show as reviewed, never rewritten by AI: warning signs,
+/// late or long bleeding, pregnancy and fertility timing, contraception,
+/// low mood, medicines and the drafts from her own log. The same list is in
+/// server/her-notes.js, which refuses them too.
+const aiNoteFixedOnly = {
+  'I03', 'I05', 'I08', 'I09', 'I11', 'I21', 'I22', 'I23', 'I24', 'I25',
+  'I26', 'I27', 'I28', 'I29', 'I30', 'NEW02', 'L07', 'L08', 'L12', 'L18',
+  'L20', 'C02', 'C07', 'M03', 'M04', 'H01', 'H02', 'H03',
+};
+
+bool aiNoteEligible(InsightPick pick) =>
+    pick.tier != InsightTier.safety && !aiNoteFixedOnly.contains(pick.id);
+
+/// What her phone sends to have the note for [pick] written: the card, and
+/// the facts its opening lines would use. Only what the card is about from
+/// her log, never the rest of it, her notes or anything about her account.
+Map<String, Object?> herNoteRequest(
+  InsightPick pick, {
+  required DayKey today,
+  required UserProfile profile,
+}) {
+  final candidate = pick.candidate;
+  Object wire(Object value) => switch (value) {
+        DayKey day => day.iso,
+        CyclePhase phase => phase.name,
+        _ => value,
+      };
+  return {
+    'card': pick.id,
+    'wording': pick.wording,
+    'today': today.iso,
+    'goal': profile.goal == TrackingGoal.conceive ? 'conceive' : 'track',
+    'fertility': profile.journey == 'fertility' || profile.showFertileDays,
+    'logged': [
+      for (final item in [candidate.symptom, candidate.alsoLogged])
+        if (item != null && item != shortSleep && item != lowEnergy) item,
+    ],
+    'facts': [
+      for (final opening in candidate.openings.take(8))
+        {
+          'id': opening.id,
+          'values': {
+            for (final MapEntry(:key, :value) in opening.values.entries)
+              key: wire(value),
+          },
+        },
+    ],
+  };
+}
+
 /// What `symptom` holds for a heavy flow, which is not a symptom name.
 const heavyFlow = 'heavy flow';
 
@@ -237,6 +287,7 @@ class InsightMemory {
     this.pickPriority,
     this.pickWording = const {},
     this.pickOpening = const {},
+    this.pickNotes = const {},
     this.dismissed = const {},
     this.screeningReminders = false,
     this.sexualWellbeing = false,
@@ -259,6 +310,9 @@ class InsightMemory {
   /// Opening key by card.
   final Map<String, String> pickOpening;
 
+  /// Today's AI-written notes by card, when she has them turned on.
+  final Map<String, String> pickNotes;
+
   /// Cards she closed on [pickDay].
   final Set<String> dismissed;
   final bool screeningReminders;
@@ -275,6 +329,7 @@ class InsightMemory {
     int? pickPriority,
     Map<String, String>? pickWording,
     Map<String, String>? pickOpening,
+    Map<String, String>? pickNotes,
     Set<String>? dismissed,
     bool? screeningReminders,
     bool? sexualWellbeing,
@@ -288,6 +343,7 @@ class InsightMemory {
         pickPriority: pickPriority ?? this.pickPriority,
         pickWording: pickWording ?? this.pickWording,
         pickOpening: pickOpening ?? this.pickOpening,
+        pickNotes: pickNotes ?? this.pickNotes,
         dismissed: dismissed ?? this.dismissed,
         screeningReminders: screeningReminders ?? this.screeningReminders,
         sexualWellbeing: sexualWellbeing ?? this.sexualWellbeing,
@@ -305,6 +361,7 @@ class InsightMemory {
         'pickPriority': pickPriority,
         'pickWording': pickWording,
         'pickOpening': pickOpening,
+        'pickNotes': pickNotes,
         'dismissed': dismissed.toList(),
         'screeningReminders': screeningReminders,
         'sexualWellbeing': sexualWellbeing,
@@ -333,6 +390,7 @@ class InsightMemory {
       pickPriority: j['pickPriority'] as int?,
       pickWording: stringMap(j['pickWording']),
       pickOpening: stringMap(j['pickOpening']),
+      pickNotes: stringMap(j['pickNotes']),
       dismissed: strings(j['dismissed']).toSet(),
       screeningReminders: j['screeningReminders'] as bool? ?? false,
       sexualWellbeing: j['sexualWellbeing'] as bool? ?? false,
@@ -511,8 +569,8 @@ class HerInsightPicker {
       if (s.contains('Joint pain')) single('L04', 'Joint pain');
       if (s.contains('Acne')) single('L09', 'Acne');
       if (s.contains('Nausea')) single('L10', 'Nausea');
-      // Dizziness with a heavy flow needs its own clinician-approved card
-      // (C02, on hold), so the plain dizziness card stays out of it.
+      // Dizziness with a heavy flow is left to the heavy-flow card and the
+      // urgent-help line (C02 was left out), not the plain dizziness card.
       if (s.contains('Dizziness') && !heavy) single('L11', 'Dizziness');
       if (s.contains('Hot flush')) single('L12', 'Hot flush');
       if (s.contains('Food cravings')) single('L13', 'Food cravings');
@@ -832,6 +890,8 @@ class HerInsightPicker {
           for (final pick in picks)
             if (pick.opening case final opening?) pick.id: opening.key,
         },
+        // A new choice starts without notes; any are fetched for it.
+        pickNotes: const {},
         dismissed: dismissed,
       ),
     );

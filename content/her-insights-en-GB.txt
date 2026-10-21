@@ -1,14 +1,16 @@
 MOONCYCLE — INSIGHT CARDS FOR HER — en-GB
-Built 21 October 2026 — NOT CLINICALLY APPROVED: shown to the test accounts only
+Built 21 October 2026 — shown to the test accounts only until our own NHS check
+(last section) is done. No clinician review: decided 21 October 2026.
 
 Source of truth for the wording, copied word for word into
 lib/l10n/her_insights_en_gb.dart (change both together):
 • "MoonCycle_Her_Insights_en-GB_curated": the 30 I/NEW cards, 23 sources.
 • Stage 1 editorial review (her-insights-en-GB-stage1-reviewed.txt and .json
   in this folder): L, C and M cards, second wordings (I01b...), opening lines
-  (P01...), sources S24–S41. Not built from it: L20 and C02 (blocked until
-  clinical sign-off), C07 (merged), M03 (to become a "log the last day"
-  prompt, not a card), P13 (a plain cycle-day label).
+  (P01...), sources S24–S41. Not built from it: L20 (emergency contraception)
+  and C02 (dizziness with heavy bleeding), left out for good; C07 (merged);
+  M03 (to become a "log the last day" prompt, not a card); P13 (a plain
+  cycle-day label).
 
 ========================================================================================
 HOW A CARD IS CHOSEN (lib/domain/her_insights.dart)
@@ -120,16 +122,27 @@ No health claims: they repeat facts from her own log. Source line on the card:
          Cooldown: 45 days
 
 ========================================================================================
-"GET HELP NOW" PAGE (needs the same clinical review)
+URGENT HELP: WHERE TO TURN, NOT DETAILED ADVICE (decided 21 October 2026)
 ========================================================================================
-Intro: If you need help now, these are the services in the UK. MoonCycle cannot
-give medical advice or check on you.
-• 999 or A&E: emergencies — Call 999 or go to A&E if someone's life is at risk:
-  for example sudden, severe tummy pain with dizziness or fainting, difficulty
-  breathing, or if you feel you cannot keep yourself safe.   [Call 999]
-• NHS 111: urgent advice — For urgent medical advice when it is not an
-  emergency, call 111 or use NHS 111 online. For your mental health, choose the
-  mental health option.   [Call 111] [111.nhs.uk]
+Cards no longer show detailed warning signs (the "Get help now" text of each
+card is kept in the code but not shown). Any card that had it, the safety
+card, and every card about something she logged (except L19 and C08, about
+desire) shows one plain line instead, always visible:
+  "Not feeling well? Call 999 in an emergency, or 111 for urgent advice (in
+  Northern Ireland, your GP)."   [Get help now]
+
+"GET HELP NOW" PAGE
+Intro: If you don't feel well or you're worried, these services can help,
+wherever you are in the UK. MoonCycle can't give medical advice or check on you.
+• 999: emergencies — Call 999, or go to A&E, in an emergency or if someone's
+  life may be at risk. This works everywhere in the UK.   [Call 999]
+• 111: urgent advice — When it isn't an emergency but you need advice soon, call
+  111 in England, Scotland or Wales. In England you can also use NHS 111
+  online, and choose the mental health option if that's what you need.
+  [Call 111] [111.nhs.uk (England)]
+• In Northern Ireland — For urgent advice, call your GP. When your surgery is
+  closed, call the GP out-of-hours service for your area; the numbers are on
+  nidirect.   [nidirect: GP out of hours]
 • Samaritans: someone to talk to — Call 116 123 to talk to someone, about
   anything, at any time.   [Call 116 123]
 • Your GP — For anything that is worrying you but is not urgent, book an
@@ -141,13 +154,10 @@ shock syndrome).
 ========================================================================================
 BEFORE THE CARDS GO BEYOND THE TEST ACCOUNTS
 ========================================================================================
-1. Clinical sign-off of the 30 cards, the stage 1 cards and opening lines,
-   H01–H03 and the "Get help now" page. The stage 1 review also asks for:
-   • "Get help now" text on L01, L03, L05, L10, L15, C01 and C03 to show only
-     after she answers clinician-approved warning-sign questions. For testing
-     it sits folded away inside the card, as on the 30 cards.
-   • L20 (emergency contraception) and C02 (dizziness with heavy bleeding):
-     clinician-designed routes before they are built.
+1. Our own check of every card, opening line and the "Get help now" page
+   against its NHS page: each statement found on the page it cites, nothing
+   stronger than the page says, every link working. Note the date checked.
+   (No clinician review: decided 21 October 2026.)
 2. The International edition, with urgent advice adapted for outside the UK.
 3. Then switch herInsightsEnabledProvider in lib/state/providers.dart from
    "test accounts" to "everyone tracking her cycle".

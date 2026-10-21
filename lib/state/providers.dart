@@ -19,6 +19,7 @@ import '../legal.dart';
 import '../services/account_service.dart';
 import '../services/api_client.dart';
 import '../services/health_service.dart';
+import '../services/her_note_service.dart';
 import '../services/notification_service.dart';
 import '../services/partner_link_service.dart';
 import '../services/tip_library_service.dart';
@@ -462,8 +463,8 @@ final partnerSyncProvider = Provider<void>((ref) {
 
 // ---- Insight cards for her ---------------------------------------------------
 
-/// The cards are not clinically approved yet, so only the test accounts see
-/// them. Once a clinician has signed them off, this becomes "trackers only".
+/// Only the test accounts see the cards until our own check against the NHS
+/// pages is done (BEFORE_LAUNCH.md); then this becomes "trackers only".
 final herInsightsEnabledProvider = Provider<bool>(
   (ref) =>
       ref.watch(isTestAccountProvider) &&
@@ -505,7 +506,25 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
   Future<void> setSexualWellbeing(bool on) =>
       save(_current.copyWith(sexualWellbeing: on));
 
+  /// Notes asked for in this session, so each is asked for once.
+  final _asked = <String>{};
+
+  /// Asks for the AI-written note for [pick] once, and keeps it with today's
+  /// choice. Nothing is kept if there is no note: the card shows as it is.
+  Future<void> fetchNote(InsightPick pick, Map<String, Object?> request) async {
+    final day = _current.pickDay;
+    final key = '${day?.iso}:${pick.id}:${pick.wording}';
+    if (day == null || !_asked.add(key)) return;
+    final note = await ref.read(herNoteServiceProvider).fetch(request);
+    final now = _current;
+    if (note == null || now.pickDay != day || !now.pickIds.contains(pick.id)) {
+      return;
+    }
+    await save(now.copyWith(pickNotes: {...now.pickNotes, pick.id: note}));
+  }
+
   Future<void> clear() async {
+    _asked.clear();
     state = const AsyncData(InsightMemory());
     await _store.clear();
   }
@@ -515,6 +534,36 @@ final insightMemoryProvider =
     AsyncNotifierProvider<InsightMemoryNotifier, InsightMemory>(
   InsightMemoryNotifier.new,
 );
+
+final herNoteServiceProvider =
+    Provider((ref) => HerNoteService(ref.watch(apiClientProvider)));
+
+/// Whether she has AI-written notes turned on: her explicit consent to the
+/// current explanation, recorded on the server. Off whenever unsure.
+class AiNotesNotifier extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() async {
+    final account = ref.watch(sessionProvider).valueOrNull;
+    if (account == null || !ref.watch(herInsightsEnabledProvider)) return false;
+    try {
+      final version = await ref.read(accountServiceProvider).aiNotesVersion();
+      return version == Legal.aiNotesVersion;
+    } on ApiException {
+      return false;
+    }
+  }
+
+  /// Turning on records her consent; turning off withdraws it at once.
+  Future<void> set(bool on) async {
+    await ref
+        .read(accountServiceProvider)
+        .setAiNotes(on: on, version: Legal.aiNotesVersion);
+    state = AsyncData(on);
+  }
+}
+
+final aiNotesProvider =
+    AsyncNotifierProvider<AiNotesNotifier, bool>(AiNotesNotifier.new);
 
 /// Every card that applies today. Worked out on her phone from her logs.
 final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {

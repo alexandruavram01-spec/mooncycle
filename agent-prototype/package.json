@@ -1,0 +1,13 @@
+{
+  "name": "mooncycle-agent-prototype",
+  "private": true,
+  "description": "Sample daily notes from invented scenarios, for review. Not part of the app.",
+  "type": "module",
+  "scripts": {
+    "dry-run": "node run.mjs --dry-run",
+    "start": "node run.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.0.0"
+  }
+}

@@ -7,6 +7,7 @@ import '../../legal.dart';
 import '../../state/providers.dart';
 import '../widgets/account_sheet.dart';
 import '../widgets/links.dart';
+import 'ai_notes_screen.dart';
 import 'get_help_screen.dart';
 import 'language_screen.dart';
 import 'onboarding_screen.dart';
@@ -322,6 +323,20 @@ class SettingsScreen extends ConsumerWidget {
           '25 to 64 with a cervix.',
         ),
         onChanged: notifier.setScreeningReminders,
+      ),
+      ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: const Icon(Icons.auto_awesome_outlined),
+        title: const Text('AI-written notes'),
+        subtitle: Text(
+          (ref.watch(aiNotesProvider).valueOrNull ?? false)
+              ? 'On. Your daily card is written around your own log.'
+              : 'Off. Have your daily card written around your own log.',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const AiNotesScreen()),
+        ),
       ),
       SwitchListTile(
         contentPadding: EdgeInsets.zero,

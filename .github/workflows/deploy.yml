@@ -48,7 +48,10 @@ jobs:
         run: flutter test test/cycle_engine_test.dart test/partner_test.dart test/her_insights_test.dart
 
       - name: Check the API code
-        run: node --check server/server.js
+        run: |
+          node --check server/server.js
+          node --check server/her-notes.js
+          node -e "JSON.parse(require('fs').readFileSync('content/her-insights-en-GB-combined.json', 'utf8'))"
 
       - name: Build the website
         run: flutter build web --release
@@ -119,8 +122,11 @@ jobs:
       # The API first: the new website may rely on what it adds.
       - name: Deploy the API
         run: |
+          # The reviewed card texts the AI notes are written from.
+          cp content/her-insights-en-GB-combined.json server/her-cards.json
           rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy -o BatchMode=yes" \
-            server/server.js "deploy@$HOST:/opt/mooncycle-api/"
+            server/server.js server/her-notes.js server/her-cards.json \
+            "deploy@$HOST:/opt/mooncycle-api/"
           ssh -i ~/.ssh/deploy -o BatchMode=yes "deploy@$HOST" \
             'sudo systemctl restart mooncycle-api && sleep 2 && systemctl is-active mooncycle-api'
 

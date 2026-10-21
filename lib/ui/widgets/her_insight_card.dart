@@ -22,20 +22,36 @@ class HerInsightsSection extends ConsumerWidget {
     final memory = ref.watch(insightMemoryProvider).valueOrNull;
     if (memory == null) return const SizedBox.shrink();
 
+    final today = DayKey.today();
     final (picks, updated) = HerInsightPicker.choose(
       ref.watch(herInsightCandidatesProvider),
       memory,
-      DayKey.today(),
+      today,
     );
+    final notifier = ref.read(insightMemoryProvider.notifier);
     // Remembers today's choice, so it stays the same all day.
     if (updated != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) {
-          ref.read(insightMemoryProvider.notifier).save(updated);
-        }
+        if (context.mounted) notifier.save(updated);
       });
     }
     if (picks.isEmpty) return const SizedBox.shrink();
+
+    // With AI-written notes on, today's note is asked for once; the card
+    // shows as it is until it arrives, or if it never does.
+    final aiNotes = ref.watch(aiNotesProvider).valueOrNull ?? false;
+    if (aiNotes && updated == null) {
+      final profile = ref.read(profileProvider);
+      for (final pick in picks) {
+        if (!aiNoteEligible(pick) || memory.pickNotes.containsKey(pick.id)) {
+          continue;
+        }
+        final request = herNoteRequest(pick, today: today, profile: profile);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) notifier.fetchNote(pick, request);
+        });
+      }
+    }
 
     final texts = ref.watch(herInsightTextsProvider);
     return Column(
@@ -47,6 +63,7 @@ class HerInsightsSection extends ConsumerWidget {
               key: ValueKey(pick.id),
               pick: pick,
               texts: texts,
+              note: aiNotes ? memory.pickNotes[pick.id] : null,
             ),
           ),
       ],
@@ -55,10 +72,23 @@ class HerInsightsSection extends ConsumerWidget {
 }
 
 class _InsightCard extends ConsumerWidget {
-  const _InsightCard({super.key, required this.pick, required this.texts});
+  const _InsightCard({
+    super.key,
+    required this.pick,
+    required this.texts,
+    this.note,
+  });
 
   final InsightPick pick;
   final HerInsightTexts texts;
+
+  /// Her AI-written note, shown in place of the opening line and the card's
+  /// words. The GP line, the urgent-help line and the sources stay as
+  /// reviewed.
+  final String? note;
+
+  /// Cards about desire, where "Not feeling well?" would read oddly.
+  static const _noSignpost = {'L19', 'C08'};
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -125,18 +155,37 @@ class _InsightCard extends ConsumerWidget {
                     style: theme.textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  if (opening != null) ...[
+                  if (note case final written?) ...[
                     const SizedBox(height: 6),
-                    Text(
-                      opening,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: scheme.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Text(written, style: theme.textTheme.bodyMedium),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.auto_awesome_outlined,
+                          size: 14,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(texts.ui['aiNote']!, style: muted),
+                        ),
+                      ],
                     ),
+                  ] else ...[
+                    if (opening != null) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        opening,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: scheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 6),
+                    Text(_fill(text.body), style: theme.textTheme.bodyMedium),
                   ],
-                  const SizedBox(height: 6),
-                  Text(_fill(text.body), style: theme.textTheme.bodyMedium),
                   if (seeGp != null) ...[
                     const SizedBox(height: 10),
                     Row(
@@ -157,31 +206,49 @@ class _InsightCard extends ConsumerWidget {
                 ],
               ),
             ),
-            if (helpNow != null)
-              ExpansionTile(
-                tilePadding: const EdgeInsets.only(right: 10),
-                childrenPadding: const EdgeInsets.only(right: 10, bottom: 4),
-                expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                expandedAlignment: Alignment.centerLeft,
-                shape: const Border(),
-                collapsedShape: const Border(),
-                leading: Icon(Icons.warning_amber_rounded, color: scheme.error),
-                title: Text(
-                  texts.ui['helpNow']!,
-                  style: theme.textTheme.labelLarge,
-                ),
-                children: [
-                  Text(helpNow, style: theme.textTheme.bodyMedium),
-                  TextButton.icon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const GetHelpScreen(),
+            // Where to turn if she doesn't feel well, always visible, rather
+            // than detailed warning signs: on the safety card, on any card
+            // with urgent text, and on cards about something she logged.
+            if (helpNow != null ||
+                safety ||
+                (pick.tier == InsightTier.logged &&
+                    !_noSignpost.contains(pick.id)))
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.phone_in_talk_outlined,
+                      size: 18,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            texts.ui['signpost']!,
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => const GetHelpScreen(),
+                              ),
+                            ),
+                            child: Text(texts.ui['openHelp']!),
+                          ),
+                        ],
                       ),
                     ),
-                    icon: const Icon(Icons.health_and_safety_outlined),
-                    label: Text(texts.ui['openHelp']!),
-                  ),
-                ],
+                  ],
+                ),
               )
             else
               const SizedBox(height: 8),

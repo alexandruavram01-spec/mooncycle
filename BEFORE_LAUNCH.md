@@ -25,18 +25,36 @@ test group uses MoonCycle.
 - **Editors** are set by `ADMIN_EMAILS` in `/etc/mooncycle-api.env` on the
   server. Keep it to real accounts with strong passwords, never a test
   account.
-- **Health review of the partner copy.** The phase card lines (G codes) and
+- **Health check of the partner copy.** The phase card lines (G codes) and
   any tip that touches health, in both `content/partner-messages-en-GB.txt`
-  and `content/partner-messages-en-INT.txt`, need a check by a gynaecologist
-  or midwife.
+  and `content/partner-messages-en-INT.txt`: check each against the NHS
+  pages, as for her cards. (No clinician review: decided 21 October 2026.)
 - **Insight cards for her are test-accounts only.** Before switching them on
   for everyone (`herInsightsEnabledProvider` in `lib/state/providers.dart`):
-  clinical sign-off of the cards (the 30, stage 1 and H01–H03), the opening
-  lines and the "Get help now" page; warning-sign questions before urgent
-  advice shows on the stage 1 cards; and an International edition with
-  urgent advice adapted for outside the UK. See
-  `content/her-insights-en-GB.txt` (last section).
+  our own check of every card, opening line and the "Get help now" page
+  against the NHS pages they cite, and an International edition with urgent
+  help adapted for outside the UK. See `content/her-insights-en-GB.txt`
+  (last section).
 - **Check the "Pulled" list** in the tip library for anything flagged.
+
+## AI-written notes (opt-in, at launch)
+
+- **Anthropic account in the company's name**, its commercial terms and data
+  processing agreement accepted. Confirm in those terms how transfers from
+  the UK are covered (the UK addendum to the standard contractual clauses),
+  as `web/privacy.html` says. Ask Anthropic whether zero data retention is
+  available; if it is, update the privacy policy and the AI notes screen
+  (both say "deleted within 30 days").
+- **Data protection impact assessment** for sending health summaries to
+  Anthropic: our own, on the ICO's template. Keep it with the company records.
+- **The medical device self-assessment** (Legal and company, below) must
+  cover the AI notes.
+- **Server setup**: the SDK and the key, DEPLOY.md, "AI-written notes on the
+  server".
+- **Cost**: about 1p per note with the second reading. Watch the usage page
+  in the Anthropic Console after launch.
+- The notes follow the cards: only where the cards are switched on
+  (`herInsightsEnabledProvider`), and only for those who turn them on.
 
 ## Still to build
 
@@ -69,10 +87,13 @@ test group uses MoonCycle.
   requests within one month.
 - **Hetzner** in the company's name, and its data processing agreement
   concluded at accounts.hetzner.com/account/dpa.
-- **Medical device check**: confirm with the clinician or a regulatory
-  adviser that MoonCycle stays outside the MHRA's software-as-a-medical-device
-  rules (general information and estimates, no diagnosis, not contraception),
-  and keep store descriptions and marketing to those claims.
+- **Medical device check**: our own written assessment, against the MHRA's
+  guidance on software and apps, that MoonCycle stays outside the
+  software-as-a-medical-device rules: general information from the NHS,
+  estimates, no diagnosis, no triage (urgent help is signposting only, the
+  same numbers for everyone), not contraception. Keep store descriptions and
+  marketing to those claims. With AI-written notes this needs extra care:
+  they must stay general information too.
 
 ## Server
 

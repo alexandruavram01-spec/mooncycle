@@ -3,6 +3,7 @@
 const http = require('node:http');
 const crypto = require('node:crypto');
 const { Pool } = require('pg');
+const herNotes = require('./her-notes');
 
 const PORT = Number(process.env.PORT || 8787);
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -110,6 +111,11 @@ const SCHEMA = `
   ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_version text;
   ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_accepted_at timestamptz;
   ALTER TABLE users ADD COLUMN IF NOT EXISTS health_consent_at timestamptz;
+
+  -- Her separate, explicit consent to AI-written notes: a summary of her day
+  -- goes to Anthropic to write them. Null means off.
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS ai_notes_consent_at timestamptz;
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS ai_notes_version text;
 
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS ask text;
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS ask_at timestamptz;
@@ -348,14 +354,59 @@ const routes = {
   'GET /api/account': async (req) => {
     const { userId } = await authenticate(req);
     const { rows } = await pool.query(
-      'SELECT email, terms_version FROM users WHERE id = $1',
+      'SELECT email, terms_version, ai_notes_version FROM users WHERE id = $1',
       [userId],
     );
     return {
       email: rows[0].email,
       admin: ADMIN_EMAILS.includes(rows[0].email),
       termsVersion: rows[0].terms_version,
+      aiNotesVersion: rows[0].ai_notes_version,
     };
+  },
+
+  // She turns AI-written notes on (giving her explicit consent to the
+  // version of the explanation she read) or off.
+  'PUT /api/account/ai-notes': async (req) => {
+    const { userId } = await authenticate(req);
+    const body = await readJson(req);
+    if (body.on === true) {
+      const version = String(body.version || '').trim();
+      if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(version)) throw httpError(400, 'unknown version');
+      await pool.query(
+        'UPDATE users SET ai_notes_consent_at = now(), ai_notes_version = $2 WHERE id = $1',
+        [userId, version],
+      );
+    } else {
+      await pool.query(
+        'UPDATE users SET ai_notes_consent_at = NULL, ai_notes_version = NULL WHERE id = $1',
+        [userId],
+      );
+    }
+    return { ok: true };
+  },
+
+  // Today's AI-written note for the card her phone chose. Only with her
+  // consent; a few a day at most. `note` is null whenever the note cannot be
+  // written or fails a check, and her phone then shows the card as it is.
+  // Neither her summary nor the note is stored or logged.
+  'POST /api/her-note': async (req) => {
+    const { userId } = await authenticate(req);
+    const { rows } = await pool.query(
+      'SELECT ai_notes_consent_at FROM users WHERE id = $1',
+      [userId],
+    );
+    if (!rows[0].ai_notes_consent_at) throw httpError(403, 'AI notes are off.');
+    throttle(`her-note:${userId}`, 6, 24 * 60 * 60 * 1000);
+    const body = await readJson(req);
+    try {
+      const { note } = await herNotes.writeNote(body);
+      return { note };
+    } catch (error) {
+      // Only what kind of failure, never what was in the request.
+      console.error('her note failed:', error?.constructor?.name, error?.status ?? '');
+      return { note: null };
+    }
   },
 
   // Agreeing to new terms, or for accounts made before consent was recorded.

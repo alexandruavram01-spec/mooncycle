@@ -34,6 +34,25 @@ class AccountService {
     return ApiClient.json(response)['termsVersion'] as String?;
   }
 
+  /// The version of the AI-notes explanation she agreed to, or null when
+  /// AI-written notes are off.
+  Future<String?> aiNotesVersion() async {
+    final response = await _api.send('GET', '/account');
+    if (response.statusCode != 200) throw ApiClient.failure(response);
+    return ApiClient.json(response)['aiNotesVersion'] as String?;
+  }
+
+  /// Turns AI-written notes on, recording her explicit consent to the
+  /// [version] she read, or off.
+  Future<void> setAiNotes({required bool on, required String version}) async {
+    final response = await _api.send(
+      'PUT',
+      '/account/ai-notes',
+      body: {'on': on, if (on) 'version': version},
+    );
+    if (response.statusCode != 200) throw ApiClient.failure(response);
+  }
+
   /// Agreeing to [termsVersion] and giving consent for health data, for an
   /// existing account.
   Future<void> recordConsent(String termsVersion) async {

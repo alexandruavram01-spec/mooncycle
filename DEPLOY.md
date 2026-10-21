@@ -5,7 +5,9 @@ Every push to `main` on GitHub runs `.github/workflows/deploy.yml`:
 1. Checks the code: `flutter analyze` and the unit tests, plus a syntax
    check of the API.
 2. Builds the website (`flutter build web --release`).
-3. Copies `server/server.js` to `/opt/mooncycle-api/` and restarts the API.
+3. Copies `server/server.js`, `server/her-notes.js` and the reviewed card
+   texts (`content/her-insights-en-GB-combined.json`, as `her-cards.json`)
+   to `/opt/mooncycle-api/` and restarts the API.
 4. Copies the website to `/var/www/mooncycle/`.
 
 If any step fails, nothing after it runs and the live site stays as it was.
@@ -18,6 +20,26 @@ GitHub's secrets and in `C:\src\mooncycle_deploy` on the PC.
 
 **Not deployed automatically:** the nginx and systemd files in `server/`, and
 npm packages on the server. Those change rarely and are installed by hand.
+
+### AI-written notes on the server (once)
+
+As root on the server:
+
+1. The Anthropic SDK, beside `pg`:
+   ```
+   cd /opt/mooncycle-api && npm install @anthropic-ai/sdk@^1
+   ```
+2. The API key, from the Anthropic account in the company's name. Type it on
+   the server only, never in chat or the repository:
+   ```
+   nano /etc/mooncycle-api.env
+   ```
+   Add the line `ANTHROPIC_API_KEY=...`, save, then
+   `systemctl restart mooncycle-api`.
+
+Optional lines in the same file: `AI_NOTES_REVIEW=off` turns off the second
+reading of each note (half the cost, less checking); `AI_NOTES_EFFORT=low`.
+Without the key, notes simply never arrive and everyone sees the cards.
 
 ## One-time setup
 

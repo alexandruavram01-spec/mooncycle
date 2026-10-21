@@ -381,6 +381,61 @@ void main() {
     expect(next.single.id, isNot('M01'));
   });
 
+  test('an AI note request sends only what the card is about', () {
+    const day = DayKey(2024, 2, 27);
+    final c = contextWith(day, [
+      DayLog(
+        date: day,
+        flow: FlowIntensity.heavy,
+        symptoms: const {'Cramps', 'Unprotected', 'Low drive'},
+        sleepHours: 5,
+      ),
+    ]);
+    final (picks, _) =
+        HerInsightPicker.choose(picker.candidates(c), const InsightMemory(), day);
+    final pick = picks.single;
+    expect(pick.id, 'C01');
+    expect(aiNoteEligible(pick), isTrue);
+    final request = herNoteRequest(pick, today: day, profile: const UserProfile());
+    expect(request['card'], 'C01');
+    expect(request['today'], '2024-02-27');
+    expect(request['logged'], ['Cramps', heavyFlow]);
+    final sent = request.toString();
+    expect(sent, isNot(contains('Unprotected')));
+    expect(sent, isNot(contains('Low drive')));
+    for (final fact in request['facts']! as List) {
+      for (final value in ((fact as Map)['values'] as Map).values) {
+        expect(value is String || value is num, isTrue, reason: '$value');
+      }
+    }
+  });
+
+  test('safety and sensitive cards are never written by AI', () {
+    final c = context(
+      midCycle,
+      extra: [DayLog(date: midCycle, flow: FlowIntensity.spotting)],
+    );
+    final (picks, _) = HerInsightPicker.choose(
+      picker.candidates(c),
+      const InsightMemory(),
+      midCycle,
+    );
+    expect(picks.first.id, 'I21');
+    expect(aiNoteEligible(picks.first), isFalse);
+    for (final id in ['I22', 'L07', 'L08', 'I30', 'NEW02']) {
+      expect(aiNoteFixedOnly, contains(id));
+    }
+  });
+
+  test('a new day starts without yesterday\'s AI notes', () {
+    final (_, saved) = HerInsightPicker.choose(
+      picker.candidates(context(beforePeriod)),
+      const InsightMemory(pickNotes: {'I12': 'an old note'}),
+      beforePeriod,
+    );
+    expect(saved!.pickNotes, isEmpty);
+  });
+
   test('a quiet day with everything resting shows no card', () {
     final candidates = picker.candidates(context(beforePeriod));
     final (picks, _) = HerInsightPicker.choose(

@@ -1,0 +1,1623 @@
+[
+  {
+    "scenario": "heavy-painful-period",
+    "cards": [
+      "C01"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Strong cramps with heavy bleeding can make everyday life harder. Warmth, rest when you need it and advice from a pharmacist may help, and treatments are available if this keeps happening. For reference, your 3 recorded periods have lasted between 4 and 6 days.",
+      "card_ids": [
+        "C01"
+      ],
+      "summary_fields_used": [
+        "her_history"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "44 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "headache-before-period",
+    "cards": [
+      "L05"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "You logged headaches in the days before your period in 3 of your last 4 recorded cycles, and a headache on 3 days in a row this time. They sometimes occur around a period, though they can have other causes. Water, regular meals and rest may help, and a pharmacist can advise on suitable pain relief.",
+      "card_ids": [
+        "L05"
+      ],
+      "summary_fields_used": [
+        "her_history",
+        "logged_recently"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "56 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": false,
+        "detail": "You logged"
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "ttc-stretchy-discharge",
+    "cards": [
+      "I30"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Your estimated fertile window runs from 12 to 17 November. Clear, slippery, stretchy discharge can appear around ovulation, so it may be a useful clue, though on its own it cannot confirm the day you ovulated.",
+      "card_ids": [
+        "I30"
+      ],
+      "summary_fields_used": [
+        "estimated_fertile_window"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "36 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No disappointment while trying to conceive",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "premenstrual-mood-pattern",
+    "cards": [
+      "L08"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "You've logged mood changes in the week before your period in 3 of your last 4 recorded cycles. If you want to talk with a GP about how they affect your daily life, your log may be useful. Support and treatment are available for difficult premenstrual symptoms.",
+      "card_ids": [
+        "L08"
+      ],
+      "summary_fields_used": [
+        "her_history"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "47 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": false,
+        "detail": "You've logged"
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "good-day",
+    "cards": [
+      "L06"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "A good day is worth logging too. Over time, your entries may show what tends to work well for you, while leaving room for each cycle to be its own.",
+      "card_ids": [
+        "L06"
+      ],
+      "summary_fields_used": []
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "30 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "tired-short-nights",
+    "cards": [
+      "C06"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Your sleep log shows under six hours on each of the last three nights, alongside the tiredness you noted today. A calming routine and an earlier wind-down might help tonight, if that is possible for you.",
+      "card_ids": [
+        "C06"
+      ],
+      "summary_fields_used": [
+        "sleep",
+        "logged_today"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "36 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "ttc-period-started",
+    "cards": [
+      "M01"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "A new cycle begins today, after a last recorded cycle of 27 days, close to your median of 28 across four completed cycles. Bleeding is often heaviest in the first couple of days, though your own experience may be different.",
+      "card_ids": [
+        "M01"
+      ],
+      "summary_fields_used": [
+        "her_history",
+        "part_of_cycle"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "40 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No disappointment while trying to conceive",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "after-estimate",
+    "cards": [
+      "I22"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Your period's estimated start was 4 days ago, and predicted dates are only estimates; a period can come later than expected for several reasons. If pregnancy is possible, most tests are reliable from the first day of a missed period. If you're unsure when it's due, test at least 21 days after unprotected sex.",
+      "card_ids": [
+        "I22"
+      ],
+      "summary_fields_used": [
+        "period_estimate"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "54 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "bloating-cravings",
+    "cards": [
+      "C04"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Your period is estimated to start on Sunday, in about five days, so you're in the days before it. Bloating and food cravings can happen at this time, though not everyone experiences them, and your own pattern is what matters.",
+      "card_ids": [
+        "C04"
+      ],
+      "summary_fields_used": [
+        "period_estimate",
+        "part_of_cycle",
+        "logged_today"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "40 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "hot-flush",
+    "cards": [
+      "L12"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "A sudden feeling of heat can be uncomfortable, and light layers, a fan and a cool drink may help. This is the first hot flush you've logged in MoonCycle. Hot flushes have different possible causes, and changes around perimenopause are only one possibility.",
+      "card_ids": [
+        "L12"
+      ],
+      "summary_fields_used": [
+        "logged_recently"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "43 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "low-desire",
+    "cards": [
+      "L19"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "There is no right amount of desire. Sex drive differs from person to person and can shift over time, and things like stress, sleep, mood, medicines and other factors can all play a part.",
+      "card_ids": [
+        "L19"
+      ],
+      "summary_fields_used": []
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "34 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "lighter-days",
+    "cards": [
+      "M02"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Flow often gets lighter after the first couple of days, though it is different for everyone. Your three recorded periods lasted between 4 and 6 days, and you can keep logging what you notice as this one goes on.",
+      "card_ids": [
+        "M02"
+      ],
+      "summary_fields_used": [
+        "her_history"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "39 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "cramps-mid-cycle",
+    "cards": [
+      "L01"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Pelvic cramps in the middle of your cycle, away from your period, can have several causes, and an app can't tell what's behind them. It's worth jotting down when they happen and any other symptoms you notice alongside them.",
+      "card_ids": [
+        "L01"
+      ],
+      "summary_fields_used": [
+        "part_of_cycle",
+        "logged_today"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "39 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "busy-day",
+    "cards": [
+      "I17"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Bloating can be uncomfortable, and smaller meals may feel easier than large ones. With your period estimated to start in 3 days, it could be worth noting when the bloating happens, to see whether it tends to repeat around your period.",
+      "card_ids": [
+        "I17"
+      ],
+      "summary_fields_used": [
+        "period_estimate",
+        "logged_today"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "41 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "hormonal-contraception",
+    "cards": [
+      "NEW02"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "You mentioned when you joined that you use hormonal contraception, and with that, the usual ovulation or cycle-phase estimates may not describe what is happening in your body. Those estimates are switched off for you. Some contraceptive methods make bleeding lighter, heavier, irregular or absent.",
+      "card_ids": [
+        "NEW02"
+      ],
+      "summary_fields_used": [
+        "contraception",
+        "note"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "45 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "new-user",
+    "cards": [
+      "I06"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "As this is your first cycle in MoonCycle, there's no pattern to see just yet. Noting the first day of your period, how heavy your flow is and any symptoms can reveal patterns over time. If you need to speak to a GP, those notes can be useful too.",
+      "card_ids": [
+        "I06"
+      ],
+      "summary_fields_used": [
+        "her_history"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "49 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "ttc-over-a-year",
+    "cards": [
+      "I28"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Conceiving can take time. When you joined, you told us you'd been trying for over 12 months, and NHS guidance suggests speaking to a GP after a year of trying. It suggests going sooner if you're 36 or older or already know of a possible fertility problem.",
+      "card_ids": [
+        "I28"
+      ],
+      "summary_fields_used": [
+        "trying_for"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "47 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No disappointment while trying to conceive",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  },
+  {
+    "scenario": "low-mood-lingering",
+    "cards": [
+      "L07"
+    ],
+    "model": "claude-opus-5-5",
+    "note": {
+      "message": "Over the past 16 days, you've logged feeling sad or anxious on 5 of them, and that can be hard. Talking to someone you trust, looking after your sleep and seeking support are all options, if and when you need them.",
+      "card_ids": [
+        "L07"
+      ],
+      "summary_fields_used": [
+        "logged_recently"
+      ]
+    },
+    "checks": [
+      {
+        "name": "At most 60 words",
+        "ok": true,
+        "detail": "41 words"
+      },
+      {
+        "name": "Says what she logged, not more",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Does not open by repeating what she logged",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Uses only the card it was given",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No urgent-care advice (the app shows it separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pointers to services (the app shows them separately)",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No condition or cause the card does not name",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No pregnancy or fertility unless the sources raise it",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No medicine the card does not mention",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "Every number comes from the sources",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No certainty about her body or the estimates",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No partner or other people",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "name": "No emoji, exclamation marks or questions",
+        "ok": true,
+        "detail": ""
+      }
+    ],
+    "judge": {
+      "verdict": "pass",
+      "unsupported": [],
+      "diagnosis_or_cause": [],
+      "other_issues": []
+    }
+  }
+]

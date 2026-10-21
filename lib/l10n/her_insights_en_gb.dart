@@ -8,7 +8,8 @@ import 'her_insights.dart';
 /// L, C and M cards, the second wordings (I01b...) and the opening lines
 /// (P01...) are the stage 1 editorial review of the same date, word for
 /// word (`content/her-insights-en-GB-stage1-reviewed.txt`). H01 to H03 are
-/// drafts awaiting review. None of it is clinically approved yet: see
+/// drafts awaiting review. Checked against the NHS pages it cites, not by a
+/// clinician (decided 21 October 2026): see
 /// `content/her-insights-en-GB.txt` and BEFORE_LAUNCH.md.
 const enGbHerInsights = HerInsightTexts(
   cards: {
@@ -584,24 +585,34 @@ const enGbHerInsights = HerInsightTexts(
     'tomorrow': 'tomorrow',
     'onDay': 'on {day}',
     'onEstimate': 'on the day it was estimated',
+    // Under any card about something that could need urgent help, in place
+    // of detailed warning signs: just where to turn.
+    'signpost': "Not feeling well? Call 999 in an emergency, or 111 for urgent advice (in Northern Ireland, your GP).",
+    'aiNote': 'Written for you by AI from this card, which is based on NHS information',
     'earlierThanEstimate': '{n} days earlier than estimated',
     'laterThanEstimate': '{n} days later than estimated',
   },
-  helpIntro: 'If you need help now, these are the services in the UK. MoonCycle cannot give medical advice or check on you.',
+  helpIntro: "If you don't feel well or you're worried, these services can help, wherever you are in the UK. MoonCycle can't give medical advice or check on you.",
   help: [
     HelpOption(
-      title: '999 or A&E: emergencies',
-      body: "Call 999 or go to A&E if someone's life is at risk: for example sudden, severe tummy pain with dizziness or fainting, difficulty breathing, or if you feel you cannot keep yourself safe.",
+      title: '999: emergencies',
+      body: "Call 999, or go to A&E, in an emergency or if someone's life may be at risk. This works everywhere in the UK.",
       callLabel: 'Call 999',
       phone: '999',
     ),
     HelpOption(
-      title: 'NHS 111: urgent advice',
-      body: 'For urgent medical advice when it is not an emergency, call 111 or use NHS 111 online. For your mental health, choose the mental health option.',
+      title: '111: urgent advice',
+      body: "When it isn't an emergency but you need advice soon, call 111 in England, Scotland or Wales. In England you can also use NHS 111 online, and choose the mental health option if that's what you need.",
       callLabel: 'Call 111',
       phone: '111',
-      linkLabel: '111.nhs.uk',
+      linkLabel: '111.nhs.uk (England)',
       link: 'https://111.nhs.uk/',
+    ),
+    HelpOption(
+      title: 'In Northern Ireland',
+      body: 'For urgent advice, call your GP. When your surgery is closed, call the GP out-of-hours service for your area; the numbers are on nidirect.',
+      linkLabel: 'nidirect: GP out of hours',
+      link: 'https://www.nidirect.gov.uk/articles/gp-out-hours-service',
     ),
     HelpOption(
       title: 'Samaritans: someone to talk to',

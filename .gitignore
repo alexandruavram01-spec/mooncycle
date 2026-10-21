@@ -27,3 +27,6 @@ replay_pid*.log
 # OS
 .DS_Store
 Thumbs.db
+
+# Copied in by the deploy from content/her-insights-en-GB-combined.json.
+server/her-cards.json

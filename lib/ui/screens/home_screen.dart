@@ -101,7 +101,7 @@ class _HomeBody extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         _WheelLegend(showFertile: showFertile),
-        // Today's insight card: test accounts only until clinically approved.
+        // Today's insight card: test accounts only until our NHS check is done.
         const HerInsightsSection(),
         // Her nudges to him and his offers to her live here, where she looks
         // every day, rather than on the Partner tab.
