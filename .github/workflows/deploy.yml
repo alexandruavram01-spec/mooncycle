@@ -55,16 +55,16 @@ jobs:
       - name: Build the website
         run: flutter build web --release
 
-      # The key and the server's fingerprint come from the repository's
-      # secrets and are never printed. Ends with a test login, so a setup
-      # problem shows up here with a plain message.
+      # The key comes from the repository's secrets and is never printed.
+      # The server's public key is in .github/known_hosts: it is public, and
+      # a server whose key does not match is refused. Ends with a test login,
+      # so a setup problem shows up here with a plain message.
       - name: Prepare SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          for name in DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS DEPLOY_HOST; do
+          for name in DEPLOY_SSH_KEY DEPLOY_HOST; do
             if [ -z "${!name}" ]; then
               echo "::error::The $name secret is missing. See DEPLOY.md, part D."
               exit 1
@@ -88,7 +88,7 @@ jobs:
             format="one line"
           fi
           chmod 600 ~/.ssh/deploy
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+          tr -d '\r' < .github/known_hosts > ~/.ssh/known_hosts
           echo "HOST=$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')" >> "$GITHUB_ENV"
 
           # Says what is wrong with the key without printing any of it.
@@ -109,12 +109,12 @@ jobs:
           fi
           host="$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')"
           if ! ssh-keygen -F "$host" -f ~/.ssh/known_hosts > /dev/null; then
-            echo "::error::DEPLOY_KNOWN_HOSTS has no line for the server. It must be the one line that ssh-keyscan prints starting with the server address and 'ssh-ed25519 AAAA': DEPLOY.md, part D."
+            echo "::error::.github/known_hosts has no line for the server in DEPLOY_HOST: DEPLOY.md, part D."
             exit 1
           fi
           if ! ssh -i ~/.ssh/deploy -o BatchMode=yes -o ConnectTimeout=20 \
               "deploy@$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')" true; then
-            echo "::error::Could not log in to the server as deploy. Check DEPLOY.md parts B to D: 'Host key verification failed' means DEPLOY_KNOWN_HOSTS; 'Permission denied' means the key on the server."
+            echo "::error::Could not log in to the server as deploy. Check DEPLOY.md parts B to D: 'Host key verification failed' means .github/known_hosts does not match the server; 'Permission denied' means the key on the server."
             exit 1
           fi
 

@@ -64,19 +64,19 @@ ssh -i C:\src\mooncycle_deploy deploy@178.105.213.196 "sudo systemctl restart mo
 ```
 It must print `active`.
 
-### D. On GitHub: add the secrets
+### D. The server's public key, and the GitHub secrets
 
-1. Check the fingerprint matches B10:
-   ```
-   ssh-keyscan -t ed25519 178.105.213.196 | ssh-keygen -lf -
-   ```
+1. The server's public key is in `.github/known_hosts`, one line:
+   `178.105.213.196 ssh-ed25519 AAAA...`. It is public, so it is kept in the
+   repository; GitHub refuses to deploy to a server whose key does not match.
+   Its fingerprint must equal the one from B10. For this server it is
+   `SHA256:1KY822mEPjebQCE7Tbk3n2nuZP9YtaN2iY4ZK5UXCMY`.
+   (The PC's `ssh-keyscan` is too old for this server, so the line was taken
+   from `C:\Users\<you>\.ssh\known_hosts`, saved on the first login. On the
+   server, `cat /etc/ssh/ssh_host_ed25519_key.pub` shows the same key.)
 2. In the `mooncycle` repository: Settings, Secrets and variables, Actions,
-   New repository secret. Add three:
+   New repository secret. Add two:
    - `DEPLOY_HOST`: `178.105.213.196`
-   - `DEPLOY_KNOWN_HOSTS`: run `ssh-keyscan -t ed25519 178.105.213.196` and
-     copy the one line that starts with `178.105.213.196 ssh-ed25519 AAAA`
-     (not a line starting with `#`, and not the `SHA256:` fingerprint from
-     step 1), then paste it. It is public, so it is safe to show.
    - `DEPLOY_SSH_KEY`: copy the private key as one line, which survives
      pasting exactly, then paste. Never paste this one anywhere else.
      ```
@@ -99,13 +99,13 @@ mooncycle.fit.
 ## Moving to a new server
 
 Repeat section B on the new server (after installing nginx, Node, PostgreSQL
-and the API as before), then update `DEPLOY_HOST` and `DEPLOY_KNOWN_HOSTS`
-(section D).
+and the API as before), then update the `DEPLOY_HOST` secret and the line in
+`.github/known_hosts` (section D).
 
 ## If a run fails
 
 Open the failed run on the Actions tab and the step marked red.
 
 - **Analyse or Unit tests:** a code problem; nothing was deployed.
-- **Prepare SSH or Deploy:** check the three secrets, and that section C
-  still prints `active`.
+- **Prepare SSH or Deploy:** check the two secrets and `.github/known_hosts`,
+  and that section C still prints `active`.
