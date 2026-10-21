@@ -13,8 +13,8 @@ class Legal {
   /// whenever either changes materially: everyone is then asked again.
   static const version = '2026-10-21';
 
-  /// Must work before launch (the mail server is being set up).
-  static const contactEmail = 'privacy@mooncycle.fit';
+  /// An alias of contact@ioncodex.org, named in every legal page.
+  static const contactEmail = 'mooncycle_contact@ioncodex.org';
 
   static const minimumAge = 18;
 

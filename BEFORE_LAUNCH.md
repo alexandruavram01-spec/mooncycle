@@ -65,7 +65,9 @@ test group uses MoonCycle.
   everyone is then asked to agree again.
 - **ICO data protection fee** paid in the company's name, and its
   registration number added to `web/privacy.html`.
-- **privacy@mooncycle.fit** must receive mail (named in every legal page).
+- **mooncycle_contact@ioncodex.org** (an alias of contact@ioncodex.org) is the
+  address in every legal page: someone must read it, and answer data
+  requests within one month.
 - **Hetzner** in the company's name, and its data processing agreement
   concluded at accounts.hetzner.com/account/dpa.
 - **Medical device check**: confirm with the clinician or a regulatory
