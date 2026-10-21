@@ -24,10 +24,11 @@ env:
 jobs:
   deploy:
     name: Check, build and deploy
-    runs-on: ubuntu-latest
+    # A fixed image, so GitHub moving "ubuntu-latest" on cannot break a deploy.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: subosito/flutter-action@v2
         with:
@@ -55,31 +56,49 @@ jobs:
         run: flutter build web --release
 
       # The key and the server's fingerprint come from the repository's
-      # secrets and are never printed.
+      # secrets and are never printed. Ends with a test login, so a setup
+      # problem shows up here with a plain message.
       - name: Prepare SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
+          for name in DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS DEPLOY_HOST; do
+            if [ -z "${!name}" ]; then
+              echo "::error::The $name secret is missing. See DEPLOY.md, part D."
+              exit 1
+            fi
+          done
+
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy
+          # Text pasted on Windows can carry carriage returns, which SSH
+          # rejects in a key file.
+          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+          echo "HOST=$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+
+          if ! ssh-keygen -y -f ~/.ssh/deploy > /dev/null; then
+            echo "::error::DEPLOY_SSH_KEY is not a valid private key. Copy it again (DEPLOY.md, part D)."
+            exit 1
+          fi
+          if ! ssh -i ~/.ssh/deploy -o BatchMode=yes -o ConnectTimeout=20 \
+              "deploy@$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')" true; then
+            echo "::error::Could not log in to the server as deploy. Check DEPLOY.md parts B to D: 'Host key verification failed' means DEPLOY_KNOWN_HOSTS; 'Permission denied' means the key on the server."
+            exit 1
+          fi
 
       # The API first: the new website may rely on what it adds.
       - name: Deploy the API
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy" \
+          rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy -o BatchMode=yes" \
             server/server.js server/tip-writer.js server/tips-seed.json \
-            "deploy@$DEPLOY_HOST:/opt/mooncycle-api/"
-          ssh -i ~/.ssh/deploy "deploy@$DEPLOY_HOST" \
+            "deploy@$HOST:/opt/mooncycle-api/"
+          ssh -i ~/.ssh/deploy -o BatchMode=yes "deploy@$HOST" \
             'sudo systemctl restart mooncycle-api && sleep 2 && systemctl is-active mooncycle-api'
 
       - name: Deploy the website
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy" \
-            build/web/ "deploy@$DEPLOY_HOST:/var/www/mooncycle/"
+          rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy -o BatchMode=yes" \
+            build/web/ "deploy@$HOST:/var/www/mooncycle/"

@@ -73,8 +73,10 @@ It must print `active`.
 2. In the `mooncycle` repository: Settings, Secrets and variables, Actions,
    New repository secret. Add three:
    - `DEPLOY_HOST`: `178.105.213.196`
-   - `DEPLOY_KNOWN_HOSTS`: run
-     `ssh-keyscan -t ed25519 178.105.213.196 | Set-Clipboard`, then paste.
+   - `DEPLOY_KNOWN_HOSTS`: run `ssh-keyscan -t ed25519 178.105.213.196` and
+     copy the one line that starts with `178.105.213.196 ssh-ed25519 AAAA`
+     (not a line starting with `#`, and not the `SHA256:` fingerprint from
+     step 1), then paste it. It is public, so it is safe to show.
    - `DEPLOY_SSH_KEY`: run
      `Get-Content C:\src\mooncycle_deploy -Raw | Set-Clipboard`, then paste.
      Never paste this one anywhere else.

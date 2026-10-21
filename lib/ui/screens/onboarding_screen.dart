@@ -1118,8 +1118,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (plan.tryingSince == 'year') {
       rows.add((
         Icons.medical_services_outlined,
-        'After a year of trying, or six months from age 35, a check-up is '
-            'usually suggested. Worth a conversation when you feel ready.',
+        // NHS guidance: https://www.nhs.uk/conditions/infertility/
+        'The NHS suggests seeing a GP after a year of trying, or sooner if '
+            "you're 36 or over. Worth a conversation when you feel ready.",
       ));
     }
 
