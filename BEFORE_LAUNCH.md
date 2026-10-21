@@ -29,6 +29,11 @@ test group uses MoonCycle.
   any tip that touches health, in both `content/partner-messages-en-GB.txt`
   and `content/partner-messages-en-INT.txt`, need a check by a gynaecologist
   or midwife.
+- **Insight cards for her are test-accounts only.** Before switching them on
+  for everyone (`herInsightsEnabledProvider` in `lib/state/providers.dart`):
+  clinical sign-off of the cards, the pattern cards H01–H03 and the "Get help
+  now" page, plus an International edition with urgent advice adapted for
+  outside the UK. See `content/her-insights-en-GB.txt`.
 - **Check the "Pulled" list** in the tip library for anything flagged.
 - **Remove the old AI tip routes** from `server/server.js` (the
   "Tip library (AI drafting)" section, `tip-writer.js` and `tips-seed.json`)

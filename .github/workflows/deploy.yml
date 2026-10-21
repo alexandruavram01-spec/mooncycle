@@ -45,7 +45,7 @@ jobs:
 
       # The widget tests predate sign-in and are not run until updated.
       - name: Unit tests
-        run: flutter test test/cycle_engine_test.dart test/partner_test.dart
+        run: flutter test test/cycle_engine_test.dart test/partner_test.dart test/her_insights_test.dart
 
       - name: Check the API code
         run: |
@@ -105,6 +105,11 @@ jobs:
             # Size and shape only, never content.
             echo "The secret has ${#raw} characters on $(printf '%s\n' "$raw" | wc -l) line(s) and was read as $format."
             echo "::error::DEPLOY_SSH_KEY cannot be used. $hint"
+            exit 1
+          fi
+          host="$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')"
+          if ! ssh-keygen -F "$host" -f ~/.ssh/known_hosts > /dev/null; then
+            echo "::error::DEPLOY_KNOWN_HOSTS has no line for the server. It must be the one line that ssh-keyscan prints starting with the server address and 'ssh-ed25519 AAAA': DEPLOY.md, part D."
             exit 1
           fi
           if ! ssh -i ~/.ssh/deploy -o BatchMode=yes -o ConnectTimeout=20 \

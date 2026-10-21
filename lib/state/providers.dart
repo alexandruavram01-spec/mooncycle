@@ -1,16 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/insight_memory_store.dart';
 import '../data/log_repository.dart';
 import '../data/repository_factory.dart';
 import '../data/settings_store.dart';
 import '../domain/cycle_engine.dart';
 import '../domain/day_key.dart';
+import '../domain/her_insights.dart';
 import '../domain/insights.dart';
 import '../domain/models.dart';
 import '../domain/partner.dart';
 import '../domain/profile.dart';
 import '../l10n/app_language.dart';
+import '../l10n/her_insights.dart';
 import '../l10n/partner_messages.dart';
 import '../services/account_service.dart';
 import '../services/api_client.dart';
@@ -258,6 +261,7 @@ class SessionNotifier extends AsyncNotifier<String?> {
     }
     await partner.forgetLocal();
     await ref.read(logsProvider.notifier).eraseAll();
+    await ref.read(insightMemoryProvider.notifier).clear();
     await ref.read(settingsProvider.notifier).replaceAll(const AppSettings());
   }
 
@@ -267,6 +271,7 @@ class SessionNotifier extends AsyncNotifier<String?> {
     await ref.read(accountServiceProvider).deleteAccount(password);
     await ref.read(partnerLinkServiceProvider).forgetLocal();
     await ref.read(logsProvider.notifier).eraseAll();
+    await ref.read(insightMemoryProvider.notifier).clear();
     await ref.read(settingsProvider.notifier).replaceAll(const AppSettings());
     state = const AsyncData(null);
   }
@@ -413,3 +418,82 @@ final partnerSyncProvider = Provider<void>((ref) {
     }
   }, fireImmediately: true);
 });
+
+// ---- Insight cards for her ---------------------------------------------------
+
+/// The cards are not clinically approved yet, so only the test accounts see
+/// them. Once a clinician has signed them off, this becomes "trackers only".
+final herInsightsEnabledProvider = Provider<bool>(
+  (ref) =>
+      ref.watch(isTestAccountProvider) &&
+      ref.watch(profileProvider).role == AppRole.tracker,
+);
+
+/// Which cards were shown when, which she hid, and today's choice. On the
+/// device only.
+class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
+  final _store = InsightMemoryStore();
+
+  @override
+  Future<InsightMemory> build() => _store.load();
+
+  Future<void> save(InsightMemory memory) async {
+    state = AsyncData(memory);
+    await _store.save(memory);
+  }
+
+  InsightMemory get _current => state.valueOrNull ?? const InsightMemory();
+
+  /// Closed with the cross: gone for today, back after its cooldown.
+  Future<void> dismiss(String id) => save(
+        _current.copyWith(dismissed: {..._current.dismissed, id}),
+      );
+
+  /// "Not relevant to me": never again, unless she brings hidden cards back.
+  Future<void> markNotRelevant(String id) => save(
+        _current.copyWith(notRelevant: {..._current.notRelevant, id}),
+      );
+
+  Future<void> restoreHidden() =>
+      save(_current.copyWith(notRelevant: const {}));
+
+  Future<void> setScreeningReminders(bool on) =>
+      save(_current.copyWith(screeningReminders: on));
+
+  Future<void> clear() async {
+    state = const AsyncData(InsightMemory());
+    await _store.clear();
+  }
+}
+
+final insightMemoryProvider =
+    AsyncNotifierProvider<InsightMemoryNotifier, InsightMemory>(
+  InsightMemoryNotifier.new,
+);
+
+/// Every card that applies today. Worked out on her phone from her logs.
+final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {
+  final logs = ref.watch(logsProvider).valueOrNull;
+  final status = ref.watch(cycleStatusProvider);
+  final screening = ref.watch(
+    insightMemoryProvider.select((m) => m.valueOrNull?.screeningReminders),
+  );
+  if (logs == null || status == null || screening == null) return const [];
+  return const HerInsightPicker().candidates(
+    InsightContext(
+      today: status.today,
+      status: status,
+      logs: logs,
+      profile: ref.watch(profileProvider),
+      screeningReminders: screening,
+      engine: ref.watch(cycleEngineProvider),
+    ),
+  );
+});
+
+/// Her cards and the "Get help now" page, in her language.
+final herInsightTextsProvider = Provider<HerInsightTexts>(
+  (ref) => HerInsightTexts.of(
+    ref.watch(languageProvider).valueOrNull ?? AppLanguage.enGB,
+  ),
+);

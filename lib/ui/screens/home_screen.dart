@@ -10,10 +10,12 @@ import '../../domain/profile.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
 import '../widgets/cycle_wheel.dart';
+import '../widgets/her_insight_card.dart';
 import '../widgets/log_sheet.dart';
 import '../widgets/moon_face.dart';
 import '../widgets/partner_stickers.dart';
 import '../widgets/wordmark.dart';
+import 'get_help_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -24,7 +26,18 @@ class HomeScreen extends ConsumerWidget {
     final status = ref.watch(cycleStatusProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Wordmark(size: 26)),
+      appBar: AppBar(
+        title: const Wordmark(size: 26),
+        actions: [
+          IconButton(
+            tooltip: ref.watch(herInsightTextsProvider).ui['openHelp'],
+            icon: const Icon(Icons.health_and_safety_outlined),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const GetHelpScreen()),
+            ),
+          ),
+        ],
+      ),
       body: logsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => _ErrorView(message: '$e'),
@@ -88,6 +101,8 @@ class _HomeBody extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         _WheelLegend(showFertile: showFertile),
+        // Today's insight card: test accounts only until clinically approved.
+        const HerInsightsSection(),
         // Her nudges to him and his offers to her live here, where she looks
         // every day, rather than on the Partner tab.
         if (sharingOn) ...[

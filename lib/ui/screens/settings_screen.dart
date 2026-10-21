@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/quiz.dart';
 import '../../state/providers.dart';
 import '../widgets/account_sheet.dart';
+import 'get_help_screen.dart';
 import 'language_screen.dart';
 import 'onboarding_screen.dart';
 import 'tip_library_screen.dart';
@@ -52,6 +53,16 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute<void>(
                 builder: (_) => const LanguageScreen(pushed: true),
               ),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.health_and_safety_outlined),
+            title: const Text('Get help now'),
+            subtitle: const Text('Emergency and urgent help services.'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const GetHelpScreen()),
             ),
           ),
           if (ref.watch(isTestAccountProvider))
@@ -117,6 +128,8 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) => notifier
                 .updateProfile(profile.copyWith(showFertileDays: v)),
           ),
+          if (ref.watch(herInsightsEnabledProvider))
+            ..._insightCards(context, ref),
           const Divider(height: 40),
           Text('Reminders', style: theme.textTheme.titleMedium),
           SwitchListTile(
@@ -237,6 +250,40 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Her insight cards' settings. Nothing here is on until she turns it on.
+  List<Widget> _insightCards(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final memory = ref.watch(insightMemoryProvider).valueOrNull;
+    if (memory == null) return const [];
+    final notifier = ref.read(insightMemoryProvider.notifier);
+    final hidden = memory.notRelevant.length;
+
+    return [
+      const Divider(height: 40),
+      Text('Insight cards', style: theme.textTheme.titleMedium),
+      SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        value: memory.screeningReminders,
+        title: const Text('Cervical screening reminders'),
+        subtitle: const Text(
+          'An occasional card about NHS cervical screening, for people aged '
+          '25 to 64 with a cervix.',
+        ),
+        onChanged: notifier.setScreeningReminders,
+      ),
+      if (hidden > 0)
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.visibility_outlined),
+          title: Text(
+            'Show $hidden hidden card${hidden == 1 ? '' : 's'} again',
+          ),
+          subtitle: const Text('Cards you marked "Not relevant to me".'),
+          onTap: notifier.restoreHidden,
+        ),
+    ];
   }
 
   Future<void> _connectHealth(BuildContext context, WidgetRef ref) async {

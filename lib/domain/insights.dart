@@ -18,18 +18,40 @@ class Pattern {
   final double strength;
 }
 
+/// A symptom that keeps turning up in the same phase: logged in [hits] of
+/// her last [cycles] completed cycles.
+class PhasePattern {
+  const PhasePattern({
+    required this.symptom,
+    required this.phase,
+    required this.hits,
+    required this.cycles,
+  });
+
+  final String symptom;
+  final CyclePhase phase;
+  final int hits;
+  final int cycles;
+
+  double get strength => hits / cycles;
+}
+
 class PhaseAverages {
   const PhaseAverages({
     required this.phase,
     required this.averageEnergy,
     required this.topSymptoms,
     required this.sampleDays,
+    this.energySamples = 0,
   });
 
   final CyclePhase phase;
   final double? averageEnergy;
   final List<String> topSymptoms;
   final int sampleDays;
+
+  /// How many days with an energy level the average is based on.
+  final int energySamples;
 }
 
 /// Derives human-readable patterns from logged history. Pure Dart.
@@ -95,12 +117,23 @@ class InsightsEngine {
             e.isEmpty ? null : e.reduce((a, b) => a + b) / e.length,
         topSymptoms: sorted.take(3).map((e) => e.key).toList(),
         sampleDays: days[phase] ?? 0,
+        energySamples: e.length,
       );
     }).toList();
   }
 
   /// Symptoms that reliably show up in the same phase across cycles.
-  List<Pattern> detectPatterns(List<DayLog> logs) {
+  List<Pattern> detectPatterns(List<DayLog> logs) => [
+        for (final p in phasePatterns(logs).take(8))
+          Pattern(
+            title: '${p.symptom} in your ${p.phase.label.toLowerCase()} phase',
+            detail: 'Logged in ${p.hits} of ${p.cycles} recent cycles.',
+            strength: p.strength,
+          ),
+      ];
+
+  /// The same patterns as [detectPatterns], as data, strongest first.
+  List<PhasePattern> phasePatterns(List<DayLog> logs) {
     final cycles = engine.deriveCycles(logs);
     final completed = cycles.where((c) => c.isComplete).toList();
     if (completed.length < minCyclesForPattern) return const [];
@@ -125,26 +158,21 @@ class InsightsEngine {
       }
     }
 
-    final patterns = <Pattern>[];
+    final patterns = <PhasePattern>[];
     hits.forEach((symptom, byPhase) {
       byPhase.forEach((phase, cycleIndices) {
-        final strength = cycleIndices.length / completed.length;
-        if (strength >= 0.6) {
-          patterns.add(
-            Pattern(
-              title: '$symptom in your ${phase.label.toLowerCase()} phase',
-              detail:
-                  'Logged in ${cycleIndices.length} of ${completed.length} '
-                  'recent cycles.',
-              strength: strength,
-            ),
-          );
-        }
+        final pattern = PhasePattern(
+          symptom: symptom,
+          phase: phase,
+          hits: cycleIndices.length,
+          cycles: completed.length,
+        );
+        if (pattern.strength >= 0.6) patterns.add(pattern);
       });
     });
 
     patterns.sort((a, b) => b.strength.compareTo(a.strength));
-    return patterns.take(8).toList();
+    return patterns;
   }
 
   /// Cycle length history for charting, oldest first.

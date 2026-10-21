@@ -1,324 +1,105 @@
-MOONCYCLE — INSIGHT CARDS FOR HER — en-GB (first batch, for preselection)
-Draft — 21 October 2026
-Written from the NHS and US Office on Women's Health pages listed at the end, in our
-own words, each card with its source. Not reviewed by a clinician yet: a GP,
-gynaecologist or midwife must check this before launch.
+MOONCYCLE — INSIGHT CARDS FOR HER — en-GB
+Built 21 October 2026 — NOT CLINICALLY APPROVED: shown to the test accounts only
+
+Source of truth for the wording: the reviewed pack
+"MoonCycle_Her_Insights_en-GB_curated" (30 cards, 23 sources), copied word for
+word into lib/l10n/her_insights_en_gb.dart. Change both together.
 
 ========================================================================================
-HOW THE CARDS WILL WORK
+HOW A CARD IS CHOSEN (lib/domain/her_insights.dart)
 ========================================================================================
-• Her Today screen shows one card a day, two at most:
-  - a card for something she logged today (cramps, low mood...), if there is one,
-  - otherwise a card for where she is in her cycle, rotating day by day.
-  Safety cards (bleeding between periods, a late period...) come first.
-• Her phone chooses the card. Nothing she logs is sent anywhere for this.
-• Every card shows its source as a link ("Source: NHS").
-• She can close a card; it won't come back for a while.
-• "Shown when" says what makes a card appear. Fertility cards appear only on the
-  fertility journey or when she turned on fertile days; "trying to conceive" cards
-  only when that's her goal.
-• The phone numbers (111, 999, Samaritans) are UK-only. The International edition
-  will follow once you've chosen, with general wording instead.
+Order, most important first:
+1. Safety — only on something she reported.
+   • I21: bleeding logged on a day that is not part of a logged period, after
+     her first logged period. Never from predicted dates.
+2. What she logged — today, or yesterday if today has nothing yet.
+   • Cramps on or near a period → I01   • Heavy flow → I02
+   • Tiredness → I19, or I05 if heavy flow this cycle   • Ovulation pain → I10
+   • Headache → I16   • Bloating → I17   • Breast tenderness → I18
+   • Sad / Anxious / Irritable / Sensitive → I20
+   • Egg-white discharge, trying to conceive → I30
+3. Her own history.
+   • Period 3+ days late, prediction confidence medium or high → I22
+     (I23 instead if trying to conceive)
+   • 8+ days of bleeding in a row → I24
+   • 2 of the last 3 cycles outside 21–35 days, or the last 2 far from her
+     usual → I25
+   • Tiredness with heavy flow in 2 or more cycles → I05
+   • H01–H03 below (drafts)
+4. Cycle education.
+   • Period: I01, I02, I03   • After the period: I06, I07, I11*
+   • Mid-cycle: I09*, I10*, I11*   • Before the period: I12, I13, I14 (2+ cycles)
+   • Any day: NEW01 (after 1st cycle), NEW02 (hormonal contraception),
+     I08 (only if she turned on screening reminders in Settings)
+   • Trying to conceive: I26, I27, I29, I28 (trying over 12 months)
+   * only with the fertility journey or fertile days on
 
-HOW TO MARK (same as the partner list)
-• [x] keep  •  [ ] drop  •  edit the wording in place  •  new cards start with [x] NEW
-• Keep the codes (I01...).
-
-Layout of each card:
-  Title
-  Text
-  See a GP if:     ... (only on some cards)
-  Get help now:    ... (only on safety cards; shown in a highlighted box)
-  Source:          S-numbers, listed at the end
-
-========================================================================================
-PART 1 — HER CYCLE (one a day, by phase)
-========================================================================================
-
----------------------------------------- PERIOD DAYS ----------------------------------
-
-[ ] I01  Easing period pain
-         Shown when: period days
-         Warmth helps: a warm bath, or a hot water bottle wrapped in a tea towel on your
-         tummy. Gentle movement such as walking, swimming or yoga can ease cramps too, and
-         a pharmacist can tell you which painkillers suit you.
-         See a GP if: the pain stops you doing your usual things, or your periods are
-         getting more painful.
-         Get help now: if the pain is severe or worse than usual and painkillers haven't
-         helped, call 111 or ask for an urgent GP appointment.
-         Source: S2
-
-[ ] I02  Is my period heavy?
-         Shown when: period days; also when she logs a heavy flow
-         Signs of a heavy period: changing a pad or tampon every 1 to 2 hours, needing
-         two products at once, clots bigger than a 10p coin, bleeding through to clothes
-         or bedding, or a period lasting more than 7 days. Heavy periods are common, and
-         there are treatments that help.
-         See a GP if: heavy periods are affecting your life, or you often feel tired or
-         short of breath.
-         Source: S3
-
-[ ] I03  Tampons and cups: change them on time
-         Shown when: period days (every few cycles)
-         Follow the time on the pack and don't leave a tampon or cup in longer than
-         recommended. Wash your hands before and after.
-         Get help now: if you suddenly feel very unwell while using one — a high
-         temperature, feeling shivery, a rash or flu-like symptoms — take it out and
-         call 111. Call 999 if you're confused, struggling to breathe, or have a rash
-         that doesn't fade under a glass. This is rare (toxic shock syndrome) but serious.
-         Source: S9
-
-[ ] I04  Your period, in numbers
-         Shown when: period days
-         Periods usually last 2 to 7 days, about 5 on average, and are heaviest in the
-         first 2 days. Most people lose 20 to 90 ml of blood, about 1 to 5 tablespoons.
-         Source: S1
-
-[ ] I05  Feeling drained?
-         Shown when: period days with tiredness logged, or a heavy flow logged
-         Heavy periods are one of the most common causes of low iron. Signs include
-         tiredness, feeling short of breath, a racing heartbeat, paler skin and headaches.
-         Iron-rich foods: dark green leafy vegetables, beans and lentils, fortified
-         cereals, meat and dried fruit.
-         See a GP if: you think your iron might be low. A simple blood test checks it.
-         Source: S10
-
----------------------------------------- AFTER THE PERIOD -----------------------------
-
-[ ] I06  A few months of logging tells a story
-         Shown when: after-period days
-         Note the first day of each period, how heavy it was and any pain. After a few
-         months you'll see your pattern, and it's exactly what a GP will ask about if you
-         ever need to see one.
-         Source: S19, S1
-
-[ ] I07  What's a normal cycle?
-         Shown when: after-period days
-         A cycle runs from the first day of one period to the first day of the next.
-         Most are around 28 days; anything from 21 to 35 days is common.
-         See a GP if: your cycles are often shorter than 21 days or longer than 35, or
-         your periods last more than 7 days.
-         Source: S1, S5
-
-[ ] I08  Cervical screening
-         Shown when: after-period days (about twice a year)
-         If you're 25 to 64 and have a cervix, the NHS invites you for cervical screening
-         every 5 years. When your letter arrives, book it.
-         Source: S18
-
----------------------------------------- MID-CYCLE (fertility cards) ------------------
-
-[ ] I09  Around ovulation
-         Shown when: mid-cycle, fertility journey or fertile days on
-         Ovulation usually happens 10 to 16 days before your next period. Around then,
-         discharge often turns clear, thin and stretchy, like raw egg white.
-         Source: S7
-
-[ ] I10  Twinges on one side?
-         Shown when: mid-cycle; also when she logs "Ovulation pain"
-         Ovulation pain is common: a dull ache or sharp twinges on one side of the lower
-         tummy, lasting from a few minutes to a day or two. A warm bath or a painkiller
-         from the pharmacy is usually enough.
-         See a GP if: it keeps coming back or painkillers don't help.
-         Get help now: if the pain is severe and painkillers haven't eased it, or you
-         think you could be pregnant, call 111 or ask for an urgent GP appointment.
-         Source: S8
-
-[ ] I11  Fertile days are an estimate
-         Shown when: mid-cycle, fertile days on, goal is not "trying to conceive"
-         Sperm can survive up to 7 days, and cycles can shift, so pregnancy is possible
-         on days before the predicted ovulation. A calendar estimate is not contraception:
-         a GP or contraception clinic can help you choose a reliable method.
-         Source: S7, S1
-
----------------------------------------- BEFORE THE PERIOD ----------------------------
-
-[ ] I12  The days before a period
-         Shown when: before-period days
-         Many people notice changes in the days before a period: mood swings, tiredness,
-         bloating, tender breasts, headaches, spots or cravings. They can vary from month
-         to month.
-         Source: S4
-
-[ ] I13  What can help with premenstrual symptoms
-         Shown when: before-period days
-         Regular exercise, small meals every few hours, enough sleep, and something that
-         helps you unwind, such as yoga or meditation. Less alcohol and not smoking can
-         help too.
-         Source: S4
-
-[ ] I14  Your log is your evidence
-         Shown when: before-period days
-         Logging how you feel for at least 2 cycles shows whether symptoms follow your
-         cycle, and it's what a GP will want to see.
-         See a GP if: symptoms affect your daily life, or don't improve with changes like
-         exercise and sleep. There are treatments.
-         Source: S4
+Rules:
+• One card a day; a second only when the first is a safety card.
+• Today's card stays the same all day unless something more important comes up.
+• Within a tier: never shown first, then shown longest ago. Cooldowns from the pack.
+• × hides a card for today. "Not relevant to me" hides it until she brings
+  hidden cards back in Settings.
+• Hormonal contraception, pregnancy/breastfeeding, hysterectomy or HRT (from her
+  quiz): no cycle-range, late-period, ovulation or "estimates" cards.
+• Only the cycle and fertility journeys get cards.
+• Crisis help is on the "Get help now" page (Today's top bar, Settings, and
+  inside any card with urgent advice), never pushed because of a mood.
+• Everything runs on her phone; nothing is sent anywhere.
 
 ========================================================================================
-PART 2 — WHAT SHE LOGGED TODAY
+NEW — CARDS FROM HER OWN LOG (drafts for your review)
 ========================================================================================
+No health claims: they repeat facts from her own log. Source line on the card:
+"Based on what you logged in MoonCycle".
 
-[ ] I15  Cramps today
-         Shown when: she logs "Cramps"
-         Warmth on your tummy or back, a warm bath or a gentle walk can ease cramps.
-         See a GP if: cramps stop you doing your usual things, or you also have pain
-         during sex or when going to the toilet. These can be signs of conditions such
-         as endometriosis, which can be treated.
-         Source: S2, S15
+[ ] H01  A pattern in your log
+         Shown when: the same pain, mood or body symptom was logged in the same
+         part of the cycle in at least 60% of her last 3+ completed cycles, and
+         she is in that part of her cycle today. Never fluid or sex entries.
+         "You've logged {headaches} {in the days before your period} in {3} of
+         your last {4} cycles. Knowing your pattern can help you plan ahead, and
+         your notes can be useful if you ever speak to a GP."
+         Cooldown: 21 days
 
-[ ] I16  Headache
-         Shown when: she logs "Headache"
-         Headaches are a common premenstrual symptom. Keep logging them: if they follow
-         your cycle, that's useful for you and a GP to know.
-         Source: S4
+[ ] H02  Your cycles lately
+         Shown when: her last 3 cycles were all 21–35 days and within 4 days of
+         each other. Not with hormonal contraception.
+         "Your last 3 cycles were {27, 29 and 28} days long. Steady cycles make
+         predictions more useful, though they are still estimates."
+         Cooldown: 60 days
 
-[ ] I17  Bloated?
-         Shown when: she logs "Bloating"
-         Bloating is common in the days before a period. Small meals every 2 to 3 hours
-         can help some people.
-         Source: S4
-
-[ ] I18  Tender breasts
-         Shown when: she logs "Breast tenderness"
-         Breast pain linked to periods is common and usually eases when the period ends.
-         A well-fitting bra, and a soft one at night, can help, and so can a painkiller
-         from the pharmacy.
-         Get help now: a hard lump that doesn't move, nipple discharge, a change in breast
-         shape, skin like orange peel, or redness and heat need an urgent GP appointment
-         or a call to 111.
-         Source: S20
-
-[ ] I19  Tired today
-         Shown when: she logs "Fatigue" outside period days
-         Tiredness is a common premenstrual symptom, and getting plenty of sleep helps.
-         If you're often tired and your periods are heavy, ask a GP to check your iron.
-         Source: S4, S10
-
-[ ] I20  Go gently today
-         Shown when: she logs "Sad", "Anxious", "Irritable" or "Sensitive"
-         Mood changes before a period are common. Movement, sleep and time to unwind can
-         help. If it's intense every cycle, it may be PMDD, a more severe form of PMS that
-         a GP can help with.
-         See a GP if: low mood or anxiety is affecting your daily life.
-         Get help now: if you feel you can't keep yourself safe, call 999 or go to A&E.
-         Samaritans are there to talk to any time on 116 123.
-         Source: S4, S17
-
-[ ] I21  Bleeding between periods
-         Shown when: she logs spotting or bleeding outside her period days
-         Bleeding between periods or after sex should always be checked by a GP or a
-         sexual health clinic. There are many possible causes, contraception among them.
-         Get help now: if you've recently missed a period and have unusual bleeding with
-         tummy pain, ask for an urgent GP appointment or call 111.
-         Source: S14
+[ ] H03  Your energy across your cycle
+         Shown when: 2+ completed cycles, at least 3 energy entries in two parts
+         of her cycle, and a difference of 1 point or more on the 1–5 scale.
+         "In what you've logged, your energy has tended to be highest {in the
+         days after your period} and lowest {during your period}. Everyone's
+         pattern is different."
+         Cooldown: 45 days
 
 ========================================================================================
-PART 3 — HER CYCLE OVER TIME
+"GET HELP NOW" PAGE (needs the same clinical review)
 ========================================================================================
-
-[ ] I22  Period late?
-         Shown when: her period is 3 or more days late, goal is not "trying to conceive"
-         Periods can come early or late. Stress, weight changes, a lot of exercise and
-         some contraception can all shift them. If you could be pregnant, most tests work
-         from the first day of a missed period.
-         See a GP if: you've missed 3 periods in a row, or a test is negative twice and
-         your period still hasn't come.
-         Source: S6, S13
-
-[ ] I23  Waiting to test?
-         Shown when: her period is late, goal is "trying to conceive"
-         Most pregnancy tests work from the first day of a missed period. A negative
-         result is less reliable than a positive one: if your period still hasn't come,
-         test again in a few days.
-         Source: S13
-
-[ ] I24  A longer period than usual
-         Shown when: she has logged bleeding for more than 7 days in a row
-         Periods usually last 2 to 7 days. If yours often last longer, it's worth seeing
-         a GP.
-         Source: S1, S5
-
-[ ] I25  Your cycles vary
-         Shown when: 2 of her last 3 cycles were shorter than 21 or longer than 35 days
-         Cycles under 21 days or over 35 count as irregular. Stress, weight changes,
-         exercise, contraception or conditions such as PMOS (formerly PCOS) can cause it.
-         See a GP if: your periods are irregular, especially with weight changes,
-         tiredness, extra facial hair or skin changes, or if you're trying to get pregnant.
-         Source: S5
+Intro: If you need help now, these are the services in the UK. MoonCycle cannot
+give medical advice or check on you.
+• 999 or A&E: emergencies — Call 999 or go to A&E if someone's life is at risk:
+  for example sudden, severe tummy pain with dizziness or fainting, difficulty
+  breathing, or if you feel you cannot keep yourself safe.   [Call 999]
+• NHS 111: urgent advice — For urgent medical advice when it is not an
+  emergency, call 111 or use NHS 111 online. For your mental health, choose the
+  mental health option.   [Call 111] [111.nhs.uk]
+• Samaritans: someone to talk to — Call 116 123 to talk to someone, about
+  anything, at any time.   [Call 116 123]
+• Your GP — For anything that is worrying you but is not urgent, book an
+  appointment with your GP.
+Footer: Outside the UK, call your local emergency number.
+Sources: S17 (urgent mental health help), S23 (ectopic pregnancy), S9 (toxic
+shock syndrome).
 
 ========================================================================================
-PART 4 — TRYING TO CONCEIVE (only when that's her goal)
+BEFORE THE CARDS GO BEYOND THE TEST ACCOUNTS
 ========================================================================================
-
-[ ] I26  Folic acid
-         Shown when: goal is "trying to conceive" (early in each cycle)
-         Take 400 micrograms of folic acid every day while you're trying, and until
-         you're 12 weeks pregnant. Some people need a higher dose on prescription, for
-         example with diabetes or a family history of spina bifida: ask a GP.
-         Source: S16
-
-[ ] I27  Timing without pressure
-         Shown when: goal is "trying to conceive"
-         The NHS's simple advice: have sex every 2 to 3 days without contraception. More
-         than 8 in 10 couples where the woman is under 40 conceive within a year this way.
-         Source: S11, S12
-
-[ ] I28  When to see a GP
-         Shown when: goal is "trying to conceive", trying for 6 months or more
-         The NHS suggests seeing a GP after a year of trying, or sooner if you're 36 or
-         over, or already know of a possible fertility problem.
-         Source: S12
-
-[ ] I29  Looking after you both
-         Shown when: goal is "trying to conceive"
-         Cutting out alcohol and stopping smoking help when you're trying. A GP can
-         support you with either.
-         Source: S11
-
-[ ] I30  Egg-white days
-         Shown when: goal is "trying to conceive", she logs "Egg white" discharge
-         Clear, stretchy discharge like raw egg white usually means you're around
-         ovulation, when pregnancy is most likely.
-         Source: S7
-
-========================================================================================
-PART 5 — ANY DAY
-========================================================================================
-
-[ ] I31  When periods need a check
-         Shown when: any day (every few weeks)
-         Changes in your periods are worth a check. Bleeding between periods, after sex,
-         or after the menopause always needs a doctor.
-         Source: S1
-
-========================================================================================
-SOURCES
-========================================================================================
-NHS content is under the Open Government Licence; we write our own wording and link
-back. The Office on Women's Health (US government) content is public domain.
-
-S1   NHS — Periods                       https://www.nhs.uk/conditions/periods/
-S2   NHS — Period pain                   https://www.nhs.uk/symptoms/period-pain/
-S3   NHS — Heavy periods                 https://www.nhs.uk/conditions/heavy-periods/
-S4   NHS — Premenstrual syndrome (PMS)   https://www.nhs.uk/conditions/pre-menstrual-syndrome/
-S5   NHS — Irregular periods             https://www.nhs.uk/symptoms/irregular-periods/
-S6   NHS — Stopped or missed periods     https://www.nhs.uk/conditions/stopped-or-missed-periods/
-S7   NHS — Fertility in the cycle        https://www.nhs.uk/conditions/periods/fertility-in-the-menstrual-cycle/
-S8   NHS — Ovulation pain                https://www.nhs.uk/conditions/ovulation-pain/
-S9   NHS — Toxic shock syndrome          https://www.nhs.uk/conditions/toxic-shock-syndrome/
-S10  NHS — Iron deficiency anaemia       https://www.nhs.uk/conditions/iron-deficiency-anaemia/
-S11  NHS — Trying to get pregnant        https://www.nhs.uk/pregnancy/trying-for-a-baby/trying-to-get-pregnant/
-S12  NHS — Infertility                   https://www.nhs.uk/conditions/infertility/
-S13  NHS — Doing a pregnancy test        https://www.nhs.uk/pregnancy/trying-for-a-baby/doing-a-pregnancy-test/
-S14  NHS — Bleeding between periods      https://www.nhs.uk/common-health-questions/sexual-health/what-causes-bleeding-between-periods/
-S15  NHS — Endometriosis                 https://www.nhs.uk/conditions/endometriosis/
-S16  NHS — B vitamins and folic acid     https://www.nhs.uk/conditions/vitamins-and-minerals/vitamin-b/
-S17  NHS — Urgent help for mental health https://www.nhs.uk/nhs-services/mental-health-services/where-to-get-urgent-help-for-mental-health/
-S18  NHS — Cervical screening            https://www.nhs.uk/conditions/cervical-screening/
-S19  Office on Women's Health — Your menstrual cycle
-                                         https://www.womenshealth.gov/menstrual-cycle/your-menstrual-cycle
-S20  NHS — Breast pain                   https://www.nhs.uk/conditions/breast-pain/
-
-Note: the two sources differ on a "normal" cycle. The NHS says 21 to 35 days; the US
-page says 24 to 38. The cards use the NHS figures for the UK launch.
+1. Clinical sign-off of the 30 cards, H01–H03 and the "Get help now" page.
+2. The International edition, with urgent advice adapted for outside the UK.
+3. Then switch herInsightsEnabledProvider in lib/state/providers.dart from
+   "test accounts" to "everyone tracking her cycle".
