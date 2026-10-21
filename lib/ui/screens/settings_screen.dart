@@ -1,0 +1,284 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/quiz.dart';
+import '../../state/providers.dart';
+import '../widgets/account_sheet.dart';
+import 'language_screen.dart';
+import 'onboarding_screen.dart';
+import 'tip_library_screen.dart';
+
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final settings = ref.watch(settingsProvider).valueOrNull;
+    if (settings == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    final reminders = settings.reminders;
+    final profile = settings.profile;
+    final notifier = ref.read(settingsProvider.notifier);
+    final journey = journeyById(profile.journey);
+    final resumeAt = profile.quizResumeAt;
+    final questionsLeft = journey != null && resumeAt != null
+        ? journey.questions.length - resumeAt
+        : 0;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+        children: [
+          Text('Account', style: theme.textTheme.titleMedium),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(ref.watch(sessionProvider).valueOrNull ?? ''),
+            subtitle: const Text('Sign out or delete your account.'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showAccountSheet(context),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.language),
+            title: Text(
+              ref.watch(languageProvider).valueOrNull?.label ?? 'Language',
+            ),
+            subtitle: const Text('Language of partner tips and messages.'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const LanguageScreen(pushed: true),
+              ),
+            ),
+          ),
+          if (ref.watch(isTestAccountProvider))
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.restart_alt),
+              title: const Text('Start over'),
+              subtitle: const Text(
+                'Test accounts only. Clears this device and goes back to '
+                '"Who\'s this for?".',
+              ),
+              onTap: () => confirmStartOver(context, ref),
+            ),
+          if (ref.watch(isEditorProvider).valueOrNull == true)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.auto_awesome),
+              title: const Text('Tip library'),
+              subtitle: const Text('Ratings and pulled partner tips.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const TipLibraryScreen(),
+                ),
+              ),
+            ),
+          const Divider(height: 40),
+          Text('Your goal', style: theme.textTheme.titleMedium),
+          if (questionsLeft > 0)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.more_time),
+              title: const Text('Finish your quiz'),
+              subtitle: Text(
+                '$questionsLeft question${questionsLeft == 1 ? '' : 's'} '
+                'left. Your answers so far are kept.',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) =>
+                      const OnboardingScreen(entry: OnboardingEntry.resume),
+                ),
+              ),
+            ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(journey?.name ?? profile.goal.label),
+            subtitle: const Text('Choose your journey again to change it.'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) =>
+                    const OnboardingScreen(entry: OnboardingEntry.retake),
+              ),
+            ),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: profile.showFertileDays,
+            title: const Text('Show estimated fertile days'),
+            subtitle: const Text('For information. It is not contraception.'),
+            onChanged: (v) => notifier
+                .updateProfile(profile.copyWith(showFertileDays: v)),
+          ),
+          const Divider(height: 40),
+          Text('Reminders', style: theme.textTheme.titleMedium),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: reminders.periodReminder,
+            title: const Text('Period is coming'),
+            subtitle: Text(
+              '${reminders.periodReminderDaysBefore} days before',
+            ),
+            onChanged: (v) => notifier
+                .updateReminders(reminders.copyWith(periodReminder: v)),
+          ),
+          if (reminders.periodReminder)
+            Slider(
+              value: reminders.periodReminderDaysBefore.toDouble(),
+              min: 1,
+              max: 5,
+              divisions: 4,
+              label: '${reminders.periodReminderDaysBefore} days',
+              onChanged: (v) => notifier.updateReminders(
+                reminders.copyWith(periodReminderDaysBefore: v.round()),
+              ),
+            ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: reminders.fertileWindowReminder,
+            title: const Text('Fertile window starts'),
+            onChanged: (v) => notifier
+                .updateReminders(reminders.copyWith(fertileWindowReminder: v)),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: reminders.dailyLogReminder,
+            title: const Text('Daily logging nudge'),
+            subtitle: Text(
+              '${reminders.dailyLogHour.toString().padLeft(2, '0')}:'
+              '${reminders.dailyLogMinute.toString().padLeft(2, '0')}',
+            ),
+            onChanged: (v) => notifier
+                .updateReminders(reminders.copyWith(dailyLogReminder: v)),
+          ),
+          if (reminders.dailyLogReminder)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Reminder time'),
+              trailing: const Icon(Icons.schedule),
+              onTap: () async {
+                final picked = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay(
+                    hour: reminders.dailyLogHour,
+                    minute: reminders.dailyLogMinute,
+                  ),
+                );
+                if (picked == null) return;
+                await notifier.updateReminders(
+                  reminders.copyWith(
+                    dailyLogHour: picked.hour,
+                    dailyLogMinute: picked.minute,
+                  ),
+                );
+              },
+            ),
+          TextButton.icon(
+            onPressed: () async {
+              final granted = await ref
+                  .read(notificationServiceProvider)
+                  .requestPermissions();
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    granted
+                        ? 'Notifications enabled'
+                        : 'Notification permission denied',
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.notifications_outlined),
+            label: const Text('Grant notification permission'),
+          ),
+          const Divider(height: 40),
+          Text('Wearables', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            'MoonCycle reads sleep, resting heart rate, HRV and temperature '
+            'through Health Connect, which already aggregates Fitbit, Garmin, '
+            'Samsung Health, Oura and Whoop.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.tonalIcon(
+            onPressed: () => _connectHealth(context, ref),
+            icon: const Icon(Icons.watch_outlined),
+            label: const Text('Connect Health Connect'),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: () => _importHealth(context, ref),
+            icon: const Icon(Icons.download_outlined),
+            label: const Text('Import last 30 days'),
+          ),
+          const Divider(height: 40),
+          Text('Your data', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            'Your logs and quiz answers stay on this device. Your account '
+            'holds only your email and your partner connection. If you turn '
+            'on partner sharing, only the summary you choose is sent to the '
+            'server.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _connectHealth(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final health = ref.read(healthServiceProvider);
+
+    // The health plugin has no desktop implementation, so this throws rather
+    // than returning false when the app is run on Windows for UI work.
+    try {
+      await health.configure();
+      final available = await health.isAvailable();
+      if (!available) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Health Connect is not installed on this device.'),
+          ),
+        );
+        return;
+      }
+      final granted = await health.requestPermissions();
+      messenger.showSnackBar(
+        SnackBar(content: Text(granted ? 'Connected' : 'Permission denied')),
+      );
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Health Connect is only available on Android.'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _importHealth(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final count =
+          await ref.read(logsProvider.notifier).importFromHealthConnect();
+      messenger.showSnackBar(
+        SnackBar(content: Text('Imported $count days')),
+      );
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Import failed: $e')));
+    }
+  }
+}

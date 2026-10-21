@@ -1,0 +1,25 @@
+[Unit]
+Description=MoonCycle API
+After=network.target postgresql.service
+
+[Service]
+User=mooncycle
+WorkingDirectory=/opt/mooncycle-api
+ExecStart=/usr/bin/node /opt/mooncycle-api/server.js
+Environment=NODE_ENV=production
+Environment=PORT=8787
+Environment=PGHOST=/var/run/postgresql
+Environment=PGUSER=mooncycle
+Environment=PGDATABASE=mooncycle
+# Secrets (the AI key) and the editors' emails. Optional: the API runs
+# without it, but tip drafting stays off.
+EnvironmentFile=-/etc/mooncycle-api.env
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

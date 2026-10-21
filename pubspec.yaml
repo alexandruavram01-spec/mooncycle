@@ -1,0 +1,41 @@
+name: mooncycle
+description: MoonCycle - period, symptom and hormone tracking with partner sharing.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  sqflite: ^2.3.3
+  # Desktop-only SQLite backend. Android uses the platform implementation;
+  # this exists so the app can be run on Windows for fast UI iteration.
+  sqflite_common_ffi: ^2.3.3
+  # Bundles the native sqlite3 library. Without it the FFI backend has nothing
+  # to load on Windows and fails at startup.
+  sqlite3_flutter_libs: ^0.5.24
+  path: ^1.9.0
+  intl: ^0.19.0
+  shared_preferences: ^2.2.3
+  http: ^1.2.0
+  # Gelasio, a free serif with Georgia's proportions, for the wordmark and
+  # the quiz headings.
+  google_fonts: ^6.2.1
+  fl_chart: ^0.68.0
+  flutter_local_notifications: ^17.2.1
+  timezone: ^0.9.4
+  # 10.x used the v1 Android embedding (Registrar), which current Flutter
+  # no longer ships — it fails to compile.
+  health: ^13.0.0
+  permission_handler: ^11.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

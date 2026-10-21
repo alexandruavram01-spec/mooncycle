@@ -1,0 +1,364 @@
+MOONCYCLE — PARTNER MESSAGE LIBRARY — en-INT (International English)
+Corrected edition — 21 October 2026
+Same codes as the en-GB edition. This text is built into the app in
+lib/l10n/partner_messages_en_int.dart; change both together.
+Product copy, not medical advice: have the health lines reviewed before launch.
+
+========================================================================================
+WHAT CHANGED FROM YOUR DRAFT
+========================================================================================
+Fixes
+• U01–U12   Rewritten to read after "Tomorrow:" / "In about 3 days:" and to name the
+            phase that is coming.
+• R05, R07  No more {duration} / {alternative}: fixed wording, nothing to fill in.
+• O21, O26  Reworded so her four answer buttons fit.
+• A15       Retired: it repeated A28 (and "space" was cut earlier as too harsh).
+• A29       Retired: third hug ask (A01, A14 remain).
+• G22       Now "before and after the predicted day", shown as a note on the card,
+            not under "How to help".
+• G31, G32  Plain sentences. G33 is new: added to G32 when her period is 2 days
+            away or less.
+• A17       Emoji 🫧 → 🧽 (🫧 shows as an empty box on older phones).
+Repeats removed
+• T76, T62  Were the same joke as T30. • T75 was the same joke as T34.
+• T36       Was the third "phones away" line in Mid-cycle.
+• A01       Reply "I'm here" → "Arms ready" (three asks had "I'm here").
+Humour that wasn't funny
+• T07, T08, T17, T18, T19, T22, T29, T31, T35, T42, T43, T44, T63
+Fewer "ask her" lines (27 → 21, counting the new "without being asked" tips)
+• T28, T42, T54, T69, T71, R08
+Wording
+• "Gentle warmth" → hot water bottle / heating pad: T01, T05, O02, G06.
+• T26, T37, T58 ("How's your day going?"), T59, T74 ("booking"), G20, A23
+  ("Nothing bad, promise").
+New
+• T78–T89   More "any phase" tips, used when she doesn't share her phase.
+
+========================================================================================
+RULES / IMPLEMENTATION
+========================================================================================
+• Phase does not determine someone's mood, energy, confidence, desire or consent; use
+  opt-in, non-diagnostic language.
+• No check-in shared = no claims about how she feels.
+• Plain ("straight") tips during period days, TTC, a late period, or a rough day,
+  whatever his tone. Period humour (T05–T12, T73) shows only if she turns on
+  "Humour during my period too" on her Partner tab; rough days stay plain even then.
+• Phase info, predicted dates and symptoms appear only if she shares them.
+• G02 only when she logged the start. G31/G32 are predictions and never say it started.
+• Predicted ovulation is never presented as contraception.
+• His replies are suggestions: nothing is sent until he taps one, and R06/R07 let him
+  say "later" or "not today".
+• Each person picks their own language, before signing in and later in Settings.
+• Codes never change meaning and are never reused. Retired: A15, A29.
+• "Peak" is still the internal name; everyone sees "Mid-cycle".
+• U lines follow "Tomorrow:" or "In about 3 days:".
+
+========================================================================================
+PART 1 — DAILY TIPS (TODAY'S MOVE)
+========================================================================================
+
+----------------------------------------------------------------------------------------
+PERIOD — Straight to the point
+----------------------------------------------------------------------------------------
+[x] T01  If cramps are bothering her, offer a hot water bottle or heating pad.
+[x] T02  Take care of a routine chore without asking her to manage it.
+[x] T03  Keep plans flexible. She may prefer to rest, go out, or stick with the original plan.
+[x] T04  Ask what would make today easier, then listen to her answer.
+[x] T49  Ask if she needs period products or other supplies picked up.
+[x] T50  If she's feeling unwell, offer to buy groceries or make a meal.
+[x] T51  Try a simple check-in: 'How are you feeling? What could I do to help?'
+[x] T52  Offer to adjust plans if she wants to, rather than deciding for her.
+[x] T53  If she wants company, spend a little distraction-free time together.
+[x] T54  Make the sofa easy: blanket, water, snacks and the remote within reach.
+[x] T55  A short walk could be nice, or not. Let her decide.
+[x] T56  Small acts matter: bring water, tidy up, or make breakfast.
+
+----------------------------------------------------------------------------------------
+PERIOD — A little humour [ONLY IF SHE ALLOWS PERIOD HUMOUR]
+----------------------------------------------------------------------------------------
+[x] T05  A hot water bottle, tea, and you doing the dishes. That's a pretty good team.
+[x] T06  Offer two plans: a relaxing evening or a relaxing evening with snacks.
+[x] T07  Offer to make tea. Bonus points for remembering how she takes it.
+[x] T08  If she wants the sofa, build her the cosiest nest in the house. Cushions are load-bearing.
+[x] T73  Tonight's optional plan: tea, a blanket, and no unnecessary stress.
+
+----------------------------------------------------------------------------------------
+PERIOD — Make me laugh [ONLY IF SHE ALLOWS PERIOD HUMOUR]
+----------------------------------------------------------------------------------------
+[x] T09  Today's heroic mission: find the heating pad and finish the dishes.
+[x] T10  Do the dishes like you're competing for Partner of the Year.
+[x] T11  Offer a blanket. If she says yes, congratulations: your mission has begun.
+[x] T12  Now hiring: tea maker, blanket finder, and professional cuddler. Apply inside.
+
+----------------------------------------------------------------------------------------
+RISING / AFTER PERIOD — Straight to the point
+----------------------------------------------------------------------------------------
+[x] T13  If she feels like it, suggest a walk or an activity together.
+[x] T14  Want to revisit an important conversation? Ask whether now is a good time.
+[x] T15  Suggest something new: a coffee shop, a walk, or a shared project.
+[x] T16  Ask what she'd enjoy doing this week instead of assuming her energy level.
+
+----------------------------------------------------------------------------------------
+RISING / AFTER PERIOD — A little humour
+----------------------------------------------------------------------------------------
+[x] T17  Planning an outing? Check your calendar first. It has opinions.
+[x] T18  Planning a trip? Bring a destination and a date, not just 'we should go somewhere'.
+[x] T19  That idea you've both been 'getting around to'? Today it gets a first step.
+[x] T20  Suggest a walk. Extra points if you've already picked a route.
+[x] T74  One fun idea and one actual booking. Look at you taking initiative.
+
+----------------------------------------------------------------------------------------
+RISING / AFTER PERIOD — Make me laugh
+----------------------------------------------------------------------------------------
+[x] T21  Thinking about an adventure? Great. Your new title is Chief Planning Officer.
+[x] T22  Your challenge: plan something fun without making a presentation about it.
+[x] T23  For a 'quick walk', bring water. The word 'quick' can mean many things.
+[x] T24  Big plans? Open the calendar before someone creates a spreadsheet.
+[x] T75  You suggested an adventure AND packed snacks? Legendary behaviour.
+
+----------------------------------------------------------------------------------------
+MID-CYCLE — Straight to the point
+----------------------------------------------------------------------------------------
+[x] T25  Around mid-cycle, offer choices: a date, a relaxing evening, or another idea.
+[x] T26  Suggest seeing friends, and make it just as easy to say no.
+[x] T27  Put your phones away and enjoy some time together.
+[x] T28  Plan one thing for this week you'd both enjoy, and put it in the calendar.
+
+----------------------------------------------------------------------------------------
+MID-CYCLE — A little humour
+----------------------------------------------------------------------------------------
+[x] T29  Suggest a place you both like and book the table. Decisiveness is very attractive.
+[x] T30  'Whatever you want' isn't much of a plan. Try suggesting two options.
+[x] T31  If she'd like to go out, handle the details. All of them. Yes, parking too.
+[x] T32  Put your phone away for a while. Yes, all the way away.
+[x] T76  Date night tip: compliments are free and surprisingly effective.
+
+----------------------------------------------------------------------------------------
+MID-CYCLE — Make me laugh
+----------------------------------------------------------------------------------------
+[x] T33  Date night? Put some effort into your outfit. A bold new strategy.
+[x] T34  Tonight's forecast: you made plans AND checked the opening hours. Impressive.
+[x] T35  Plan a tiny surprise. Tiny. Not a flash mob.
+[x] T36  Cook something new tonight. If it goes wrong, that's a story. If it goes right, you're a legend.
+[x] T77  Tonight's romantic achievement: choosing a place you BOTH want to eat.
+
+----------------------------------------------------------------------------------------
+WIND-DOWN / BEFORE PERIOD — Straight to the point
+----------------------------------------------------------------------------------------
+[x] T37  Listen first. Don't assume you know what's behind her mood.
+[x] T38  Reduce the everyday workload: cook, clean up, or handle an errand.
+[x] T39  Ask what would help her feel comfortable: food, company, or time alone.
+[x] T40  Tell her early when plans change, whenever possible.
+[x] T57  If plans are uncertain, offer two simple choices.
+[x] T58  A quick 'How's your day going?' works better than guessing from the calendar.
+[x] T59  Take care of one task that's been hanging over both of you.
+[x] T60  If she asks for a quiet evening, help make it peaceful.
+
+----------------------------------------------------------------------------------------
+WIND-DOWN / BEFORE PERIOD — A little humour
+----------------------------------------------------------------------------------------
+[x] T41  Take care of dinner tonight. Nice bonus: you get dinner too.
+[x] T42  Dinner plan: you choose, you shop, you cook. She just turns up hungry.
+[x] T43  Fewer last-minute surprises this week. Unless the surprise is that dinner's ready.
+[x] T44  Listen first, fix later. Assuming anything actually needs fixing.
+[x] T61  Make a dinner plan early. Planning can be its own kind of romance.
+[x] T62  Pick tonight's film before you sit down. An hour of scrolling is not a date.
+[x] T63  Your to-do list has entered the chat. It thinks you can help.
+[x] T64  A clean kitchen: a surprisingly thoughtful way to show you care.
+
+----------------------------------------------------------------------------------------
+WIND-DOWN / BEFORE PERIOD — Make me laugh
+----------------------------------------------------------------------------------------
+[x] T45  You don't need to be a detective. Just ask what would help.
+[x] T46  Today's unexpected romantic gesture: taking care of a boring chore.
+[x] T47  Before rearranging the kitchen 'to help', ask where things belong.
+[x] T48  Tonight's epic quest: make dinner, find the blanket, avoid movie spoilers.
+[x] T65  Tonight's boss battle: the laundry pile. Prize: clean clothes for both of you.
+[x] T66  Secret mission: decide on dinner before you're both hungry.
+[x] T67  The romance department recommends: dinner planned and no movie spoilers.
+[x] T68  Helpful-partner starter pack: initiative, clean dishes, and locating the blanket.
+
+----------------------------------------------------------------------------------------
+ANY PHASE (when she doesn't share her phase) — Straight to the point
+----------------------------------------------------------------------------------------
+[x] T69  Offer one specific thing you can do to make today easier.
+[x] T70  Be curious about her day, not about what a prediction says.
+[x] T78  Take one task off her list today without being asked.                      (NEW)
+[x] T79  Send her a message during the day, just to say you're thinking of her.     (NEW)
+[x] T80  Plan dinner tonight, so neither of you has to think about it.              (NEW)
+[x] T81  Put your phone away for the first ten minutes when you see each other.     (NEW)
+
+----------------------------------------------------------------------------------------
+ANY PHASE — A little humour
+----------------------------------------------------------------------------------------
+[x] T71  The calendar has a suggestion; she's the one with the actual answer.
+[x] T82  Do the job you've been 'about to do' for a week. Today's the day.          (NEW)
+[x] T83  Make her a drink without being asked. Mind-reading skills: unlocked.       (NEW)
+[x] T84  Text her something nice. Emojis count, but words count more.               (NEW)
+[x] T85  Tidy one room before she sees it. Act like it was always like that.        (NEW)
+
+----------------------------------------------------------------------------------------
+ANY PHASE — Make me laugh
+----------------------------------------------------------------------------------------
+[x] T72  Achievement unlocked: asking a real question instead of making an assumption.
+[x] T86  Today's side quest: empty the dishwasher before anyone asks. Reward: eternal gratitude. (NEW)
+[x] T87  Plan a mini date at home. Candles optional; clean socks essential.         (NEW)
+[x] T88  Surprise move: put the laundry away. Yes, folded.                          (NEW)
+[x] T89  Learn her coffee or tea order by heart. It's basically a superpower.       (NEW)
+
+========================================================================================
+PART 2 — UPCOMING PHASE HEADS-UP
+========================================================================================
+The app puts "Tomorrow:" or "In about 3 days:" in front.
+
+Upcoming period
+[x] U01 (straight)  Her period may start around then. Ask if she'd like anything ready.
+[x] U02 (humour)    Her period may start around then. Check the tea and snacks are stocked.
+[x] U03 (laugh)     Her period may start around then. Check the supplies, not her mood.
+
+Upcoming Rising
+[x] U04 (straight)  The days after her period begin. Ask what she'd like to do.
+[x] U05 (humour)    The days after her period begin. Have an activity you'd both enjoy in mind?
+[x] U06 (laugh)     The days after her period begin. New plans welcome; the sofa is still an option.
+
+Upcoming Mid-cycle
+[x] U07 (straight)  Mid-cycle begins (an estimate). A good moment to suggest some quality time.
+[x] U08 (humour)    Mid-cycle begins. How about suggesting a date plan?
+[x] U09 (laugh)     Mid-cycle begins. Pick a nice outfit, but check she'd enjoy a date first.
+
+Upcoming Wind-down
+[x] U10 (straight)  The days before her next period begin. Keep plans flexible.
+[x] U11 (humour)    The days before her next period begin. Less last-minute stress is always welcome.
+[x] U12 (laugh)     The days before her next period begin. Your superpower: planning dinner early.
+
+========================================================================================
+PART 3 — PHASE CARD (SAME FOR ALL THREE TONES)
+========================================================================================
+Only when she shares her phase.
+
+PERIOD
+[x] G01  Name: Period • Summary: Menstrual days
+[x] G02  Her period has started.   [only when she logged it]
+  She may feel (possibilities)
+[x] G03  Cramps, lower back pain, or headaches are possible.
+[x] G04  Some people notice fatigue during their period; others do not.
+[x] G05  She may prefer rest, company, or her usual routine.
+  How to help
+[x] G06  If cramps are bothering her, offer a hot water bottle or heating pad.
+[x] G07  Offer to handle a task without asking her to coordinate everything.
+[x] G08  Keep plans flexible and ask what she would prefer.
+
+RISING
+[x] G09  Name: Rising • Summary: After-period days
+[x] G10  The days after her period.
+  She may feel (possibilities)
+[x] G11  Period symptoms may ease during this part of the cycle.
+[x] G12  Some people notice a change in energy; others feel no difference.
+[x] G13  Her own feedback is more useful than a predicted energy level.
+  How to help
+[x] G14  Ask whether she'd like to make plans together.
+[x] G15  Suggest an activity, while leaving space for a relaxing day.
+
+MID-CYCLE
+[x] G16  Name: Mid-cycle • Summary: Around estimated ovulation
+[x] G17  Around the middle of the cycle (estimate).
+  She may feel (possibilities)
+[x] G18  Some people notice physical changes around this time; others do not.
+[x] G19  Some people have mild one-sided pelvic discomfort around ovulation.
+[x] G20  Sex drive can change during the cycle, and it's different for everyone.
+  How to help
+[x] G21  Suggest a date or quality time, and respect what she wants.
+  Note under the card
+[x] G22  Predicted ovulation dates are estimates, not contraception. Pregnancy is possible on days before and after the predicted day.
+
+WIND-DOWN
+[x] G23  Name: Wind-down • Summary: Before the next period
+[x] G24  The days before her estimated next period.
+  She may feel (possibilities)
+[x] G25  Some people notice mood changes before their period; others do not.
+[x] G26  Bloating, breast tenderness, or changes in appetite may occur.
+[x] G27  Energy, sleep, or sensitivity to stress may change, or may stay the same.
+  How to help
+[x] G28  Take her feelings seriously without attributing them to hormones.
+[x] G29  Offer to help with dinner, cleaning, or everyday tasks.
+[x] G30  Ask whether she'd appreciate favourite food, company, or quiet time.
+
+PREDICTIONS (never say her period has started)
+[x] G31  Her period is expected around now. That's an estimate, not a confirmation.
+[x] G32  Her next period is expected in about {1 day / 12 days}.
+[x] G33  Ask whether she needs anything.   (added to G32 at 2 days or less)   (NEW)
+
+========================================================================================
+PART 4 — ONE-TAP MESSAGES BETWEEN PARTNERS
+========================================================================================
+
+Her requests → his suggested reply (not sent until he taps it)
+[x] A01  I could use a hug.  →  Arms ready 🤗
+[x] A02  Could you make me some tea?  →  I'll make some ☕
+[x] A03  Could you bring me a treat?  →  What would you like? 🍫
+[x] A04  Could you bring me a heating pad or hot water bottle?  →  I'll get it ♨️
+[x] A05  Can we have a peaceful evening at home?  →  That sounds good 🌙
+[x] A06  Could you listen without trying to solve it?  →  I'm listening 👂
+[x] A07  Can you take care of one task for me?  →  Which task should I handle? ✅
+[x] A08  Could you take care of dinner tonight?  →  I'll handle it 🍽️
+[x] A09  Movie and blanket night?  →  I'll bring the popcorn 🍿
+[x] A10  Could we get ice cream?  →  What flavour? 🍦
+[x] A11  Would you go for a walk with me?  →  Let's go 👟
+[x] A12  Would you like to go out together?  →  Let's pick a place 💌
+[x] A13  Can you make me laugh?  →  I have some terrible jokes 😄
+[x] A14  Can we cuddle for a while?  →  Cuddles coming up 🧸
+[–] A15  (retired)
+[x] A16  Could you pick up period products for me?  →  Send the brand and type 🛍️
+[x] A17  Could you handle the dishes?  →  I'll take care of them 🧽
+[x] A18  Could we have ten minutes with no phones?  →  Phones away 📵
+[x] A19  I need a little reassurance.  →  I'm here ❤️
+[x] A20  Could you make breakfast tomorrow?  →  I'll handle breakfast 🍳
+[x] A21  Can we have an evening with no plans?  →  No plans it is 🛋️
+[x] A22  Could you give me a shoulder massage?  →  Massage service available 💆
+[x] A23  Can we chat tonight? Nothing bad, promise.  →  Of course. When works for you? 💬
+[x] A24  Could you send me a sweet message?  →  Challenge accepted 💌
+[x] A25  Could you buy the groceries?  →  Send me the list 🛒
+[x] A26  Want to dance in the kitchen later?  →  Preparing my worst moves 💃
+[x] A27  Could you check in with me tonight?  →  Of course. I'll make time 🌙
+[x] A28  I'd like some time alone.  →  Of course. Take your time 🍃
+[–] A29  (retired)
+
+His general replies
+[x] R01  On my way
+[x] R02  It's done            (stamps her ask "Delivered")
+[x] R03  Love you ❤️
+[x] R04  I can do that tonight
+[x] R05  I can help in about half an hour
+[x] R06  Could we do it later?
+[x] R07  I can't today. Can I help another way?
+[x] R08  What do you need most?
+
+His offers
+[x] O01  Would you like some tea? I can make it.
+[x] O02  Would a hot water bottle or heating pad help?
+[x] O03  I can take care of dinner tonight if you'd like.
+[x] O04  Would you like me to handle a chore?
+[x] O05  Would you like a back massage?
+[x] O06  Would you like a warm bath? I can run one.
+[x] O07  Would you like some time alone? I can handle things.
+[x] O08  Movie tonight? You choose.
+[x] O09  Would you like me to bring you something nice?
+[x] O10  Would you like a walk and some ice cream?
+[x] O11  Would you like to go on a date?
+[x] O12  Would you like to plan a weekend together?
+[x] O17  Would you like me to make breakfast tomorrow?
+[x] O18  Would you like a shoulder massage?
+[x] O19  Do you need anything from the store?
+[x] O20  Would you like ten minutes to talk without phones?
+[x] O21  Would a hug help? No pressure.
+[x] O22  I can take care of the laundry today.
+[x] O23  Want to do something silly together tonight?
+[x] O24  Would you enjoy a relaxing walk together?
+[x] O25  Would you like a mini date night at home?
+[x] O26  Tonight, shall we each share one good thing from our day?
+
+Her answers to his offers
+[x] O13  Yes, please!         (stamps his offer "Accepted")
+[x] O14  That's very thoughtful ❤️
+[x] O15  Maybe later
+[x] O16  Not today, thank you
