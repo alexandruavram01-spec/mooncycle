@@ -34,6 +34,9 @@ dependencies:
   # Opens the NHS source links on her insight cards, and the phone's dialler
   # from "Get help now".
   url_launcher: ^6.3.1
+  # The phone's fingerprint, face or PIN, to confirm deleting the account.
+  # Needs an AppCompat theme on Android (res/values*/styles.xml).
+  local_auth: ^3.0.2
 
 dev_dependencies:
   flutter_test:

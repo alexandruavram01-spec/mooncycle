@@ -69,4 +69,6 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // The AppCompat themes in res/values*/styles.xml, which local_auth needs.
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }

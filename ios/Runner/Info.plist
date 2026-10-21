@@ -13,6 +13,8 @@
 	<false/>
 	<!-- Required because the health package links HealthKit. The app does not
 	     read Apple Health yet; Health Connect is Android only. -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>MoonCycle uses Face ID to confirm it is you before deleting your account.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>MoonCycle can read sleep, heart rate and temperature from Apple Health to show them alongside your cycle. This stays on your phone.</string>
 	<key>NSHealthUpdateUsageDescription</key>

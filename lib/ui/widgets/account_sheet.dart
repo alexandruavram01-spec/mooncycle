@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../services/device_check.dart';
 import '../../state/providers.dart';
 
 /// The account actions, shared by Settings and the partner's menu.
@@ -87,14 +88,11 @@ class _AccountSheet extends ConsumerWidget {
                 final session = ref.read(sessionProvider.notifier);
                 final navigator = Navigator.of(context);
                 final messenger = ScaffoldMessenger.of(context);
-                final password = await showDialog<String>(
-                  context: context,
-                  builder: (_) => const _DeleteAccountDialog(),
-                );
-                if (password == null) return;
+                final confirmation = await _confirmDeletion(context);
+                if (confirmation == null) return;
                 navigator.pop();
                 try {
-                  await session.deleteAccount(password);
+                  await session.deleteAccount(password: confirmation.password);
                 } catch (e) {
                   messenger.showSnackBar(SnackBar(content: Text('$e')));
                 }
@@ -107,8 +105,51 @@ class _AccountSheet extends ConsumerWidget {
   }
 }
 
+/// How deleting was confirmed: by the phone's own lock, or by password.
+class _Confirmation {
+  const _Confirmation.byDevice() : password = null;
+  const _Confirmation.byPassword(String this.password);
+
+  /// Null when the phone's lock confirmed it.
+  final String? password;
+}
+
+/// Asks first, then checks it is the owner, so a borrowed, unlocked phone is
+/// not enough: the phone's fingerprint, face or PIN where it has a lock, the
+/// password otherwise (and on the website). Null if cancelled.
+Future<_Confirmation?> _confirmDeletion(BuildContext context) async {
+  if (await DeviceCheck.available()) {
+    if (!context.mounted) return null;
+    final go = await showDialog<String>(
+      context: context,
+      builder: (_) => const _DeleteAccountDialog(askPassword: false),
+    );
+    if (go == null) return null;
+    switch (await DeviceCheck.confirm(
+      'Confirm it is you to delete your MoonCycle account.',
+    )) {
+      case DeviceCheckResult.passed:
+        return const _Confirmation.byDevice();
+      case DeviceCheckResult.cancelled:
+        return null;
+      case DeviceCheckResult.unavailable:
+        break; // Falls back to the password.
+    }
+  }
+  if (!context.mounted) return null;
+  final password = await showDialog<String>(
+    context: context,
+    builder: (_) => const _DeleteAccountDialog(askPassword: true),
+  );
+  return password == null ? null : _Confirmation.byPassword(password);
+}
+
+/// Returns the password, or an empty string when [askPassword] is false and
+/// the phone's lock is checked next. Null if cancelled.
 class _DeleteAccountDialog extends StatefulWidget {
-  const _DeleteAccountDialog();
+  const _DeleteAccountDialog({required this.askPassword});
+
+  final bool askPassword;
 
   @override
   State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
@@ -137,15 +178,20 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
             'device. This cannot be undone.',
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: _password,
-            obscureText: true,
-            autofocus: true,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              border: OutlineInputBorder(),
+          if (widget.askPassword)
+            TextField(
+              controller: _password,
+              obscureText: true,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(),
+              ),
+            )
+          else
+            const Text(
+              'Next, your phone asks for your fingerprint, face or PIN.',
             ),
-          ),
         ],
       ),
       actions: [
@@ -155,6 +201,10 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
         ),
         FilledButton(
           onPressed: () {
+            if (!widget.askPassword) {
+              Navigator.of(context).pop('');
+              return;
+            }
             if (_password.text.isEmpty) return;
             Navigator.of(context).pop(_password.text);
           },

@@ -5,8 +5,7 @@ Every push to `main` on GitHub runs `.github/workflows/deploy.yml`:
 1. Checks the code: `flutter analyze` and the unit tests, plus a syntax
    check of the API.
 2. Builds the website (`flutter build web --release`).
-3. Copies `server/server.js`, `tip-writer.js` and `tips-seed.json` to
-   `/opt/mooncycle-api/` and restarts the API.
+3. Copies `server/server.js` to `/opt/mooncycle-api/` and restarts the API.
 4. Copies the website to `/var/www/mooncycle/`.
 
 If any step fails, nothing after it runs and the live site stays as it was.

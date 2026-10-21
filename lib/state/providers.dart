@@ -270,8 +270,9 @@ class SessionNotifier extends AsyncNotifier<String?> {
 
   /// Deletes the account on the server, then erases this device as well, so
   /// "delete" leaves nothing behind in either place.
-  Future<void> deleteAccount(String password) async {
-    await ref.read(accountServiceProvider).deleteAccount(password);
+  /// [password] is null when the phone's own lock confirmed it.
+  Future<void> deleteAccount({String? password}) async {
+    await ref.read(accountServiceProvider).deleteAccount(password: password);
     await ref.read(partnerLinkServiceProvider).forgetLocal();
     await ref.read(logsProvider.notifier).eraseAll();
     await ref.read(insightMemoryProvider.notifier).clear();

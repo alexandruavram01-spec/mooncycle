@@ -48,9 +48,7 @@ jobs:
         run: flutter test test/cycle_engine_test.dart test/partner_test.dart test/her_insights_test.dart
 
       - name: Check the API code
-        run: |
-          node --check server/server.js
-          node --check server/tip-writer.js
+        run: node --check server/server.js
 
       - name: Build the website
         run: flutter build web --release
@@ -122,8 +120,7 @@ jobs:
       - name: Deploy the API
         run: |
           rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy -o BatchMode=yes" \
-            server/server.js server/tip-writer.js server/tips-seed.json \
-            "deploy@$HOST:/opt/mooncycle-api/"
+            server/server.js "deploy@$HOST:/opt/mooncycle-api/"
           ssh -i ~/.ssh/deploy -o BatchMode=yes "deploy@$HOST" \
             'sudo systemctl restart mooncycle-api && sleep 2 && systemctl is-active mooncycle-api'
 

@@ -3,8 +3,6 @@
 const http = require('node:http');
 const crypto = require('node:crypto');
 const { Pool } = require('pg');
-const tipWriter = require('./tip-writer');
-const TIP_SEED = require('./tips-seed.json');
 
 const PORT = Number(process.env.PORT || 8787);
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -44,16 +42,14 @@ const FRESH_INTERACTIONS = `
   CASE WHEN offer_at > ${FRESH} THEN offer END AS "offer",
   CASE WHEN offer_at > ${FRESH} THEN offer_reply END AS "offerReply"`;
 
-// The partner tip library. Lines are drafted by AI or seeded, and reach
-// partners only once a person has approved them. A "not okay" from anyone
-// pulls a line for everyone until it is looked at again.
-const TIP_PHASES = ['menstrual', 'follicular', 'ovulatory', 'luteal'];
+// The tone of tip he picked, and the ratings anyone can give a tip. A "not
+// okay" pulls the tip for everyone until an editor puts it back.
 const TIP_TONES = ['straight', 'light', 'playful'];
-const TIP_STATUSES = ['draft', 'approved', 'rejected', 'pulled'];
 const TIP_FEEDBACK = ['like', 'not_funny', 'not_okay'];
 
-// Accounts allowed to draft and approve tips, from the server's environment
-// file. Never one of the test accounts: anyone can guess those.
+// Accounts allowed to see tip ratings and put pulled tips back, from the
+// server's environment file. Never one of the test accounts: anyone can guess
+// those.
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '')
   .split(',')
   .map((e) => e.trim().toLowerCase())
@@ -105,6 +101,9 @@ const SCHEMA = `
   );
   CREATE INDEX IF NOT EXISTS pairings_partner_idx ON pairings (partner_id);
 
+  -- When each sign-in was last used, so unused ones expire.
+  ALTER TABLE sessions ADD COLUMN IF NOT EXISTS last_used_at timestamptz NOT NULL DEFAULT now();
+
   -- Proof of agreement: which version of the terms and privacy policy each
   -- person accepted, and when they gave explicit consent for health data
   -- (UK GDPR articles 7 and 9).
@@ -122,26 +121,9 @@ const SCHEMA = `
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS offer_reply_at timestamptz;
   ALTER TABLE pairings ADD COLUMN IF NOT EXISTS partner_tone text;
 
-  CREATE TABLE IF NOT EXISTS tip_lines (
-    id          uuid PRIMARY KEY,
-    phase       text NOT NULL,
-    tone        text NOT NULL,
-    text        text NOT NULL,
-    status      text NOT NULL,
-    source      text NOT NULL,
-    review_note text,
-    likes       integer NOT NULL DEFAULT 0,
-    not_funny   integer NOT NULL DEFAULT 0,
-    not_okay    integer NOT NULL DEFAULT 0,
-    created_at  timestamptz NOT NULL DEFAULT now(),
-    decided_at  timestamptz
-  );
-  CREATE TABLE IF NOT EXISTS tip_feedback (
-    user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    line_id uuid NOT NULL REFERENCES tip_lines(id) ON DELETE CASCADE,
-    kind    text NOT NULL,
-    PRIMARY KEY (user_id, line_id)
-  );
+  -- The old AI-drafted tip library, replaced by the tips built into the app.
+  DROP TABLE IF EXISTS tip_feedback;
+  DROP TABLE IF EXISTS tip_lines;
 
   -- Ratings of the daily tips built into the app, by code. One per person
   -- per tip; a new rating replaces the old.
@@ -253,20 +235,6 @@ async function seedTestUsers() {
   }
 }
 
-// The lines the app shipped with, so they can be pulled and reviewed like any
-// other. Only runs while the library is empty.
-async function seedTips() {
-  const { rows } = await pool.query('SELECT count(*)::int AS n FROM tip_lines');
-  if (rows[0].n > 0) return;
-  for (const line of TIP_SEED) {
-    await pool.query(
-      `INSERT INTO tip_lines (id, phase, tone, text, status, source, decided_at)
-       VALUES ($1, $2, $3, $4, 'approved', 'seed', now())`,
-      [crypto.randomUUID(), line.phase, line.tone, line.text],
-    );
-  }
-}
-
 async function requireAdmin(req) {
   const { userId } = await authenticate(req);
   const { rows } = await pool.query('SELECT email FROM users WHERE id = $1', [userId]);
@@ -294,14 +262,47 @@ async function openSession(userId) {
   return token;
 }
 
+// A sign-in lasts until it goes unused for this long, then the person signs in
+// again. The privacy policy states this period.
+const SESSION_IDLE_DAYS = 90;
+
 async function authenticate(req) {
   const match = /^Bearer ([A-Za-z0-9_-]{20,})$/.exec(req.headers.authorization || '');
   if (!match) throw httpError(401, 'Sign in first.');
   const tokenHash = sha256(match[1]);
-  const { rows } = await pool.query('SELECT user_id FROM sessions WHERE token_hash = $1', [tokenHash]);
+  const { rows } = await pool.query(
+    `SELECT user_id, last_used_at < now() - interval '1 day' AS stale
+       FROM sessions
+      WHERE token_hash = $1 AND last_used_at > now() - interval '${SESSION_IDLE_DAYS} days'`,
+    [tokenHash],
+  );
   if (rows.length === 0) throw httpError(401, 'Sign in again.');
+  // Recorded at most once a day, so ordinary requests don't write.
+  if (rows[0].stale) {
+    await pool.query('UPDATE sessions SET last_used_at = now() WHERE token_hash = $1', [tokenHash]);
+  }
   return { userId: rows[0].user_id, tokenHash };
 }
+
+// What is deleted once it expires, as the privacy policy states: unused
+// sign-ins, unused pairing codes, and one-tap messages once they are a day
+// old (an ask goes with his reply to it, an offer with her answer).
+const CLEAN_UPS = [
+  ['sign-ins', `DELETE FROM sessions WHERE last_used_at < now() - interval '${SESSION_IDLE_DAYS} days'`],
+  ['pairing codes', 'UPDATE pairings SET code = NULL, code_expires_at = NULL WHERE code_expires_at < now()'],
+  ['asks', `UPDATE pairings SET ask = NULL, ask_at = NULL, reaction = NULL, reaction_at = NULL
+             WHERE ask_at <= ${FRESH}`],
+  ['offers', `UPDATE pairings SET offer = NULL, offer_at = NULL, offer_reply = NULL, offer_reply_at = NULL
+               WHERE offer_at <= ${FRESH}`],
+];
+
+// Runs at start-up and then every 15 minutes.
+async function removeExpiredData() {
+  for (const [what, sql] of CLEAN_UPS) {
+    await pool.query(sql).catch((err) => console.error(`clean-up of ${what} failed`, err));
+  }
+}
+setInterval(removeExpiredData, 15 * 60 * 1000).unref();
 
 // Passwords and pairing codes are the only secrets guarding an account or a
 // snapshot, so guessing either is throttled.
@@ -427,135 +428,20 @@ const routes = {
     return { ok: true };
   },
 
-  // ---- Tip library (AI drafting) -------------------------------------------
-  // No longer used by the app, which now has the reviewed tips built in.
-  // Kept until the AI work moves to its own server.
-
-  // Approved partner tips, for the app to rotate through.
-  'GET /api/tips': async (req) => {
-    await authenticate(req);
-    const { rows } = await pool.query(
-      `SELECT id, phase, tone, text FROM tip_lines WHERE status = 'approved'
-        ORDER BY created_at`,
-    );
-    return { lines: rows };
-  },
-
-  // Anyone who sees a tip can rate it once (a new rating replaces the old).
-  // "not_okay" pulls the line for everyone straight away.
-  'POST /api/tips/feedback': async (req) => {
-    const { userId } = await authenticate(req);
-    throttle(`feedback:${userId}`, 60, 60 * 60 * 1000);
-    const body = await readJson(req);
-    const kind = oneOf(body.kind, TIP_FEEDBACK, 'unknown feedback');
-    const lineId = String(body.id || '');
-    if (!/^[0-9a-f-]{36}$/.test(lineId)) throw httpError(400, 'unknown tip');
-
-    const { rowCount } = await pool.query('SELECT 1 FROM tip_lines WHERE id = $1', [lineId]);
-    if (rowCount === 0) throw httpError(404, 'unknown tip');
-    await pool.query(
-      `INSERT INTO tip_feedback (user_id, line_id, kind) VALUES ($1, $2, $3)
-       ON CONFLICT (user_id, line_id) DO UPDATE SET kind = EXCLUDED.kind`,
-      [userId, lineId, kind],
-    );
-    await pool.query(
-      `UPDATE tip_lines SET
-         likes     = (SELECT count(*) FROM tip_feedback WHERE line_id = $1 AND kind = 'like'),
-         not_funny = (SELECT count(*) FROM tip_feedback WHERE line_id = $1 AND kind = 'not_funny'),
-         not_okay  = (SELECT count(*) FROM tip_feedback WHERE line_id = $1 AND kind = 'not_okay'),
-         status    = CASE WHEN $2 = 'not_okay' AND status = 'approved' THEN 'pulled' ELSE status END
-       WHERE id = $1`,
-      [lineId, kind],
-    );
-    return { ok: true };
-  },
-
-  'GET /api/admin/tips': async (req) => {
-    await requireAdmin(req);
-    const status = oneOf(
-      new URL(req.url, 'http://localhost').searchParams.get('status'),
-      TIP_STATUSES,
-      'unknown status',
-    );
-    const { rows } = await pool.query(
-      `SELECT id, phase, tone, text, status, source, review_note AS "reviewNote",
-              likes, not_funny AS "notFunny", not_okay AS "notOkay"
-         FROM tip_lines WHERE status = $1
-        ORDER BY phase, tone, created_at DESC`,
-      [status],
-    );
-    return { lines: rows };
-  },
-
-  // Has the AI draft new lines. Lines its reviewer fails are kept as
-  // "rejected" with the reason, so an editor can see what was filtered out.
-  'POST /api/admin/tips/draft': async (req) => {
-    const userId = await requireAdmin(req);
-    throttle(`draft:${userId}`, 30, 60 * 60 * 1000);
-    const body = await readJson(req);
-    const phase = oneOf(body.phase, TIP_PHASES, 'unknown phase');
-    const tone = oneOf(body.tone, TIP_TONES, 'unknown tone');
-    if (phase === 'menstrual' && tone !== 'straight') {
-      throw httpError(400, 'Jokes are always off during her period, so only plain tips are needed.');
-    }
-    const count = Math.min(Math.max(Number(body.count) || 5, 1), 20);
-
-    const { rows } = await pool.query(
-      `SELECT text FROM tip_lines
-        WHERE phase = $1 AND tone = $2 AND status IN ('draft', 'approved')`,
-      [phase, tone],
-    );
-    let results;
-    try {
-      results = await tipWriter.draftTips({ phase, tone, count, avoid: rows.map((r) => r.text) });
-    } catch (err) {
-      console.error('tip drafting failed', err);
-      throw httpError(502, err.message);
-    }
-
-    for (const r of results) {
-      await pool.query(
-        `INSERT INTO tip_lines (id, phase, tone, text, status, source, review_note)
-         VALUES ($1, $2, $3, $4, $5, 'ai', $6)`,
-        [crypto.randomUUID(), phase, tone, r.text, r.pass ? 'draft' : 'rejected', r.reason],
-      );
-    }
-    return {
-      drafted: results.filter((r) => r.pass).length,
-      filtered: results.filter((r) => !r.pass).length,
-    };
-  },
-
-  // An editor approves, rejects, withdraws or restores a line, optionally
-  // rewording it first.
-  'POST /api/admin/tips/decide': async (req) => {
-    await requireAdmin(req);
-    const body = await readJson(req);
-    const status = oneOf(body.status, ['approved', 'rejected'], 'unknown decision');
-    const lineId = String(body.id || '');
-    if (!/^[0-9a-f-]{36}$/.test(lineId)) throw httpError(400, 'unknown tip');
-    const text = body.text === undefined || body.text === null ? null : String(body.text).trim();
-    if (text !== null && (text.length === 0 || text.length > tipWriter.MAX_TIP_LENGTH + 30)) {
-      throw httpError(400, 'Keep the tip short.');
-    }
-    const { rowCount } = await pool.query(
-      `UPDATE tip_lines SET status = $2, text = COALESCE($3, text), decided_at = now()
-        WHERE id = $1`,
-      [lineId, status, text],
-    );
-    if (rowCount === 0) throw httpError(404, 'unknown tip');
-    return { ok: true };
-  },
-
-  // The password is asked again so a borrowed, unlocked phone is not enough.
-  // 403 rather than 401: the session itself is still valid.
+  // Deleting needs a second check, so a borrowed, unlocked phone is not
+  // enough: the phone's own fingerprint, face or PIN (the app checks it and
+  // sends deviceConfirmed; the server cannot see that check), or the
+  // password, for phones without a screen lock and the test website.
+  // 403 rather than 401 for a wrong password: the session itself is valid.
   'POST /api/account/delete': async (req) => {
     const { userId } = await authenticate(req);
     throttle(`delete:${userId}`, 10, 15 * 60 * 1000);
     const body = await readJson(req);
-    const { rows } = await pool.query('SELECT password_hash FROM users WHERE id = $1', [userId]);
-    if (!(await verifyPassword(String(body.password || ''), rows[0].password_hash))) {
-      throw httpError(403, 'Wrong password.');
+    if (body.deviceConfirmed !== true) {
+      const { rows } = await pool.query('SELECT password_hash FROM users WHERE id = $1', [userId]);
+      if (!(await verifyPassword(String(body.password || ''), rows[0].password_hash))) {
+        throw httpError(403, 'Wrong password.');
+      }
     }
     // Sessions and her pairing go with the user; a pairing he had joined is unlinked.
     await pool.query('DELETE FROM users WHERE id = $1', [userId]);
@@ -783,8 +669,8 @@ const server = http.createServer(async (req, res) => {
 
 pool.query(SCHEMA)
   .then(seedTestUsers)
-  .then(seedTips)
   .then(() => {
+    removeExpiredData();
     server.listen(PORT, '127.0.0.1', () => console.log(`mooncycle-api listening on 127.0.0.1:${PORT}`));
   })
   .catch((err) => {

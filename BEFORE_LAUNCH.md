@@ -35,9 +35,6 @@ test group uses MoonCycle.
   now" page, plus an International edition with urgent advice adapted for
   outside the UK. See `content/her-insights-en-GB.txt`.
 - **Check the "Pulled" list** in the tip library for anything flagged.
-- **Remove the old AI tip routes** from `server/server.js` (the
-  "Tip library (AI drafting)" section, `tip-writer.js` and `tips-seed.json`)
-  once the AI work has its own server. The app no longer uses them.
 
 ## Still to build
 
@@ -81,6 +78,19 @@ test group uses MoonCycle.
   `/etc/logrotate.d/nginx` keeps no more (`rotate 14` with `daily`).
 - **Search engines.** nginx sends `X-Robots-Tag: noindex`. Decide whether the
   public site should be indexed.
+
+## Retire the web app (it is for testing only)
+
+- Replace the Flutter web app at mooncycle.fit with a small static page:
+  logo, one paragraph, App Store and Google Play badges, legal links.
+- Keep `/api/` (the phone apps need it) and the legal pages
+  (`privacy.html`, `terms.html`, `health.html`, `delete-account.html`): both
+  stores require a public privacy policy link, and Google Play a public
+  account deletion page. They may move to ioncodex.org instead; if so, update
+  the URLs in `lib/legal.dart` and the store listings.
+- In `.github/workflows/deploy.yml`, drop "Build the website" and upload only
+  the static page and legal pages.
+- In `web/privacy.html`, remove the mentions of the website (section 9).
 
 ## App stores
 

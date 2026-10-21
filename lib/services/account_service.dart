@@ -74,13 +74,17 @@ class AccountService {
     await _api.clearSession();
   }
 
-  /// Deletes the account on the server. The password is asked for again; a
-  /// wrong one throws and leaves everything in place.
-  Future<void> deleteAccount(String password) async {
+  /// Deletes the account on the server. [password] is null when the phone's
+  /// own fingerprint, face or PIN check has just passed. Otherwise it is the
+  /// password, asked for again; a wrong one throws and leaves everything in
+  /// place.
+  Future<void> deleteAccount({String? password}) async {
     final response = await _api.send(
       'POST',
       '/account/delete',
-      body: {'password': password},
+      body: password == null
+          ? {'deviceConfirmed': true}
+          : {'password': password},
     );
     if (response.statusCode != 200) throw ApiClient.failure(response);
     await _api.clearSession();
