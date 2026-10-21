@@ -77,9 +77,14 @@ It must print `active`.
      copy the one line that starts with `178.105.213.196 ssh-ed25519 AAAA`
      (not a line starting with `#`, and not the `SHA256:` fingerprint from
      step 1), then paste it. It is public, so it is safe to show.
-   - `DEPLOY_SSH_KEY`: run
-     `Get-Content C:\src\mooncycle_deploy -Raw | Set-Clipboard`, then paste.
-     Never paste this one anywhere else.
+   - `DEPLOY_SSH_KEY`: copy the private key as one line, which survives
+     pasting exactly, then paste. Never paste this one anywhere else.
+     ```
+     [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\src\mooncycle_deploy')) | Set-Clipboard
+     ```
+     The key must have no passphrase: if section C asks for one, remove it
+     with `ssh-keygen -p -f C:\src\mooncycle_deploy` (type the old one, then
+     press Enter twice), and copy it again.
 
 ### E. First deploy
 

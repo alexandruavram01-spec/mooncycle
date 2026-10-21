@@ -72,15 +72,31 @@ jobs:
           done
 
           install -m 700 -d ~/.ssh
-          # Text pasted on Windows can carry carriage returns, which SSH
-          # rejects in a key file.
-          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy
+          # The key may be pasted as one base64 line (DEPLOY.md, part D),
+          # which survives copy and paste exactly, or as the key file's
+          # text. Text pasted on Windows can carry carriage returns, which
+          # SSH rejects.
+          key="$(printf '%s' "$DEPLOY_SSH_KEY" | tr -d '\r')"
+          case "$key" in
+            -----BEGIN*) printf '%s\n' "$key" > ~/.ssh/deploy ;;
+            *) printf '%s' "$key" | tr -d '[:space:]' | base64 -d > ~/.ssh/deploy 2>/dev/null || true ;;
+          esac
           chmod 600 ~/.ssh/deploy
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
           echo "HOST=$(printf '%s' "$DEPLOY_HOST" | tr -d '[:space:]')" >> "$GITHUB_ENV"
 
-          if ! ssh-keygen -y -f ~/.ssh/deploy > /dev/null; then
-            echo "::error::DEPLOY_SSH_KEY is not a valid private key. Copy it again (DEPLOY.md, part D)."
+          # Says what is wrong with the key without printing any of it.
+          if ! problem="$(ssh-keygen -y -P '' -f ~/.ssh/deploy 2>&1 >/dev/null)"; then
+            if printf '%s' "$problem" | grep -qi passphrase; then
+              hint="The key has a passphrase, which GitHub cannot type. Remove it: DEPLOY.md, part D."
+            elif head -n1 ~/.ssh/deploy | grep -q '^ssh-'; then
+              hint="This is the public key (the .pub file). Use the private key file: DEPLOY.md, part D."
+            elif head -n1 ~/.ssh/deploy | grep -q '^-----BEGIN OPENSSH PRIVATE KEY-----$'; then
+              hint="The key looks cut short or changed. Copy it again as one line: DEPLOY.md, part D."
+            else
+              hint="The secret does not look like a private key. Copy it again as one line: DEPLOY.md, part D."
+            fi
+            echo "::error::DEPLOY_SSH_KEY cannot be used. $hint"
             exit 1
           fi
           if ! ssh -i ~/.ssh/deploy -o BatchMode=yes -o ConnectTimeout=20 \
