@@ -7,21 +7,21 @@
   <link rel="stylesheet" href="legal.css">
 </head>
 <body>
-<!-- DRAFT for review by a UK solicitor before launch. Version 2026-10-21.
+<!-- DRAFT for review by a UK solicitor before launch. Version 2026-10-22.
      Keep in step with Legal.version in lib/legal.dart. -->
 <main>
   <header><a class="brand" href="/"><img src="logo.png" alt=""> MoonCycle</a></header>
   <h1>Privacy policy</h1>
-  <p class="updated">Version 2026-10-21 · Last updated 21 October 2026</p>
+  <p class="updated">Version 2026-10-22 · Last updated 22 October 2026</p>
 
   <div class="summary">
     <strong>The short version</strong>
     <ul>
       <li>What you log (periods, symptoms, mood, notes) stays on your phone. We never receive it.</li>
-      <li>Our server holds your email, a scrambled form of your password, and, only if you turn on partner sharing, the summary you choose to share.</li>
-      <li>Only if you turn on AI-written notes, a short summary of your day passes through our server to Anthropic, which writes the note. We don't keep it; Anthropic deletes it within 30 days and doesn't use it to train AI.</li>
+      <li>Our server holds your email, a scrambled form of your password (or, if you continue with Google, an ID for your Google account), and, only if you turn on partner sharing, the summary you choose to share.</li>
+      <li>Only if you turn on AI-written notes, a short summary of your day passes through our server to Anthropic, which writes the note. We don't store the summary or the note, unless you report a note: then we keep that note and its card, without your name or account, for up to 90 days to look into it and improve the notes. Anthropic deletes what we send within 30 days and doesn't use it to train AI.</li>
       <li>No advertising, no selling of data, no tracking or analytics tools.</li>
-      <li>You can delete your account and data at any time, in the app.</li>
+      <li>You can delete your account and data at any time, in the app. Your phone's own backup (iCloud or your Google account) is separate: you manage it, and we cannot reach it.</li>
     </ul>
   </div>
 
@@ -36,6 +36,11 @@
       <tr>
         <td data-label="Information">Your email address and password (stored only as a scrypt hash, which cannot be turned back into your password)</td>
         <td data-label="Why">To create your account and sign you in</td>
+        <td data-label="Legal basis">Providing the service you asked for (contract, Article 6(1)(b))</td>
+      </tr>
+      <tr>
+        <td data-label="Information"><strong>Only if you continue with Google:</strong> your email address, which Google confirms to us, and the ID Google gives your Google account. No password is stored for these accounts.</td>
+        <td data-label="Why">To create your account and sign you in without a password</td>
         <td data-label="Legal basis">Providing the service you asked for (contract, Article 6(1)(b))</td>
       </tr>
       <tr>
@@ -77,7 +82,8 @@
   </table>
 
   <h3>What stays on your phone</h3>
-  <p>Everything you log (period dates and flow, symptoms, mood, energy, sleep, temperature, discharge, sex, notes), your quiz answers, your reminders and your insight cards are stored only on your device, and in your phone’s own backup if you use one (iCloud, or your Google account on Android), which Apple or Google holds for you under your own account. We do not receive it and cannot see it (except the short daily summary described above, if you turn on AI-written notes). MoonCycle processes it on your phone to show predictions, insights and reminders, with your explicit consent (Article 9(2)(a)), which you give when you create your account. If you delete the app or your account, it is erased from your device.</p>
+  <p>Everything you log (period dates and flow, symptoms, mood, energy, sleep, temperature, discharge, sex, notes), your quiz answers, your reminders and your insight cards are stored only on your device, and in your phone’s own backup if you use one (iCloud, or your Google account on Android), which Apple or Google holds for you under your own account. We do not receive it and cannot see it (except the short daily summary described above, if you turn on AI-written notes). MoonCycle processes it on your phone to show predictions, insights and reminders, with your explicit consent (Article 9(2)(a)), which you give when you create your account.</p>
+  <p>Deleting your account in the app, or uninstalling the app, erases what MoonCycle stored on that phone. Signing out does not: your logs stay on the phone. Copies already in your phone's backup are not affected by either. They stay until that backup is replaced or you delete it in your phone's or account's settings, and they may be restored if you reinstall MoonCycle from that backup. We cannot see, change or delete your backups.</p>
 
   <h2>3. What we do not do</h2>
   <ul>
@@ -91,11 +97,12 @@
   <ul>
     <li><strong>Hetzner Online GmbH</strong> (Germany) hosts our server in its data centre in Germany, under a data processing agreement. The UK recognises the EU as giving adequate protection to personal data.</li>
     <li><strong>Anthropic PBC</strong> (United States) writes AI-written notes for us, only if you turn them on, as our processor under its data processing terms, which include safeguards for transfers from the UK. It deletes what we send within 30 days (longer, up to 2 years, only if its safety systems flag misuse) and does not use it to train its AI models.</li>
-    <li><strong>Our email provider</strong> sends account emails, such as password resets, once that feature is available. We will name it here.</li>
+    <li><strong>Account emails</strong>: MoonCycle does not send any yet. Before we start (for example for password resets), we will name the email provider here and say what it receives.</li>
     <li><strong>Google Fonts</strong>: the app currently downloads one typeface from Google's servers, which means your device's IP address is visible to Google when it does. We plan to include the typeface in the app instead.</li>
+    <li><strong>Google</strong> confirms who you are if you choose Continue with Google, and tells us only your email address and an ID for your Google account. Google's own privacy policy applies to your Google account.</li>
     <li><strong>Apple and Google</strong> provide the app stores. When you download MoonCycle, their own privacy policies apply to that.</li>
   </ul>
-  <p>If your partner connects with you, they see only the summary and messages you choose to share. They are responsible for treating it with respect.</p>
+  <p>If your partner connects with you, they see only the summary and messages you choose to share. They are responsible for treating it with respect. What they have already seen cannot be taken back: turning sharing off or disconnecting stops anything new, removes the shared summary from our server, and their app then shows nothing about you.</p>
 
   <h2>5. How long we keep it</h2>
   <ul>
@@ -104,7 +111,7 @@
     <li>Pairing codes: deleted when used, or 24 hours after they are created.</li>
     <li>The shared summary: replaced each time it updates, and deleted straight away when you turn sharing off or delete your account.</li>
     <li>One-tap messages and the replies to them: deleted 24 hours after they are sent, or sooner if replaced by a new one or sharing ends.</li>
-    <li>AI-written notes: our server passes the summary to Anthropic and the note back to your phone, and keeps neither. Your phone keeps the note for that day. If you report a note, we keep that note and the card it came from, without your name or account, for 90 days, to improve the notes.</li>
+    <li>AI-written notes: our server passes the summary to Anthropic and the note back to your phone, and keeps neither. Your phone keeps the note for that day. If you report a note, we keep that note and the card it came from, without your name or account, for up to 90 days, to look into it and improve the notes. Because they are not linked to your account, we cannot find or delete them for you before then.</li>
     <li>Server logs: up to 14 days.</li>
   </ul>
 
@@ -115,7 +122,7 @@
     <li><strong>Stop sharing:</strong> turn partner sharing off in the app. The shared summary is removed from our server immediately.</li>
     <li><strong>Anything else:</strong> email <a href="mailto:mooncycle_contact@ioncodex.org">mooncycle_contact@ioncodex.org</a>. We will reply within one month.</li>
   </ul>
-  <p>Data that is only on your phone is under your control: we cannot see, export or delete it for you, but deleting the app or your account in the app erases it.</p>
+  <p>Data that is only on your phone is under your control: we cannot see, export or delete it for you. Deleting your account in the app, or uninstalling the app, erases it from that phone, but not from your phone's own backup (see "What stays on your phone" above).</p>
 
   <h2>7. Age</h2>
   <p>MoonCycle is for people aged 18 or over. We do not knowingly hold data about anyone younger. If you think a child has created an account, contact us and we will delete it.</p>

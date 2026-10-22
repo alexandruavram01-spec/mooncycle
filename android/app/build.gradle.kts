@@ -1,8 +1,23 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Release builds are signed with the upload key: on Codemagic from its
+// keystore settings (CM_KEYSTORE_* variables), on a PC from
+// android/key.properties, which is never committed. Without either, the
+// debug key is used, which Google Play rejects. Read here, outside the
+// android block, where `java.util` would not resolve.
+val keyProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) FileInputStream(file).use { load(it) }
+}
+val keystorePath: String? =
+    System.getenv("CM_KEYSTORE_PATH") ?: keyProperties.getProperty("storeFile")
 
 android {
     namespace = "com.example.mooncycle"
@@ -16,20 +31,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    // Release builds are signed with the upload key: on Codemagic from its
-    // keystore settings (CM_KEYSTORE_* variables), on a PC from
-    // android/key.properties, which is never committed. Without either, the
-    // debug key is used, which Google Play rejects.
-    val keyProperties = java.util.Properties().apply {
-        val file = rootProject.file("key.properties")
-        if (file.exists()) file.inputStream().use { load(it) }
-    }
-    val keystorePath = System.getenv("CM_KEYSTORE_PATH") ?: keyProperties.getProperty("storeFile")
-
     signingConfigs {
-        if (keystorePath != null) {
+        keystorePath?.let { path ->
             create("release") {
-                storeFile = file(keystorePath)
+                storeFile = file(path)
                 storePassword = System.getenv("CM_KEYSTORE_PASSWORD") ?: keyProperties.getProperty("storePassword")
                 keyAlias = System.getenv("CM_KEY_ALIAS") ?: keyProperties.getProperty("keyAlias")
                 keyPassword = System.getenv("CM_KEY_PASSWORD") ?: keyProperties.getProperty("keyPassword")
@@ -42,7 +47,7 @@ android {
         applicationId = "com.ioncodex.mooncycle"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        // Health Connect and the notification scheduler both need API 26.
+        // The notification scheduler needs API 26.
         minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

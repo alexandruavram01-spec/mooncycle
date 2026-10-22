@@ -6,7 +6,8 @@ import '../widgets/consent_boxes.dart';
 import '../widgets/wordmark.dart';
 
 /// Shown once to accounts that have not agreed to the current terms: those
-/// made before consent was recorded, and everyone after the terms change.
+/// made with Google from the sign-in screen, those made before consent was
+/// recorded, and everyone after the terms change.
 class LegalConsentScreen extends ConsumerStatefulWidget {
   const LegalConsentScreen({super.key});
 
@@ -63,8 +64,8 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'We have published our terms and privacy policy. Please read '
-                  'them and tick both boxes to keep using MoonCycle.',
+                  'Please read our terms and privacy policy, and tick both '
+                  'boxes to use MoonCycle.',
                   style: theme.textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),

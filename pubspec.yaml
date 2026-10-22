@@ -33,6 +33,9 @@ dependencies:
   # The phone's fingerprint, face or PIN, to confirm deleting the account.
   # Needs an AppCompat theme on Android (res/values*/styles.xml).
   local_auth: ^3.0.2
+  # "Continue with Google" on Android (lib/services/google_account.dart).
+  # The clients are in Google Cloud, project MoonCycle: SIGN_IN_SETUP.md.
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:

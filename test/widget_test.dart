@@ -5,8 +5,8 @@ import 'package:mooncycle/data/log_repository.dart';
 import 'package:mooncycle/domain/day_key.dart';
 import 'package:mooncycle/domain/enums.dart';
 import 'package:mooncycle/domain/models.dart';
-import 'package:mooncycle/main.dart';
 import 'package:mooncycle/state/providers.dart';
+import 'package:mooncycle/ui/shell.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Smoke tests. The real logic lives in `domain/` and is covered by the unit
@@ -25,7 +25,9 @@ void main() {
             (ref) async => InMemoryLogRepository(logs),
           ),
         ],
-        child: const MoonCycleApp(),
+        // The main screen directly: the full app first asks for a language
+        // and a sign-in, which these tests are not about.
+        child: const MaterialApp(home: AppShell()),
       ),
     );
     // Let the async providers resolve without waiting on the loading spinner's

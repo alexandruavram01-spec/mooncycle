@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../legal.dart';
+import '../../services/google_account.dart';
 import '../../state/providers.dart';
 import '../widgets/consent_boxes.dart';
 import '../widgets/links.dart';
@@ -74,6 +75,30 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         await session.signIn(email, password);
       }
       // Success replaces this screen, so there is nothing left to update.
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _error = '$e';
+        });
+      }
+    }
+  }
+
+  /// On the sign-up screen only after both boxes are ticked, so the new
+  /// account records her consent. Signing in, a first-time Google account is
+  /// made too, and the consent screen comes next.
+  Future<void> _google() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await ref
+          .read(sessionProvider.notifier)
+          .signInWithGoogle(consent: _creating);
+      // Success replaces this screen; a closed picker leaves it as it was.
+      if (mounted) setState(() => _busy = false);
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -195,6 +220,30 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             : 'Sign in',
                   ),
                 ),
+                if (GoogleAccount.available) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text('or', style: muted),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed:
+                        _busy || (_creating && !(_terms && _health))
+                            ? null
+                            : _google,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    child: const Text('Continue with Google'),
+                  ),
+                ],
                 const SizedBox(height: 4),
                 TextButton(
                   onPressed: _busy
@@ -212,7 +261,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 const SizedBox(height: 20),
                 Text(
                   'Your logs and quiz answers stay on this device. The '
-                  'account holds only your email and your partner connection.',
+                  'account holds only your email and your partner connection '
+                  '(and, with Google, an ID for your Google account).',
                   style: muted,
                   textAlign: TextAlign.center,
                 ),

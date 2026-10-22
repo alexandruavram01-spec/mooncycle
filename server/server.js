@@ -109,6 +109,11 @@ const SCHEMA = `
   -- password) are gone: their rows, sessions and pairings are deleted.
   DELETE FROM users WHERE email IN ('alex', 'sorana', 'robert', 'oana');
 
+  -- Sign in with Google: the ID Google gives the person's Google account
+  -- (its "sub"). Those accounts have no password.
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id text UNIQUE;
+  ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL;
+
   -- Her separate, explicit consent to AI-written notes: a summary of her day
   -- goes to Anthropic to write them. Null means off.
   ALTER TABLE users ADD COLUMN IF NOT EXISTS ai_notes_consent_at timestamptz;
@@ -235,6 +240,80 @@ function readCredentials(body) {
   return { email, password };
 }
 
+// ---- Sign in with Google ----------------------------------------------------
+
+// The "MoonCycle server" web client in Google Cloud (project MoonCycle). The
+// Android app asks Google for ID tokens made for it. Not a secret; another
+// client can be added through the environment file (comma-separated).
+const GOOGLE_CLIENT_IDS = (process.env.GOOGLE_CLIENT_IDS ||
+  '531774189485-hqam3gqj4ola0p2b277u2e87sv8es266.apps.googleusercontent.com')
+  .split(',')
+  .map((id) => id.trim())
+  .filter(Boolean);
+const GOOGLE_ISSUERS = ['accounts.google.com', 'https://accounts.google.com'];
+const GOOGLE_CERTS_URL = 'https://www.googleapis.com/oauth2/v3/certs';
+
+// Google's signing keys, kept as long as Google says (capped at a day).
+// Fetched again early only for a key we have not seen, at most once a minute.
+let googleKeys = { byId: new Map(), expiresAt: 0, fetchedAt: 0 };
+
+async function googleKey(kid) {
+  const now = Date.now();
+  const stale = now > googleKeys.expiresAt;
+  const unknown = !googleKeys.byId.has(kid) && now - googleKeys.fetchedAt > 60 * 1000;
+  if (stale || unknown) {
+    const response = await fetch(GOOGLE_CERTS_URL, { signal: AbortSignal.timeout(10 * 1000) });
+    if (!response.ok) throw httpError(502, 'Could not reach Google. Try again.');
+    const { keys } = await response.json();
+    const maxAge = Number(/max-age=(\d+)/.exec(response.headers.get('cache-control') || '')?.[1] || 3600);
+    googleKeys = {
+      byId: new Map(keys.map((jwk) => [jwk.kid, crypto.createPublicKey({ key: jwk, format: 'jwk' })])),
+      expiresAt: now + Math.min(maxAge, 24 * 60 * 60) * 1000,
+      fetchedAt: now,
+    };
+  }
+  return googleKeys.byId.get(kid);
+}
+
+// Checks an ID token from Google's sign-in on the phone: Google's signature,
+// made for our client, not expired, with an email Google has confirmed.
+async function verifyGoogleToken(idToken) {
+  const failed = () => httpError(401, 'Google sign-in did not work. Try again.');
+  const token = String(idToken || '');
+  const parts = token.split('.');
+  if (parts.length !== 3 || token.length > 4096) throw failed();
+  let header;
+  let claims;
+  try {
+    header = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf8'));
+    claims = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+  } catch {
+    throw failed();
+  }
+  if (header.alg !== 'RS256' || typeof header.kid !== 'string') throw failed();
+  const key = await googleKey(header.kid);
+  const signed = key && crypto.verify(
+    'sha256',
+    Buffer.from(`${parts[0]}.${parts[1]}`),
+    key,
+    Buffer.from(parts[2], 'base64url'),
+  );
+  const now = Date.now() / 1000;
+  if (!signed ||
+      !GOOGLE_ISSUERS.includes(claims.iss) ||
+      !GOOGLE_CLIENT_IDS.includes(claims.aud) ||
+      !(claims.exp > now - 60) ||
+      typeof claims.sub !== 'string' || claims.sub.length === 0) {
+    throw failed();
+  }
+  const email = String(claims.email || '').trim().toLowerCase();
+  if ((claims.email_verified !== true && claims.email_verified !== 'true') ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    throw httpError(401, 'Your Google account has no confirmed email address.');
+  }
+  return { googleId: claims.sub, email };
+}
+
 async function requireAdmin(req) {
   const { userId } = await authenticate(req);
   const { rows } = await pool.query('SELECT email FROM users WHERE id = $1', [userId]);
@@ -353,7 +432,8 @@ const routes = {
   'GET /api/account': async (req) => {
     const { userId } = await authenticate(req);
     const { rows } = await pool.query(
-      'SELECT email, terms_version, ai_notes_version FROM users WHERE id = $1',
+      `SELECT email, terms_version, ai_notes_version, password_hash IS NOT NULL AS password
+         FROM users WHERE id = $1`,
       [userId],
     );
     return {
@@ -361,6 +441,8 @@ const routes = {
       admin: ADMIN_EMAILS.includes(rows[0].email),
       termsVersion: rows[0].terms_version,
       aiNotesVersion: rows[0].ai_notes_version,
+      // False for accounts made with Google, which confirm with Google instead.
+      password: rows[0].password,
     };
   },
 
@@ -505,16 +587,27 @@ const routes = {
 
   // Deleting needs a second check, so a borrowed, unlocked phone is not
   // enough: the phone's own fingerprint, face or PIN (the app checks it and
-  // sends deviceConfirmed; the server cannot see that check), or the
-  // password, for phones without a screen lock and the test website.
-  // 403 rather than 401 for a wrong password: the session itself is valid.
+  // sends deviceConfirmed; the server cannot see that check), or, for phones
+  // without a screen lock and the test website, the password (Google again
+  // for accounts made with Google).
+  // 403 rather than 401 for a failed check: the session itself is valid.
   'POST /api/account/delete': async (req) => {
     const { userId } = await authenticate(req);
     throttle(`delete:${userId}`, 10, 15 * 60 * 1000);
     const body = await readJson(req);
     if (body.deviceConfirmed !== true) {
-      const { rows } = await pool.query('SELECT password_hash FROM users WHERE id = $1', [userId]);
-      if (!(await verifyPassword(String(body.password || ''), rows[0].password_hash))) {
+      const { rows } = await pool.query(
+        'SELECT password_hash, google_id FROM users WHERE id = $1',
+        [userId],
+      );
+      if (body.googleIdToken !== undefined) {
+        const { googleId } = await verifyGoogleToken(body.googleIdToken);
+        if (googleId !== rows[0].google_id) {
+          throw httpError(403, 'That is a different Google account.');
+        }
+      } else if (rows[0].password_hash === null) {
+        throw httpError(403, 'Confirm with Google to delete this account.');
+      } else if (!(await verifyPassword(String(body.password || ''), rows[0].password_hash))) {
         throw httpError(403, 'Wrong password.');
       }
     }
@@ -528,6 +621,11 @@ const routes = {
     throttle(`signin:${clientIp(req)}`, 20, 10 * 60 * 1000);
     throttle(`signin:${email}`, 10, 15 * 60 * 1000);
     const { rows } = await pool.query('SELECT id, password_hash FROM users WHERE email = $1', [email]);
+    // Sign-up already tells anyone that an email has an account, so saying
+    // how it signs in gives nothing more away.
+    if (rows.length > 0 && rows[0].password_hash === null) {
+      throw httpError(401, 'This account uses Continue with Google.');
+    }
     let ok = false;
     if (rows.length > 0) {
       ok = await verifyPassword(password, rows[0].password_hash);
@@ -538,6 +636,41 @@ const routes = {
     }
     if (!ok) throw httpError(401, 'Wrong email or password.');
     return { email, token: await openSession(rows[0].id) };
+  },
+
+  // Continue with Google (Android for now). Google confirms the email, so the
+  // first time makes the account. Consent is recorded with it when she ticked
+  // both boxes on the sign-up screen first; otherwise the app asks for it
+  // next, before anything else. An email that already has a password account
+  // is not joined to it: emails are not confirmed for those, so the account
+  // may have been made by someone else.
+  'POST /api/session/google': async (req) => {
+    throttle(`google:${clientIp(req)}`, 20, 10 * 60 * 1000);
+    const body = await readJson(req);
+    const { googleId, email } = await verifyGoogleToken(body.idToken);
+    const signIn = async () => {
+      const { rows } = await pool.query('SELECT id, email FROM users WHERE google_id = $1', [googleId]);
+      return rows.length > 0 ? { email: rows[0].email, token: await openSession(rows[0].id) } : null;
+    };
+    const known = await signIn();
+    if (known) return known;
+
+    const termsVersion = body.healthConsent === undefined ? null : readConsent(body);
+    const { rowCount } = await pool.query(
+      `INSERT INTO users (id, email, google_id, terms_version, terms_accepted_at, health_consent_at)
+       VALUES ($1, $2, $3, $4::text,
+               CASE WHEN $4::text IS NULL THEN NULL ELSE now() END,
+               CASE WHEN $4::text IS NULL THEN NULL ELSE now() END)
+       ON CONFLICT DO NOTHING`,
+      [crypto.randomUUID(), email, googleId, termsVersion],
+    );
+    if (rowCount === 0) {
+      // Made a moment ago by a second tap, or the email is taken.
+      const raced = await signIn();
+      if (raced) return raced;
+      throw httpError(409, 'This email already has a MoonCycle account. Sign in with your email and password.');
+    }
+    return signIn();
   },
 
   'DELETE /api/session': async (req) => {

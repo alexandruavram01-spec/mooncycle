@@ -11,7 +11,7 @@ class Legal {
 
   /// The version of the terms and privacy policy people agree to. Change it
   /// whenever either changes materially: everyone is then asked again.
-  static const version = '2026-10-21';
+  static const version = '2026-10-22';
 
   /// The version of the AI-written notes explanation she agrees to when she
   /// turns them on. Change it when that explanation changes materially:

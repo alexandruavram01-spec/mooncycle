@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../services/account_service.dart';
 import '../../services/device_check.dart';
+import '../../services/google_account.dart';
 import '../../state/providers.dart';
 
 /// The account actions, shared by Settings and the partner's menu.
@@ -58,13 +60,23 @@ class _AccountSheet extends ConsumerWidget {
               ),
               onTap: () async {
                 final session = ref.read(sessionProvider.notifier);
+                final accounts = ref.read(accountServiceProvider);
                 final navigator = Navigator.of(context);
                 final messenger = ScaffoldMessenger.of(context);
-                final confirmation = await _confirmDeletion(context);
+                _Confirmation? confirmation;
+                try {
+                  confirmation = await _confirmDeletion(context, accounts);
+                } catch (e) {
+                  messenger.showSnackBar(SnackBar(content: Text('$e')));
+                  return;
+                }
                 if (confirmation == null) return;
                 navigator.pop();
                 try {
-                  await session.deleteAccount(password: confirmation.password);
+                  await session.deleteAccount(
+                    password: confirmation.password,
+                    googleIdToken: confirmation.googleIdToken,
+                  );
                 } catch (e) {
                   messenger.showSnackBar(SnackBar(content: Text('$e')));
                 }
@@ -77,24 +89,33 @@ class _AccountSheet extends ConsumerWidget {
   }
 }
 
-/// How deleting was confirmed: by the phone's own lock, or by password.
+/// How deleting was confirmed: by the phone's own lock, by password, or for
+/// accounts made with Google, by Google.
 class _Confirmation {
-  const _Confirmation.byDevice() : password = null;
-  const _Confirmation.byPassword(String this.password);
+  const _Confirmation.byDevice()
+      : password = null,
+        googleIdToken = null;
+  const _Confirmation.byPassword(String this.password) : googleIdToken = null;
+  const _Confirmation.byGoogle(String this.googleIdToken) : password = null;
 
-  /// Null when the phone's lock confirmed it.
+  /// Both null when the phone's lock confirmed it.
   final String? password;
+  final String? googleIdToken;
 }
 
 /// Asks first, then checks it is the owner, so a borrowed, unlocked phone is
-/// not enough: the phone's fingerprint, face or PIN where it has a lock, the
-/// password otherwise (and on the website). Null if cancelled.
-Future<_Confirmation?> _confirmDeletion(BuildContext context) async {
+/// not enough: the phone's fingerprint, face or PIN where it has a lock;
+/// otherwise (and on the website) the password, or Google's account picker
+/// for accounts made with Google. Null if cancelled.
+Future<_Confirmation?> _confirmDeletion(
+  BuildContext context,
+  AccountService accounts,
+) async {
   if (await DeviceCheck.available()) {
     if (!context.mounted) return null;
     final go = await showDialog<String>(
       context: context,
-      builder: (_) => const _DeleteAccountDialog(askPassword: false),
+      builder: (_) => const _DeleteAccountDialog(step: _NextStep.deviceLock),
     );
     if (go == null) return null;
     switch (await DeviceCheck.confirm(
@@ -105,23 +126,36 @@ Future<_Confirmation?> _confirmDeletion(BuildContext context) async {
       case DeviceCheckResult.cancelled:
         return null;
       case DeviceCheckResult.unavailable:
-        break; // Falls back to the password.
+        break; // Falls back to the password, or Google.
     }
+  }
+  if (GoogleAccount.available && !await accounts.hasPassword()) {
+    if (!context.mounted) return null;
+    final go = await showDialog<String>(
+      context: context,
+      builder: (_) => const _DeleteAccountDialog(step: _NextStep.google),
+    );
+    if (go == null) return null;
+    final token = await GoogleAccount.idToken();
+    return token == null ? null : _Confirmation.byGoogle(token);
   }
   if (!context.mounted) return null;
   final password = await showDialog<String>(
     context: context,
-    builder: (_) => const _DeleteAccountDialog(askPassword: true),
+    builder: (_) => const _DeleteAccountDialog(step: _NextStep.password),
   );
   return password == null ? null : _Confirmation.byPassword(password);
 }
 
-/// Returns the password, or an empty string when [askPassword] is false and
-/// the phone's lock is checked next. Null if cancelled.
-class _DeleteAccountDialog extends StatefulWidget {
-  const _DeleteAccountDialog({required this.askPassword});
+/// How the dialog's "Delete account" is confirmed next.
+enum _NextStep { deviceLock, password, google }
 
-  final bool askPassword;
+/// Returns the password, or an empty string when the phone's lock or Google
+/// checks it next. Null if cancelled.
+class _DeleteAccountDialog extends StatefulWidget {
+  const _DeleteAccountDialog({required this.step});
+
+  final _NextStep step;
 
   @override
   State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
@@ -150,20 +184,23 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
             'device. This cannot be undone.',
           ),
           const SizedBox(height: 16),
-          if (widget.askPassword)
-            TextField(
-              controller: _password,
-              obscureText: true,
-              autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+          switch (widget.step) {
+            _NextStep.password => TextField(
+                controller: _password,
+                obscureText: true,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            )
-          else
-            const Text(
-              'Next, your phone asks for your fingerprint, face or PIN.',
-            ),
+            _NextStep.deviceLock => const Text(
+                'Next, your phone asks for your fingerprint, face or PIN.',
+              ),
+            _NextStep.google => const Text(
+                'Next, choose your Google account to confirm it is you.',
+              ),
+          },
         ],
       ),
       actions: [
@@ -173,7 +210,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
         ),
         FilledButton(
           onPressed: () {
-            if (!widget.askPassword) {
+            if (widget.step != _NextStep.password) {
               Navigator.of(context).pop('');
               return;
             }

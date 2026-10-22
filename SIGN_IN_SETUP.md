@@ -1,5 +1,21 @@
 # Google and Apple sign-in: accounts setup
 
+## Status (22 October 2026)
+
+- Google Cloud project `MoonCycle`, consent screen In production, External.
+- Clients made: `MoonCycle server` (web, ID
+  `531774189485-hqam3gqj4ola0p2b277u2e87sv8es266.apps.googleusercontent.com`,
+  in `lib/services/google_account.dart` and `server/server.js`),
+  `MoonCycle Android (debug)` and `MoonCycle Android (upload)`.
+- **Still to do:** `MoonCycle Android (Play)` with the App signing key SHA-1
+  from Play Console (Test and release, App integrity), after the first
+  upload. Until then Google sign-in fails in builds installed from Play.
+- "Continue with Google" is built for Android only. The iPhone waits for the
+  Apple developer account: the iOS client below, then Sign in with Apple
+  beside it (Apple requires both together).
+- A Google sign-in whose email already has a password account is refused,
+  not joined to it: emails are not confirmed for password accounts.
+
 Done once, by hand, before the sign-in code is built. Use the company's
 accounts (IONCODEX LTD) where you can: these are hard to move later.
 

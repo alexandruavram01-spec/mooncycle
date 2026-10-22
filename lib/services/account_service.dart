@@ -1,6 +1,9 @@
-import 'api_client.dart';
+import 'package:http/http.dart' as http;
 
-/// Email-and-password accounts.
+import 'api_client.dart';
+import 'google_account.dart';
+
+/// Email-and-password accounts, or Continue with Google (Android).
 ///
 /// An account is identity only: it holds the email and the partner
 /// connection. Logs and quiz answers never leave the device, so signing in
@@ -26,6 +29,36 @@ class AccountService {
 
   Future<String> signIn(String email, String password) =>
       _open('/session', email, password);
+
+  /// Continue with Google. The first time makes the account; with
+  /// [termsVersion] (she ticked both boxes on the sign-up screen) her consent
+  /// is recorded with it, otherwise the app asks for it next. Returns the
+  /// email, or null if she closed Google's account picker.
+  Future<String?> signInWithGoogle({String? termsVersion}) async {
+    final idToken = await GoogleAccount.idToken();
+    if (idToken == null) return null;
+    final response = await _api.send(
+      'POST',
+      '/session/google',
+      auth: false,
+      body: {
+        'idToken': idToken,
+        if (termsVersion != null) ...{
+          'termsVersion': termsVersion,
+          'healthConsent': true,
+        },
+      },
+    );
+    return _save(response);
+  }
+
+  /// False for accounts made with Google: they confirm with Google, not a
+  /// password.
+  Future<bool> hasPassword() async {
+    final response = await _api.send('GET', '/account');
+    if (response.statusCode != 200) throw ApiClient.failure(response);
+    return ApiClient.json(response)['password'] != false;
+  }
 
   /// The terms version this account last agreed to, or null if never.
   Future<String?> acceptedTermsVersion() async {
@@ -76,8 +109,12 @@ class AccountService {
       auth: false,
       body: {'email': email.trim(), 'password': password, ...extra},
     );
-    if (response.statusCode != 200) throw ApiClient.failure(response);
+    return _save(response);
+  }
 
+  /// Keeps the session the server opened, and returns its email.
+  Future<String> _save(http.Response response) async {
+    if (response.statusCode != 200) throw ApiClient.failure(response);
     final json = ApiClient.json(response);
     final confirmed = json['email'] as String;
     await _api.saveSession(email: confirmed, token: json['token'] as String);
@@ -91,21 +128,25 @@ class AccountService {
       // Offline or already signed out: the local session is dropped anyway.
     }
     await _api.clearSession();
+    await GoogleAccount.signOut();
   }
 
-  /// Deletes the account on the server. [password] is null when the phone's
-  /// own fingerprint, face or PIN check has just passed. Otherwise it is the
-  /// password, asked for again; a wrong one throws and leaves everything in
-  /// place.
-  Future<void> deleteAccount({String? password}) async {
+  /// Deletes the account on the server. Both are null when the phone's own
+  /// fingerprint, face or PIN check has just passed. Otherwise it is the
+  /// [password], asked for again, or for accounts made with Google a fresh
+  /// [googleIdToken]; a failed check throws and leaves everything in place.
+  Future<void> deleteAccount({String? password, String? googleIdToken}) async {
     final response = await _api.send(
       'POST',
       '/account/delete',
-      body: password == null
-          ? {'deviceConfirmed': true}
-          : {'password': password},
+      body: password != null
+          ? {'password': password}
+          : googleIdToken != null
+              ? {'googleIdToken': googleIdToken}
+              : {'deviceConfirmed': true},
     );
     if (response.statusCode != 200) throw ApiClient.failure(response);
     await _api.clearSession();
+    await GoogleAccount.signOut();
   }
 }

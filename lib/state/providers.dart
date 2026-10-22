@@ -216,6 +216,16 @@ class SessionNotifier extends AsyncNotifier<String?> {
     );
   }
 
+  /// Continue with Google. [consent]: she ticked both boxes on the sign-up
+  /// screen, so a new account records it. Nothing changes if she closes
+  /// Google's account picker.
+  Future<void> signInWithGoogle({required bool consent}) async {
+    final email = await ref
+        .read(accountServiceProvider)
+        .signInWithGoogle(termsVersion: consent ? Legal.version : null);
+    if (email != null) state = AsyncData(email);
+  }
+
   /// Logs and quiz answers stay on the device; only the session ends.
   Future<void> signOut() async {
     await ref.read(accountServiceProvider).signOut();
@@ -246,9 +256,12 @@ class SessionNotifier extends AsyncNotifier<String?> {
 
   /// Deletes the account on the server, then erases this device as well, so
   /// "delete" leaves nothing behind in either place.
-  /// [password] is null when the phone's own lock confirmed it.
-  Future<void> deleteAccount({String? password}) async {
-    await ref.read(accountServiceProvider).deleteAccount(password: password);
+  /// [password] and [googleIdToken] are null when the phone's own lock
+  /// confirmed it.
+  Future<void> deleteAccount({String? password, String? googleIdToken}) async {
+    await ref
+        .read(accountServiceProvider)
+        .deleteAccount(password: password, googleIdToken: googleIdToken);
     await ref.read(partnerLinkServiceProvider).forgetLocal();
     await ref.read(logsProvider.notifier).eraseAll();
     await ref.read(insightMemoryProvider.notifier).clear();

@@ -70,6 +70,16 @@ those listed elsewhere here:
 - The notes follow the cards: only where the cards are switched on
   (`herInsightsEnabledProvider`), and only for those who turn them on.
 
+## Google sign-in
+
+- **The Play client in Google Cloud**: after the first upload, an Android
+  client with the App signing key SHA-1 (SIGN_IN_SETUP.md, Status).
+- **iPhone**: the iOS client and Sign in with Apple, once the Apple developer
+  account is approved. Until then the iPhone app shows email and password
+  only, and an account made with Google cannot sign in on an iPhone.
+- **Button style**: Google's guidelines ask for its "G" logo on the button.
+  It is a plain text button for now.
+
 ## Still to build
 
 - **Password reset and email confirmation.** Neither exists; a forgotten
