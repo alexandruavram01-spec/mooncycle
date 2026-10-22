@@ -73,15 +73,35 @@ class MoonCycleApp extends ConsumerWidget {
       theme: partner ? nightTheme : dawnTheme,
       // On a wide screen the app keeps a phone-like width, centred, instead
       // of stretching cards and the calendar across the whole window.
-      builder: (context, child) => ColoredBox(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: child,
+      //
+      // Android draws apps behind its navigation bar (|||, O, <), so every
+      // screen, sheet and dialog is lifted above it here. Without this, Save
+      // buttons at the bottom sat under the bar and taps missed them. While
+      // the keyboard is open it already covers the bar, so nothing is added.
+      builder: (context, child) {
+        final media = MediaQuery.of(context);
+        final bar = media.padding.bottom;
+        final keyboard = media.viewInsets.bottom - bar;
+        return ColoredBox(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: bar),
+            child: MediaQuery(
+              data: media.removePadding(removeBottom: true).copyWith(
+                    viewInsets: media.viewInsets.copyWith(
+                      bottom: keyboard > 0 ? keyboard : 0,
+                    ),
+                  ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: child,
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
       home: const _Gate(),
     );
   }

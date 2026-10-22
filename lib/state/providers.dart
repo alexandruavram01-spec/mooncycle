@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -83,9 +84,23 @@ class LogsNotifier extends AsyncNotifier<List<DayLog>> {
     final status = ref.read(cycleEngineProvider).status(logs);
     final settings = ref.read(settingsProvider).valueOrNull;
     if (settings == null) return;
-    await ref
-        .read(notificationServiceProvider)
-        .reschedule(status: status, settings: settings.reminders);
+    await _remindersSafely(
+      () => ref
+          .read(notificationServiceProvider)
+          .reschedule(status: status, settings: settings.reminders),
+    );
+  }
+}
+
+/// Reminders are rescheduled after every save, but they must never stop the
+/// save itself: what she logged is already stored by then. A failure here
+/// once made every Save look broken (the sheet stayed open) in the Play
+/// build, where the reminders plugin had lost code to the release optimiser.
+Future<void> _remindersSafely(Future<void> Function() reschedule) async {
+  try {
+    await reschedule();
+  } catch (error) {
+    debugPrint('Reminders could not be rescheduled: $error');
   }
 }
 
@@ -138,9 +153,11 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
       // Built directly rather than read from cycleEngineProvider, which now
       // depends on these settings — reading it from here would be circular.
       final status = _engineFor(next.profile).status(logs);
-      await ref
-          .read(notificationServiceProvider)
-          .reschedule(status: status, settings: next.reminders);
+      await _remindersSafely(
+        () => ref
+            .read(notificationServiceProvider)
+            .reschedule(status: status, settings: next.reminders),
+      );
     }
   }
 

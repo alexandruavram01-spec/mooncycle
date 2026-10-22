@@ -68,7 +68,17 @@ class _LogSheetState extends ConsumerState<LogSheet> {
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
       isPeriodStartOverride: _periodStartOverride,
     );
-    await ref.read(logsProvider.notifier).save(log);
+    try {
+      await ref.read(logsProvider.notifier).save(log);
+    } catch (e) {
+      // Never fail silently: a Save that does nothing looks like a lost day.
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not save this day: $e')),
+        );
+      }
+      return;
+    }
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -107,15 +117,46 @@ class _LogSheetState extends ConsumerState<LogSheet> {
         expand: false,
         initialChildSize: 0.85,
         maxChildSize: 0.95,
-        builder: (context, controller) => ListView(
-          controller: controller,
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        // The date and Save stay pinned at the top, so filling in many days
+        // never means scrolling down to save each one.
+        builder: (context, controller) => Column(
           children: [
-            Text(
-              DateFormat('EEEE d MMMM').format(widget.day.toDateTime()),
-              style: theme.textTheme.titleLarge,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 12, 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      DateFormat('EEEE d MMMM')
+                          .format(widget.day.toDateTime()),
+                      style: theme.textTheme.titleLarge,
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: _save,
+                    child: const Text('Save'),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
+            Expanded(child: _fields(context, controller, groupOrder)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _fields(
+    BuildContext context,
+    ScrollController controller,
+    List<String> groupOrder,
+  ) {
+    final theme = Theme.of(context);
+    final profile = ref.watch(profileProvider);
+    return ListView(
+          controller: controller,
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          children: [
             _SectionLabel('Flow'),
             Wrap(
               spacing: 8,
@@ -245,9 +286,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               child: const Text('Save'),
             ),
           ],
-        ),
-      ),
-    );
+        );
   }
 }
 

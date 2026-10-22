@@ -139,7 +139,7 @@ class PartnerViewScreen extends ConsumerWidget {
               itemBuilder: (_) => [
                 const PopupMenuItem(
                   value: 'edit',
-                  child: Text('Name and tone'),
+                  child: Text('Her name and tip tone'),
                 ),
                 const PopupMenuItem(
                   value: 'switch',
@@ -255,6 +255,22 @@ class _SharedView extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
       children: [
+        // The name used to be asked in the quiz; it now lives in the menu
+        // (Name and tone), so it is offered here until he sets one.
+        if (name.isEmpty)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: const Text('What do you call her?'),
+              subtitle: const Text('Add her name or a nickname.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const PartnerSettingsScreen(),
+                ),
+              ),
+            ),
+          ),
         shared.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(32),

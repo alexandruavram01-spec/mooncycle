@@ -31,14 +31,24 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
     setState(() => _saving = true);
     final current =
         ref.read(settingsProvider).valueOrNull ?? const AppSettings();
-    await ref.read(settingsProvider.notifier).replaceAll(
-          current.copyWith(
-            profile: current.profile.copyWith(
-              partnerNickname: _name.text.trim(),
-              partnerTone: _tone,
+    try {
+      await ref.read(settingsProvider.notifier).replaceAll(
+            current.copyWith(
+              profile: current.profile.copyWith(
+                partnerNickname: _name.text.trim(),
+                partnerTone: _tone,
+              ),
             ),
-          ),
+          );
+    } catch (e) {
+      if (mounted) {
+        setState(() => _saving = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not save: $e')),
         );
+      }
+      return;
+    }
     if (mounted) Navigator.of(context).pop();
   }
 
