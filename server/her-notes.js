@@ -12,6 +12,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const MODEL = process.env.AI_NOTES_MODEL || 'claude-opus-5-5';
+// Where Anthropic runs the model: only in the United States, where it also
+// stores data, so her summary goes to one country (priced at 1.1x).
+const GEO = process.env.AI_NOTES_GEO || 'us';
 const EFFORT = process.env.AI_NOTES_EFFORT || 'medium';
 // A second reading of each note against its card, before it is used.
 const SECOND_READING = process.env.AI_NOTES_REVIEW !== 'off';
@@ -305,6 +308,7 @@ async function ask(system, user, schema) {
   const response = await api.beta.messages.create({
     model: MODEL,
     max_tokens: 16000,
+    inference_geo: GEO,
     // If a safety check declines the request, Anthropic's recommended
     // fallback model answers it instead.
     betas: ['server-side-fallback-2026-07-01'],

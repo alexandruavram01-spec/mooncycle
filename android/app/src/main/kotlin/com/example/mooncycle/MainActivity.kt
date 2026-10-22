@@ -2,6 +2,6 @@ package com.example.mooncycle
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
-// The health plugin launches the Health Connect permission screen through the
-// Activity Result API, which needs a FragmentActivity.
+// local_auth (fingerprint, face or PIN before deleting the account) shows the
+// phone's prompt as a fragment, which needs a FragmentActivity.
 class MainActivity : FlutterFragmentActivity()

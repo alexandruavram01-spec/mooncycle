@@ -18,7 +18,6 @@ import '../l10n/partner_messages.dart';
 import '../legal.dart';
 import '../services/account_service.dart';
 import '../services/api_client.dart';
-import '../services/health_service.dart';
 import '../services/her_note_service.dart';
 import '../services/notification_service.dart';
 import '../services/partner_link_service.dart';
@@ -36,7 +35,6 @@ CycleEngine _engineFor(UserProfile profile) => CycleEngine(
     );
 final insightsEngineProvider = Provider((_) => const InsightsEngine());
 final settingsStoreProvider = Provider((_) => SettingsStore());
-final healthServiceProvider = Provider((_) => HealthService());
 final notificationServiceProvider =
     Provider((_) => NotificationService.create());
 
@@ -77,29 +75,6 @@ class LogsNotifier extends AsyncNotifier<List<DayLog>> {
     }
     state = AsyncData(await repo.all());
     await _rescheduleReminders();
-  }
-
-  /// Pulls wearable data and folds it into existing logs.
-  Future<int> importFromHealthConnect({int daysBack = 30}) async {
-    final health = ref.read(healthServiceProvider);
-    final repo = await ref.read(logRepositoryProvider.future);
-    final today = DayKey.today();
-    final data = await health.fetchRange(
-      from: today.addDays(-daysBack),
-      to: today,
-    );
-
-    var imported = 0;
-    for (final entry in data.entries) {
-      final existing = await repo.forDay(entry.key) ?? DayLog(date: entry.key);
-      final merged = HealthService.merge(existing, entry.value);
-      if (!merged.isEmpty) {
-        await repo.save(merged);
-        imported++;
-      }
-    }
-    state = AsyncData(await repo.all());
-    return imported;
   }
 
   Future<void> _rescheduleReminders() async {

@@ -26,6 +26,39 @@ final _sharedSnapshotProvider = FutureProvider.autoDispose<SharedSnapshot?>(
   (ref) => ref.watch(partnerLinkServiceProvider).fetchShared(),
 );
 
+/// Fetches her summary again whenever his app comes back to the front. His
+/// phone never stores what she shares, so once she disconnects him it is
+/// gone from his screen the next time he looks, without him refreshing.
+class _RefreshOnResume extends ConsumerStatefulWidget {
+  const _RefreshOnResume({required this.child});
+
+  final Widget child;
+
+  @override
+  ConsumerState<_RefreshOnResume> createState() => _RefreshOnResumeState();
+}
+
+class _RefreshOnResumeState extends ConsumerState<_RefreshOnResume> {
+  late final AppLifecycleListener _listener;
+
+  @override
+  void initState() {
+    super.initState();
+    _listener = AppLifecycleListener(
+      onResume: () => ref.invalidate(_sharedSnapshotProvider),
+    );
+  }
+
+  @override
+  void dispose() {
+    _listener.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+
 /// The partner's side: enter her code once, then see what she shares.
 ///
 /// This is the whole app for someone who chose the partner role, and a pushed
@@ -45,7 +78,9 @@ class PartnerViewScreen extends ConsumerWidget {
     // this screen from her Partner tab.
     return Theme(
       data: nightTheme,
-      child: _buildScaffold(context, ref, joined, profile, name),
+      child: _RefreshOnResume(
+        child: _buildScaffold(context, ref, joined, profile, name),
+      ),
     );
   }
 

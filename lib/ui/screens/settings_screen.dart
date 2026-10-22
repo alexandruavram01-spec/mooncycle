@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -216,32 +215,6 @@ class SettingsScreen extends ConsumerWidget {
             icon: const Icon(Icons.notifications_outlined),
             label: const Text('Grant notification permission'),
           ),
-          // Health Connect exists on Android only.
-          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
-            const Divider(height: 40),
-            Text('Wearables', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text(
-              'MoonCycle reads sleep, resting heart rate, HRV and temperature '
-              'through Health Connect, which already aggregates Fitbit, '
-              'Garmin, Samsung Health, Oura and Whoop.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-            FilledButton.tonalIcon(
-              onPressed: () => _connectHealth(context, ref),
-              icon: const Icon(Icons.watch_outlined),
-              label: const Text('Connect Health Connect'),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () => _importHealth(context, ref),
-              icon: const Icon(Icons.download_outlined),
-              label: const Text('Import last 30 days'),
-            ),
-          ],
           const Divider(height: 40),
           Text('Your data', style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
@@ -359,48 +332,5 @@ class SettingsScreen extends ConsumerWidget {
           onTap: notifier.restoreHidden,
         ),
     ];
-  }
-
-  Future<void> _connectHealth(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final health = ref.read(healthServiceProvider);
-
-    // The health plugin has no desktop implementation, so this throws rather
-    // than returning false when the app is run on Windows for UI work.
-    try {
-      await health.configure();
-      final available = await health.isAvailable();
-      if (!available) {
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Health Connect is not installed on this device.'),
-          ),
-        );
-        return;
-      }
-      final granted = await health.requestPermissions();
-      messenger.showSnackBar(
-        SnackBar(content: Text(granted ? 'Connected' : 'Permission denied')),
-      );
-    } catch (_) {
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Health Connect is only available on Android.'),
-        ),
-      );
-    }
-  }
-
-  Future<void> _importHealth(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    try {
-      final count =
-          await ref.read(logsProvider.notifier).importFromHealthConnect();
-      messenger.showSnackBar(
-        SnackBar(content: Text('Imported $count days')),
-      );
-    } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Import failed: $e')));
-    }
   }
 }

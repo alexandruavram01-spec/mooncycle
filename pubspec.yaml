@@ -27,10 +27,6 @@ dependencies:
   fl_chart: ^0.68.0
   flutter_local_notifications: ^17.2.1
   timezone: ^0.9.4
-  # 10.x used the v1 Android embedding (Registrar), which current Flutter
-  # no longer ships — it fails to compile.
-  health: ^13.0.0
-  permission_handler: ^11.3.1
   # Opens the NHS source links on her insight cards, and the phone's dialler
   # from "Get help now".
   url_launcher: ^6.3.1

@@ -37,12 +37,36 @@ test group uses MoonCycle.
   (last section).
 - **Check the "Pulled" list** in the tip library for anything flagged.
 
+## Privacy (from the DPIA, revised 22 October 2026)
+
+The DPIA (shared doc "MoonCycle data protection impact assessment") is not
+approved until its launch controls are verified. Its open actions, besides
+those listed elsewhere here:
+
+- **Breach procedure and breach log**: record every breach; report to the
+  ICO within 72 hours of becoming aware unless unlikely to risk people's
+  rights; tell people directly when the risk to them is high.
+- **Data requests by email**: a written procedure and a request log.
+- **Phone backups**: check on real phones what iCloud and Google backups
+  contain (Android backup is on by default: no `allowBackup` setting in the
+  manifest), then decide whether to exclude her log.
+- **Her phone's screen**: reminders without health wording on the lock
+  screen, content hidden in the app switcher, an optional app lock.
+- **Sharing screen**: say that what her partner has already seen cannot be
+  taken back; decide on domestic abuse support on Get help now.
+- **"I am 18 or over"** confirmation at sign-up.
+- **Server logs** kept no longer than 14 days: check log rotation.
+- **Testers**: a short privacy questionnaire.
+
 ## AI-written notes (opt-in, at launch)
 
 - **Anthropic account in the company's name**, its commercial terms and data
-  processing agreement accepted. Confirm in those terms how transfers from
-  the UK are covered (the UK addendum to the standard contractual clauses),
-  as `web/privacy.html` says. Ask Anthropic whether zero data retention is
+  processing agreement accepted. Transfers: check the Data Privacy Framework
+  List (dataprivacyframework.gov) for an active UK Extension certification;
+  if there is none, record a transfer risk assessment and rely on the
+  safeguards in Anthropic's data processing terms. Review its sub-processors.
+  Notes run with `inference_geo: "us"` (server/her-notes.js), so data is
+  stored and processed only in the United States. Ask Anthropic whether zero data retention is
   available; if it is, update the privacy policy and the AI notes screen
   (both say "deleted within 30 days").
 - **Data protection impact assessment** for sending health summaries to
