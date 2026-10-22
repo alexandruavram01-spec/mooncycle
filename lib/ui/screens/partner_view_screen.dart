@@ -118,8 +118,6 @@ class PartnerViewScreen extends ConsumerWidget {
                   );
                 } else if (value == 'account') {
                   showAccountSheet(context);
-                } else if (value == 'restart') {
-                  confirmStartOver(context, ref);
                 } else if (value == 'library') {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
@@ -149,11 +147,6 @@ class PartnerViewScreen extends ConsumerWidget {
                 ),
                 const PopupMenuItem(value: 'language', child: Text('Language')),
                 const PopupMenuItem(value: 'account', child: Text('Account')),
-                if (ref.read(isTestAccountProvider))
-                  const PopupMenuItem(
-                    value: 'restart',
-                    child: Text('Start over'),
-                  ),
                 if (ref.read(isEditorProvider).valueOrNull == true)
                   const PopupMenuItem(
                     value: 'library',

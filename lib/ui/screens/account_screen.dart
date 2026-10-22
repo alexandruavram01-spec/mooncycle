@@ -42,13 +42,16 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final email = _email.text.trim();
     final password = _password.text;
 
-    // Only sign-up insists on an email address: the server also has a few
-    // test accounts with plain names (see BEFORE_LAUNCH.md).
     String? problem;
-    if (email.isEmpty || (_creating && !email.contains('@'))) {
+    if (email.isEmpty || !email.contains('@')) {
       problem = 'Enter your email address.';
     } else if (_creating && password.length < _minPasswordLength) {
       problem = 'Use a password of at least $_minPasswordLength characters.';
+    } else if (_creating && !RegExp('[A-Z]').hasMatch(password)) {
+      problem = 'Add at least one capital letter to your password.';
+    } else if (_creating && !RegExp(r'[^A-Za-z0-9\s]').hasMatch(password)) {
+      problem = 'Add at least one special character to your password, '
+          'such as ! # or ?.';
     } else if (password.isEmpty) {
       problem = 'Enter your password.';
     } else if (_creating && !(_terms && _health)) {
@@ -132,6 +135,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ],
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    helperText: _creating
+                        ? 'At least $_minPasswordLength characters, with a '
+                            'capital letter and a special character'
+                        : null,
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       tooltip: _obscure ? 'Show password' : 'Hide password',

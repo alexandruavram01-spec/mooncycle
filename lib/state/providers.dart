@@ -321,13 +321,6 @@ final partnerTipReminderProvider = Provider<void>((ref) {
       .catchError((Object _) {});
 });
 
-/// The test accounts are the only ones whose name is not an email address
-/// (see BEFORE_LAUNCH.md). They get a "Start over" button.
-final isTestAccountProvider = Provider<bool>((ref) {
-  final name = ref.watch(sessionProvider).valueOrNull;
-  return name != null && !name.contains('@');
-});
-
 final tipLibraryServiceProvider =
     Provider((ref) => TipLibraryService(ref.watch(apiClientProvider)));
 
@@ -438,12 +431,10 @@ final partnerSyncProvider = Provider<void>((ref) {
 
 // ---- Insight cards for her ---------------------------------------------------
 
-/// Only the test accounts see the cards until our own check against the NHS
-/// pages is done (BEFORE_LAUNCH.md); then this becomes "trackers only".
+/// Everyone tracking her own cycle sees the cards (switched on for everyone
+/// on 22 October 2026; they were for the test accounts only before).
 final herInsightsEnabledProvider = Provider<bool>(
-  (ref) =>
-      ref.watch(isTestAccountProvider) &&
-      ref.watch(profileProvider).role == AppRole.tracker,
+  (ref) => ref.watch(profileProvider).role == AppRole.tracker,
 );
 
 /// Which cards were shown when, which she hid, and today's choice. On the
@@ -496,6 +487,21 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
       return;
     }
     await save(now.copyWith(pickNotes: {...now.pickNotes, pick.id: note}));
+  }
+
+  /// Reports today's AI-written note for [cardId], then shows the card's
+  /// standard wording for the rest of the day (an empty note means none).
+  Future<bool> reportNote(String cardId) async {
+    final note = _current.pickNotes[cardId];
+    if (note == null || note.isEmpty) return false;
+    final sent = await ref
+        .read(herNoteServiceProvider)
+        .report(card: cardId, note: note);
+    if (sent) {
+      final now = _current;
+      await save(now.copyWith(pickNotes: {...now.pickNotes, cardId: ''}));
+    }
+    return sent;
   }
 
   Future<void> clear() async {

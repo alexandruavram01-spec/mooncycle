@@ -1,6 +1,7 @@
 MOONCYCLE — INSIGHT CARDS FOR HER — en-GB
-Built 21 October 2026 — shown to the test accounts only until our own NHS check
-(last section) is done. No clinician review: decided 21 October 2026.
+Built 21 October 2026 — on for everyone tracking her cycle since 22 October
+2026; our own NHS check (last section) still to do. No clinician review:
+decided 21 October 2026.
 
 Source of truth for the wording, copied word for word into
 lib/l10n/her_insights_en_gb.dart (change both together):
@@ -159,5 +160,5 @@ BEFORE THE CARDS GO BEYOND THE TEST ACCOUNTS
    stronger than the page says, every link working. Note the date checked.
    (No clinician review: decided 21 October 2026.)
 2. The International edition, with urgent advice adapted for outside the UK.
-3. Then switch herInsightsEnabledProvider in lib/state/providers.dart from
-   "test accounts" to "everyone tracking her cycle".
+3. Done 22 October 2026: herInsightsEnabledProvider in lib/state/providers.dart
+   now shows the cards to everyone tracking her cycle.

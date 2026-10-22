@@ -68,17 +68,6 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute<void>(builder: (_) => const GetHelpScreen()),
             ),
           ),
-          if (ref.watch(isTestAccountProvider))
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.restart_alt),
-              title: const Text('Start over'),
-              subtitle: const Text(
-                'Test accounts only. Clears this device and goes back to '
-                '"Who\'s this for?".',
-              ),
-              onTap: () => confirmStartOver(context, ref),
-            ),
           if (ref.watch(isEditorProvider).valueOrNull == true)
             ListTile(
               contentPadding: EdgeInsets.zero,

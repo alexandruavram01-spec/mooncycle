@@ -5,20 +5,11 @@ test group uses MoonCycle.
 
 ## Remove
 
-- **The four test accounts.** `server/server.js` creates `alex`, `sorana`,
-  `robert` and `oana` at start-up, all with the password `123456`. To remove
-  them:
-  1. Delete `TEST_USERS`, `TEST_PASSWORD` and `seedTestUsers` from
-     `server/server.js`, and the `.then(seedTestUsers)` line at the bottom.
-  2. Change `requireEmail: false` back to `true` in the `POST /api/session`
-     route, so sign-in only accepts email addresses again.
-  3. In `lib/ui/screens/account_screen.dart`, make the email check apply to
-     sign-in as well as sign-up.
-  4. Delete the accounts from the database (removing the code does not):
-     `DELETE FROM users WHERE email IN ('alex', 'sorana', 'robert', 'oana');`
-  5. The "Start over" button only shows for these accounts (any name without
-     an `@`), so it disappears with them. Remove `isTestAccountProvider` and
-     its two uses (Settings, the partner menu) if no longer wanted.
+- **The four test accounts** were removed on 22 October 2026: the server
+  deletes them at start-up and sign-in accepts email addresses only. For
+  Google and Apple's reviewers, create two review accounts in the app with
+  real email addresses and strong passwords, link them as partners, and give
+  the logins in Play Console ("App access") and App Store Connect.
 
 ## Tip library
 
@@ -29,12 +20,11 @@ test group uses MoonCycle.
   any tip that touches health, in both `content/partner-messages-en-GB.txt`
   and `content/partner-messages-en-INT.txt`: check each against the NHS
   pages, as for her cards. (No clinician review: decided 21 October 2026.)
-- **Insight cards for her are test-accounts only.** Before switching them on
-  for everyone (`herInsightsEnabledProvider` in `lib/state/providers.dart`):
-  our own check of every card, opening line and the "Get help now" page
-  against the NHS pages they cite, and an International edition with urgent
-  help adapted for outside the UK. See `content/her-insights-en-GB.txt`
-  (last section).
+- **Insight cards for her are on for everyone tracking her cycle** (since
+  22 October 2026). Still to do: our own check of every card, opening line
+  and the "Get help now" page against the NHS pages they cite, and an
+  International edition with urgent help adapted for outside the UK. See
+  `content/her-insights-en-GB.txt` (last section).
 - **Check the "Pulled" list** in the tip library for anything flagged.
 
 ## Privacy (from the DPIA, revised 22 October 2026)

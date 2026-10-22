@@ -589,6 +589,13 @@ const enGbHerInsights = HerInsightTexts(
     // of detailed warning signs: just where to turn.
     'signpost': "Not feeling well? Call 999 in an emergency, or 111 for urgent advice (in Northern Ireland, your GP).",
     'aiNote': 'Written for you by AI from this card, which is based on NHS information',
+    'reportNote': 'Report this note',
+    'reportNoteTitle': 'Report this note?',
+    'reportNoteBody': "The note goes to MoonCycle without your name or account, so we can improve the notes. You'll see this card's standard wording instead.",
+    'reportNoteDone': "Thanks, we've received your report.",
+    'reportNoteFailed': "The report couldn't be sent. Please try again later.",
+    'report': 'Report',
+    'cancel': 'Cancel',
     'earlierThanEstimate': '{n} days earlier than estimated',
     'laterThanEstimate': '{n} days later than estimated',
   },

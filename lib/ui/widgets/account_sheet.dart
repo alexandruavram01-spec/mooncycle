@@ -13,34 +13,6 @@ Future<void> showAccountSheet(BuildContext context) {
   );
 }
 
-/// Asks first, then takes a test account back to "Who's this for?" with its
-/// logs, quiz answers and partner connection cleared.
-Future<void> confirmStartOver(BuildContext context, WidgetRef ref) async {
-  final session = ref.read(sessionProvider.notifier);
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Start over?'),
-      content: const Text(
-        'This clears the logs, quiz answers and partner connection for this '
-        'account on this device, then goes back to the first question. The '
-        'account itself stays.',
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Start over'),
-        ),
-      ],
-    ),
-  );
-  if (confirmed == true) await session.startOver();
-}
-
 class _AccountSheet extends ConsumerWidget {
   const _AccountSheet();
 

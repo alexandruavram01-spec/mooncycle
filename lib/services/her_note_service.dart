@@ -25,4 +25,19 @@ class HerNoteService {
       return null;
     }
   }
+
+  /// Reports an AI-written note. Only the note and its card are sent, never
+  /// who she is. True when the server has it.
+  Future<bool> report({required String card, required String note}) async {
+    try {
+      final response = await _api.send(
+        'POST',
+        '/her-note/report',
+        body: {'card': card, 'note': note},
+      );
+      return response.statusCode == 200;
+    } on ApiException {
+      return false;
+    }
+  }
 }

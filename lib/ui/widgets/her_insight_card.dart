@@ -63,7 +63,10 @@ class HerInsightsSection extends ConsumerWidget {
               key: ValueKey(pick.id),
               pick: pick,
               texts: texts,
-              note: aiNotes ? memory.pickNotes[pick.id] : null,
+              // An empty note marks one she reported: the card shows instead.
+              note: aiNotes && (memory.pickNotes[pick.id]?.isNotEmpty ?? false)
+                  ? memory.pickNotes[pick.id]
+                  : null,
             ),
           ),
       ],
@@ -171,6 +174,19 @@ class _InsightCard extends ConsumerWidget {
                           child: Text(texts.ui['aiNote']!, style: muted),
                         ),
                       ],
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          foregroundColor: scheme.onSurfaceVariant,
+                          padding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: () => _report(context, memory),
+                        icon: const Icon(Icons.flag_outlined, size: 16),
+                        label: Text(texts.ui['reportNote']!),
+                      ),
                     ),
                   ] else ...[
                     if (opening != null) ...[
@@ -295,6 +311,40 @@ class _InsightCard extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// Reports this AI-written note from inside the app, after asking.
+  Future<void> _report(
+    BuildContext context,
+    InsightMemoryNotifier memory,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(texts.ui['reportNoteTitle']!),
+        content: Text(texts.ui['reportNoteBody']!),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(texts.ui['cancel']!),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(texts.ui['report']!),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final sent = await memory.reportNote(pick.id);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          texts.ui[sent ? 'reportNoteDone' : 'reportNoteFailed']!,
         ),
       ),
     );

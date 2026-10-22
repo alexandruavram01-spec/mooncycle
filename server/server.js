@@ -56,13 +56,6 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '')
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
-// TEST ACCOUNTS — REMOVE BEFORE REAL USERS. See BEFORE_LAUNCH.md.
-// Created at start-up so the testers can sign in without registering. The
-// names are not email addresses and the password is far below the minimum a
-// real sign-up must meet, so anyone who guesses a name gets in.
-const TEST_USERS = ['alex', 'sorana', 'robert', 'oana'];
-const TEST_PASSWORD = '123456';
-
 // The cost settings are stored inside each hash, so they can be raised later
 // without locking out anyone whose password was hashed with the old ones.
 const SCRYPT = { N: 32768, r: 8, p: 1 };
@@ -112,6 +105,10 @@ const SCHEMA = `
   ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_accepted_at timestamptz;
   ALTER TABLE users ADD COLUMN IF NOT EXISTS health_consent_at timestamptz;
 
+  -- The four test accounts used before launch (plain names, a shared
+  -- password) are gone: their rows, sessions and pairings are deleted.
+  DELETE FROM users WHERE email IN ('alex', 'sorana', 'robert', 'oana');
+
   -- Her separate, explicit consent to AI-written notes: a summary of her day
   -- goes to Anthropic to write them. Null means off.
   ALTER TABLE users ADD COLUMN IF NOT EXISTS ai_notes_consent_at timestamptz;
@@ -145,6 +142,15 @@ const SCHEMA = `
   CREATE TABLE IF NOT EXISTS tip_pulled (
     code      text PRIMARY KEY,
     pulled_at timestamptz NOT NULL DEFAULT now()
+  );
+
+  -- AI notes someone reported, to improve the notes: the note and its card
+  -- only, never who reported it. Deleted after 90 days.
+  CREATE TABLE IF NOT EXISTS ai_note_reports (
+    id          bigserial PRIMARY KEY,
+    card        text NOT NULL,
+    note        text NOT NULL,
+    reported_at timestamptz NOT NULL DEFAULT now()
   );
 `;
 
@@ -219,26 +225,14 @@ function readConsent(body) {
   return termsVersion;
 }
 
-// Sign-up insists on an email address. Sign-in takes whatever name the account
-// has, which is what lets the test accounts in.
-function readCredentials(body, { requireEmail }) {
+// Every account, for sign-up and sign-in, is an email address.
+function readCredentials(body) {
   const email = String(body.email || '').trim().toLowerCase();
   const password = String(body.password || '');
-  const valid = requireEmail ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) : email.length > 0;
-  if (!valid || email.length > 254) throw httpError(400, 'Enter a valid email address.');
-  return { email, password };
-}
-
-async function seedTestUsers() {
-  for (const name of TEST_USERS) {
-    const { rowCount } = await pool.query('SELECT 1 FROM users WHERE email = $1', [name]);
-    if (rowCount > 0) continue;
-    await pool.query(
-      `INSERT INTO users (id, email, password_hash) VALUES ($1, $2, $3)
-       ON CONFLICT (email) DO NOTHING`,
-      [crypto.randomUUID(), name, await hashPassword(TEST_PASSWORD)],
-    );
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    throw httpError(400, 'Enter a valid email address.');
   }
+  return { email, password };
 }
 
 async function requireAdmin(req) {
@@ -295,6 +289,7 @@ async function authenticate(req) {
 // old (an ask goes with his reply to it, an offer with her answer).
 const CLEAN_UPS = [
   ['sign-ins', `DELETE FROM sessions WHERE last_used_at < now() - interval '${SESSION_IDLE_DAYS} days'`],
+  ['note reports', "DELETE FROM ai_note_reports WHERE reported_at < now() - interval '90 days'"],
   ['pairing codes', 'UPDATE pairings SET code = NULL, code_expires_at = NULL WHERE code_expires_at < now()'],
   ['asks', `UPDATE pairings SET ask = NULL, ask_at = NULL, reaction = NULL, reaction_at = NULL
              WHERE ask_at <= ${FRESH}`],
@@ -335,9 +330,13 @@ const routes = {
   'POST /api/account': async (req) => {
     throttle(`signup:${clientIp(req)}`, 10, 60 * 60 * 1000);
     const body = await readJson(req);
-    const { email, password } = readCredentials(body, { requireEmail: true });
+    const { email, password } = readCredentials(body);
     if (password.length < MIN_PASSWORD_LENGTH || password.length > MAX_PASSWORD_LENGTH) {
       throw httpError(400, `Use a password of at least ${MIN_PASSWORD_LENGTH} characters.`);
+    }
+    // The app checks the same before sending; this holds for any client.
+    if (!/[A-Z]/.test(password) || !/[^A-Za-z0-9\s]/.test(password)) {
+      throw httpError(400, 'Use at least one capital letter and one special character, such as ! # or ?.');
     }
     const termsVersion = readConsent(body);
     const id = crypto.randomUUID();
@@ -390,6 +389,31 @@ const routes = {
   // consent; a few a day at most. `note` is null whenever the note cannot be
   // written or fails a check, and her phone then shows the card as it is.
   // Neither her summary nor the note is stored or logged.
+  // She reports an AI-written note from inside the app (a Google Play rule
+  // for AI-generated content). Only the note and its card are kept, without
+  // her account, for 90 days.
+  'POST /api/her-note/report': async (req) => {
+    const { userId } = await authenticate(req);
+    throttle(`note-report:${userId}`, 10, 24 * 60 * 60 * 1000);
+    const body = await readJson(req);
+    const card = String(body.card || '');
+    const note = String(body.note || '').trim();
+    if (!/^(?:[A-Z]{1,3}\d{2}b?|NEW\d{2})$/.test(card)) throw httpError(400, 'unknown card');
+    if (note.length === 0 || note.length > 800) throw httpError(400, 'bad note');
+    await pool.query('INSERT INTO ai_note_reports (card, note) VALUES ($1, $2)', [card, note]);
+    return { ok: true };
+  },
+
+  // Editors read the reports, newest first.
+  'GET /api/admin/note-reports': async (req) => {
+    await requireAdmin(req);
+    const { rows } = await pool.query(
+      `SELECT card, note, reported_at AS "reportedAt"
+         FROM ai_note_reports ORDER BY reported_at DESC LIMIT 200`,
+    );
+    return { reports: rows };
+  },
+
   'POST /api/her-note': async (req) => {
     const { userId } = await authenticate(req);
     const { rows } = await pool.query(
@@ -500,7 +524,7 @@ const routes = {
   },
 
   'POST /api/session': async (req) => {
-    const { email, password } = readCredentials(await readJson(req), { requireEmail: false });
+    const { email, password } = readCredentials(await readJson(req));
     throttle(`signin:${clientIp(req)}`, 20, 10 * 60 * 1000);
     throttle(`signin:${email}`, 10, 15 * 60 * 1000);
     const { rows } = await pool.query('SELECT id, password_hash FROM users WHERE email = $1', [email]);
@@ -719,7 +743,6 @@ const server = http.createServer(async (req, res) => {
 });
 
 pool.query(SCHEMA)
-  .then(seedTestUsers)
   .then(() => {
     removeExpiredData();
     server.listen(PORT, '127.0.0.1', () => console.log(`mooncycle-api listening on 127.0.0.1:${PORT}`));
