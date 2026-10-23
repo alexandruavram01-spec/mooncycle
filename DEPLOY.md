@@ -27,8 +27,10 @@ As root on the server:
 
 1. The Anthropic SDK, beside `pg`:
    ```
-   cd /opt/mooncycle-api && npm install @anthropic-ai/sdk@^1
+   cd /opt/mooncycle-api && npm install @anthropic-ai/sdk@1.0.0
    ```
+   Pinned: on 23 October 2026 npm listed 1.2.0 but its download returned
+   404. 1.0.0 is the version the agent prototype was tested with.
 2. The API key, from the Anthropic account in the company's name. Type it on
    the server only, never in chat or the repository:
    ```
