@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart'
-    show TargetPlatform, defaultTargetPlatform, kIsWeb;
+    show TargetPlatform, debugPrint, defaultTargetPlatform, kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'api_client.dart';
@@ -44,8 +44,10 @@ class GoogleAccount {
       if (token == null) throw const ApiException(_failed);
       return token;
     } on GoogleSignInException catch (e) {
+      debugPrint('Google sign-in: ${e.code.name} ${e.description ?? ''}');
       if (e.code == GoogleSignInExceptionCode.canceled) return null;
-      throw const ApiException(_failed);
+      // The code helps tell a setup problem from anything else.
+      throw ApiException('$_failed (${e.code.name})');
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/partner.dart';
 import '../domain/profile.dart';
+import 'account_storage.dart';
 
 class ReminderSettings {
   const ReminderSettings({
@@ -92,12 +93,21 @@ class AppSettings {
       );
 }
 
+/// One account's settings on this phone. With no account (nobody signed
+/// in) it holds the defaults and saves nothing.
 class SettingsStore {
-  static const _key = 'mooncycle.settings.v1';
+  SettingsStore(String? accountId)
+      : _key = accountId == null
+            ? null
+            : AccountStorage.key('mooncycle.settings.v1', accountId);
+
+  final String? _key;
 
   Future<AppSettings> load() async {
+    final key = _key;
+    if (key == null) return const AppSettings();
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key);
+    final raw = prefs.getString(key);
     if (raw == null) return const AppSettings();
     final j = jsonDecode(raw) as Map<String, Object?>;
     return AppSettings(
@@ -116,9 +126,11 @@ class SettingsStore {
   }
 
   Future<void> save(AppSettings settings) async {
+    final key = _key;
+    if (key == null) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-      _key,
+      key,
       jsonEncode({
         'reminders': settings.reminders.toJson(),
         'sharing': settings.sharing.toJson(),

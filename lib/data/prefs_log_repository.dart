@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/day_key.dart';
 import '../domain/models.dart';
+import 'account_storage.dart';
 import 'log_repository.dart';
 
 /// Storage for platforms with no SQLite implementation — currently web, where
@@ -13,14 +14,16 @@ import 'log_repository.dart';
 /// SQLite columns and data could be migrated between the two if web ever
 /// became a real target rather than a preview surface.
 class PrefsLogRepository implements LogRepository {
-  PrefsLogRepository(this._prefs);
+  PrefsLogRepository(this._prefs, String accountId)
+      : _key = AccountStorage.key('mooncycle.logs.v1', accountId);
 
-  static const _key = 'mooncycle.logs.v1';
+  /// One account's logs.
+  final String _key;
 
   final SharedPreferences _prefs;
 
-  static Future<PrefsLogRepository> open() async =>
-      PrefsLogRepository(await SharedPreferences.getInstance());
+  static Future<PrefsLogRepository> open(String accountId) async =>
+      PrefsLogRepository(await SharedPreferences.getInstance(), accountId);
 
   Map<String, DayLog> _read() {
     final raw = _prefs.getString(_key);

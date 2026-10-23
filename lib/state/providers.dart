@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/account_storage.dart';
 import '../data/insight_memory_store.dart';
 import '../data/log_repository.dart';
 import '../data/repository_factory.dart';
@@ -35,14 +36,31 @@ CycleEngine _engineFor(UserProfile profile) => CycleEngine(
       defaultPeriodLength: profile.periodLength ?? 5,
     );
 final insightsEngineProvider = Provider((_) => const InsightsEngine());
-final settingsStoreProvider = Provider((_) => SettingsStore());
+/// The signed-in account's name for storage on this phone, once data stored
+/// before accounts were kept apart has been handed over. Null while nobody is
+/// signed in. Logs, settings and card memory all follow it, so signing in as
+/// someone else never shows the previous person's data.
+final accountStorageProvider = FutureProvider<String?>((ref) async {
+  final email = ref.watch(sessionProvider.select((s) => s.valueOrNull));
+  if (email == null) return null;
+  final id = AccountStorage.idFor(email);
+  await AccountStorage.claimLegacy(id);
+  return id;
+});
+
+final settingsStoreProvider = FutureProvider<SettingsStore>(
+  (ref) async => SettingsStore(await ref.watch(accountStorageProvider.future)),
+);
 final notificationServiceProvider =
     Provider((_) => NotificationService.create());
 
 /// SQLite on device, browser storage on web. Overridden in tests with
 /// [InMemoryLogRepository].
-final logRepositoryProvider =
-    FutureProvider<LogRepository>((ref) => createLogRepository());
+final logRepositoryProvider = FutureProvider<LogRepository>((ref) async {
+  final account = await ref.watch(accountStorageProvider.future);
+  if (account == null) return InMemoryLogRepository();
+  return createLogRepository(account);
+});
 
 /// The single source of truth for logged days. Every screen reads from here,
 /// so a change made in the log sheet is instantly reflected in the calendar,
@@ -51,7 +69,11 @@ class LogsNotifier extends AsyncNotifier<List<DayLog>> {
   @override
   Future<List<DayLog>> build() async {
     final repo = await ref.watch(logRepositoryProvider.future);
-    return repo.all();
+    final logs = await repo.all();
+    // Her reminders, for whichever account just opened (runs once the logs
+    // are in place).
+    Future(_rescheduleReminders);
+    return logs;
   }
 
   Future<void> save(DayLog log) async {
@@ -140,12 +162,13 @@ final cycleLengthHistoryProvider = Provider<List<int>>((ref) {
 
 class SettingsNotifier extends AsyncNotifier<AppSettings> {
   @override
-  Future<AppSettings> build() => ref.watch(settingsStoreProvider).load();
+  Future<AppSettings> build() async =>
+      (await ref.watch(settingsStoreProvider.future)).load();
 
   /// Not named `update` — `AsyncNotifier` already defines that with an
   /// incompatible signature.
   Future<void> replaceAll(AppSettings next) async {
-    await ref.read(settingsStoreProvider).save(next);
+    await (await ref.read(settingsStoreProvider.future)).save(next);
     state = AsyncData(next);
 
     final logs = ref.read(logsProvider).valueOrNull;
@@ -234,19 +257,26 @@ class SessionNotifier extends AsyncNotifier<String?> {
   }
 
   /// Continue with Google. [consent]: she ticked both boxes on the sign-up
-  /// screen, so a new account records it. Nothing changes if she closes
-  /// Google's account picker.
-  Future<void> signInWithGoogle({required bool consent}) async {
+  /// screen, so a new account records it. False if Google's account picker
+  /// closed before she was signed in.
+  Future<bool> signInWithGoogle({required bool consent}) async {
     final email = await ref
         .read(accountServiceProvider)
         .signInWithGoogle(termsVersion: consent ? Legal.version : null);
-    if (email != null) state = AsyncData(email);
+    if (email == null) return false;
+    state = AsyncData(email);
+    return true;
   }
 
-  /// Logs and quiz answers stay on the device; only the session ends.
+  /// Her logs and quiz answers stay on the device, kept for when she signs
+  /// back in; nobody else who signs in on this phone sees them. Her
+  /// reminders stop until then.
   Future<void> signOut() async {
     await ref.read(accountServiceProvider).signOut();
     await ref.read(partnerLinkServiceProvider).forgetLocal();
+    await _remindersSafely(
+      () => ref.read(notificationServiceProvider).cancelAll(),
+    );
     state = const AsyncData(null);
   }
 
@@ -276,13 +306,19 @@ class SessionNotifier extends AsyncNotifier<String?> {
   /// [password] and [googleIdToken] are null when the phone's own lock
   /// confirmed it.
   Future<void> deleteAccount({String? password, String? googleIdToken}) async {
+    final account = await ref.read(accountStorageProvider.future);
     await ref
         .read(accountServiceProvider)
         .deleteAccount(password: password, googleIdToken: googleIdToken);
     await ref.read(partnerLinkServiceProvider).forgetLocal();
-    await ref.read(logsProvider.notifier).eraseAll();
-    await ref.read(insightMemoryProvider.notifier).clear();
-    await ref.read(settingsProvider.notifier).replaceAll(const AppSettings());
+    await _remindersSafely(
+      () => ref.read(notificationServiceProvider).cancelAll(),
+    );
+    if (account != null) {
+      // The whole database file and every stored key of this account.
+      await deleteLogStore(account);
+      await AccountStorage.eraseKeys(account);
+    }
     state = const AsyncData(null);
   }
 }
@@ -470,10 +506,13 @@ final herInsightsEnabledProvider = Provider<bool>(
 /// Which cards were shown when, which she hid, and today's choice. On the
 /// device only.
 class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
-  final _store = InsightMemoryStore();
+  InsightMemoryStore _store = InsightMemoryStore(null);
 
   @override
-  Future<InsightMemory> build() => _store.load();
+  Future<InsightMemory> build() async {
+    _store = InsightMemoryStore(await ref.watch(accountStorageProvider.future));
+    return _store.load();
+  }
 
   Future<void> save(InsightMemory memory) async {
     state = AsyncData(memory);

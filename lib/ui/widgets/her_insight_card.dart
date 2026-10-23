@@ -6,6 +6,7 @@ import '../../domain/enums.dart';
 import '../../domain/her_insights.dart';
 import '../../l10n/her_insights.dart';
 import '../../state/providers.dart';
+import '../screens/ai_notes_screen.dart';
 import '../screens/get_help_screen.dart';
 import 'links.dart';
 
@@ -67,6 +68,21 @@ class HerInsightsSection extends ConsumerWidget {
               note: aiNotes && (memory.pickNotes[pick.id]?.isNotEmpty ?? false)
                   ? memory.pickNotes[pick.id]
                   : null,
+            ),
+          ),
+        // Offered where the notes appear, not only in Settings. Opens the
+        // same explanation and consent screen; nothing is ticked for her.
+        if (!aiNotes && picks.any(aiNoteEligible))
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const AiNotesScreen(),
+                ),
+              ),
+              icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+              label: const Text('Have your card written around your log (AI)'),
             ),
           ),
       ],

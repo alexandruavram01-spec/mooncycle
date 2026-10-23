@@ -256,16 +256,31 @@ class _NextPeriodCard extends StatelessWidget {
                   label: 'Period',
                   value: '${status.typicalPeriodLength}d',
                 ),
+                // Variation needs two full cycles to mean anything.
                 _Stat(
                   label: 'Variation',
-                  value: '±${status.cycleLengthVariation.toStringAsFixed(1)}d',
+                  value: status.completedCycles < 2
+                      ? '—'
+                      : '±${status.cycleLengthVariation.toStringAsFixed(1)}d',
                 ),
                 _Stat(
                   label: 'Cycles',
-                  value: '${status.completedCycles}',
+                  value: status.completedCycles == 0
+                      ? '—'
+                      : '${status.completedCycles}',
                 ),
               ],
             ),
+            if (status.completedCycles == 0) ...[
+              const SizedBox(height: 10),
+              Text(
+                'Estimated from your quiz answers until you have logged a '
+                'full cycle.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -306,7 +321,7 @@ class _ConfidenceChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (confidence) {
-      PredictionConfidence.none => ('No data', Colors.grey),
+      PredictionConfidence.none => ('First estimate', Colors.grey),
       PredictionConfidence.low => ('Low confidence', Colors.orange),
       PredictionConfidence.medium => ('Fair confidence', Colors.amber),
       PredictionConfidence.high => ('High confidence', Colors.green),

@@ -3,14 +3,23 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/her_insights.dart';
+import 'account_storage.dart';
 
-/// Keeps [InsightMemory] on the device. Never sent anywhere.
+/// Keeps one account's [InsightMemory] on the device. Never sent anywhere.
+/// With no account it holds nothing.
 class InsightMemoryStore {
-  static const _key = 'mooncycle.insights.v1';
+  InsightMemoryStore(String? accountId)
+      : _key = accountId == null
+            ? null
+            : AccountStorage.key('mooncycle.insights.v1', accountId);
+
+  final String? _key;
 
   Future<InsightMemory> load() async {
+    final key = _key;
+    if (key == null) return const InsightMemory();
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key);
+    final raw = prefs.getString(key);
     if (raw == null) return const InsightMemory();
     try {
       return InsightMemory.fromJson(
@@ -22,12 +31,16 @@ class InsightMemoryStore {
   }
 
   Future<void> save(InsightMemory memory) async {
+    final key = _key;
+    if (key == null) return;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, jsonEncode(memory.toJson()));
+    await prefs.setString(key, jsonEncode(memory.toJson()));
   }
 
   Future<void> clear() async {
+    final key = _key;
+    if (key == null) return;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_key);
+    await prefs.remove(key);
   }
 }

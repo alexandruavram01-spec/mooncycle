@@ -27,6 +27,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   bool _obscure = true;
   bool _busy = false;
   String? _error;
+  String? _googleError;
 
   /// The two consent boxes on sign-up. Never ticked in advance.
   bool _terms = false;
@@ -85,25 +86,32 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     }
   }
 
-  /// On the sign-up screen only after both boxes are ticked, so the new
-  /// account records her consent. Signing in, a first-time Google account is
-  /// made too, and the consent screen comes next.
+  /// Works from both screens. If she already ticked both boxes on the
+  /// sign-up screen, a new account records her consent; otherwise the
+  /// consent screen comes next, before anything else.
   Future<void> _google() async {
     setState(() {
       _busy = true;
       _error = null;
+      _googleError = null;
     });
     try {
-      await ref
+      final signedIn = await ref
           .read(sessionProvider.notifier)
-          .signInWithGoogle(consent: _creating);
-      // Success replaces this screen; a closed picker leaves it as it was.
-      if (mounted) setState(() => _busy = false);
+          .signInWithGoogle(consent: _creating && _terms && _health);
+      // Success replaces this screen.
+      if (mounted && !signedIn) {
+        setState(() {
+          _busy = false;
+          _googleError = 'Google sign-in was closed before it finished. '
+              'Try again, or use your email and password.';
+        });
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
           _busy = false;
-          _error = '$e';
+          _googleError = '$e';
         });
       }
     }
@@ -136,6 +144,28 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
+                if (GoogleAccount.available) ...[
+                  _GoogleButton(onPressed: _busy ? null : _google),
+                  if (_googleError case final message?) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      message,
+                      style: TextStyle(color: theme.colorScheme.error),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text('or use your email', style: muted),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
                 TextField(
                   controller: _email,
                   enabled: !_busy,
@@ -164,6 +194,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                         ? 'At least $_minPasswordLength characters, with a '
                             'capital letter and a special character'
                         : null,
+                    helperMaxLines: 2,
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       tooltip: _obscure ? 'Show password' : 'Hide password',
@@ -220,30 +251,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             : 'Sign in',
                   ),
                 ),
-                if (GoogleAccount.available) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('or', style: muted),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed:
-                        _busy || (_creating && !(_terms && _health))
-                            ? null
-                            : _google,
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                    ),
-                    child: const Text('Continue with Google'),
-                  ),
-                ],
                 const SizedBox(height: 4),
                 TextButton(
                   onPressed: _busy
@@ -311,4 +318,75 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       ),
     );
   }
+}
+
+/// Google's sign-in button: white, Google's "G" and "Continue with Google",
+/// full width, as its branding guidelines describe.
+class _GoogleButton extends StatelessWidget {
+  const _GoogleButton({required this.onPressed});
+
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(54),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF1F1F1F),
+        side: const BorderSide(color: Color(0xFF747775)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: CustomPaint(painter: _GoogleG()),
+          ),
+          SizedBox(width: 12),
+          Text('Continue with Google'),
+        ],
+      ),
+    );
+  }
+}
+
+/// Google's four-colour "G", drawn so no image file is needed.
+class _GoogleG extends CustomPainter {
+  const _GoogleG();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final stroke = size.width * 0.2;
+    final rect = Rect.fromCircle(
+      center: size.center(Offset.zero),
+      radius: (size.width - stroke) / 2,
+    );
+    Paint arc(int colour) => Paint()
+      ..color = Color(colour)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke;
+    double rad(double degrees) => degrees * 3.141592653589793 / 180;
+    // Clockwise from the bar at three o'clock; the gap is at the top right.
+    canvas.drawArc(rect, rad(0), rad(50), false, arc(0xFF4285F4));
+    canvas.drawArc(rect, rad(50), rad(90), false, arc(0xFF34A853));
+    canvas.drawArc(rect, rad(140), rad(75), false, arc(0xFFFBBC05));
+    canvas.drawArc(rect, rad(215), rad(100), false, arc(0xFFEA4335));
+    canvas.drawRect(
+      Rect.fromLTRB(
+        size.width / 2,
+        size.height / 2 - stroke / 2,
+        size.width,
+        size.height / 2 + stroke / 2,
+      ),
+      Paint()..color = const Color(0xFF4285F4),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

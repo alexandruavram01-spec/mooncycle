@@ -21,3 +21,12 @@
 }
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+
+## Google sign-in (Credential Manager)
+# Credential Manager finds Google's sign-in provider at run time. Without this
+# rule R8 removes it from the Play build, and Continue with Google closed
+# without doing anything. From Android's Credential Manager setup notes.
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** {
+  *;
+}

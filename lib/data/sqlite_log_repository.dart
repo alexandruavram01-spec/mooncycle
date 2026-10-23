@@ -53,14 +53,12 @@ class SqliteLogRepository implements LogRepository {
     );
   }
 
+  /// Removes the day for good. (It used to be only marked as deleted, which
+  /// kept what she had logged in the file.)
   @override
   Future<void> delete(DayKey day) async {
-    await _database.db.update(
+    await _database.db.delete(
       'day_logs',
-      {
-        'deleted': 1,
-        'updated_at': DateTime.now().millisecondsSinceEpoch,
-      },
       where: 'date = ?',
       whereArgs: [day.iso],
     );
