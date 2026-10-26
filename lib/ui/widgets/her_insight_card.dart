@@ -73,16 +73,19 @@ class HerInsightsSection extends ConsumerWidget {
         // Offered where the notes appear, not only in Settings. Opens the
         // same explanation and consent screen; nothing is ticked for her.
         if (!aiNotes && picks.any(aiNoteEligible))
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: FilledButton.icon(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => const AiNotesScreen(),
                 ),
               ),
-              icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-              label: const Text('Have your card written around your log (AI)'),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(50),
+              ),
+              icon: const Icon(Icons.auto_awesome_outlined, size: 20),
+              label: const Text('Turn on AI-written notes'),
             ),
           ),
       ],

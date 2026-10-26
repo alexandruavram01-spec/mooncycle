@@ -71,8 +71,11 @@ class SymptomCatalog {
     ],
     'Digestion': ['Constipation', 'Diarrhoea', 'Appetite up', 'Appetite down'],
     'Fluid': ['Dry', 'Sticky', 'Creamy', 'Egg white', 'Watery'],
-    'Sex': ['High drive', 'Low drive', 'Protected', 'Unprotected'],
+    'Sex': ['Low drive', 'Usual drive', 'High drive', 'Protected', 'Unprotected'],
   };
+
+  /// Desire is one of these three (the log sheet keeps only one ticked).
+  static const desire = {'Low drive', 'Usual drive', 'High drive'};
 
   static List<String> get all =>
       groups.values.expand((e) => e).toList(growable: false);

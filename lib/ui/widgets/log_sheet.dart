@@ -32,7 +32,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
   bool? _periodStartOverride;
   late TextEditingController _notes;
   late TextEditingController _sleep;
-  late TextEditingController _bbt;
+  double? _oldTemperature;
 
   @override
   void initState() {
@@ -45,15 +45,14 @@ class _LogSheetState extends ConsumerState<LogSheet> {
     _notes = TextEditingController(text: existing?.notes ?? '');
     _sleep = TextEditingController(
         text: existing?.sleepHours?.toStringAsFixed(1) ?? '');
-    _bbt = TextEditingController(
-        text: existing?.basalTemperature?.toStringAsFixed(2) ?? '');
+    // Temperature is no longer asked for; a value saved before is kept.
+    _oldTemperature = existing?.basalTemperature;
   }
 
   @override
   void dispose() {
     _notes.dispose();
     _sleep.dispose();
-    _bbt.dispose();
     super.dispose();
   }
 
@@ -64,7 +63,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
       symptoms: _symptoms,
       energy: _energy,
       sleepHours: double.tryParse(_sleep.text.replaceAll(',', '.')),
-      basalTemperature: double.tryParse(_bbt.text.replaceAll(',', '.')),
+      basalTemperature: _oldTemperature,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
       isPeriodStartOverride: _periodStartOverride,
     );
@@ -87,12 +86,30 @@ class _LogSheetState extends ConsumerState<LogSheet> {
         selected: _symptoms.contains(symptom),
         onSelected: (on) => setState(() {
           if (on) {
+            // Desire is one of low, usual or high.
+            if (SymptomCatalog.desire.contains(symptom)) {
+              _symptoms.removeAll(SymptomCatalog.desire);
+            }
             _symptoms.add(symptom);
           } else {
             _symptoms.remove(symptom);
           }
         }),
       );
+
+  /// What people see for a group, and a hint under it. The stored names
+  /// ("Fluid", "Sex") stay as they are, so past days and the cards still
+  /// match.
+  static const _groupLabels = {
+    'Fluid': 'Fluid (fertile phase)',
+    'Sex': 'Sex and desire',
+  };
+  static const _groupHints = {
+    'Fluid': 'The fluid you may notice between periods. Around your fertile '
+        'days it often becomes clear and stretchy, like raw egg white.',
+    'Sex': 'Desire on this day, and sex if you had it. Leave desire '
+        'unticked if you are not sure.',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +149,12 @@ class _LogSheetState extends ConsumerState<LogSheet> {
                       style: theme.textTheme.titleLarge,
                     ),
                   ),
+                  // The iPhone's number keyboard has no key to close it.
+                  if (bottomInset > 0)
+                    TextButton(
+                      onPressed: () => FocusScope.of(context).unfocus(),
+                      child: const Text('Done'),
+                    ),
                   FilledButton(
                     onPressed: _save,
                     child: const Text('Save'),
@@ -139,7 +162,27 @@ class _LogSheetState extends ConsumerState<LogSheet> {
                 ],
               ),
             ),
-            Expanded(child: _fields(context, controller, groupOrder)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Everything here is about this day, whether or not you are '
+                  'on your period.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              // A tap outside a box closes the keyboard too.
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: _fields(context, controller, groupOrder),
+              ),
+            ),
           ],
         ),
       ),
@@ -155,6 +198,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
     final profile = ref.watch(profileProvider);
     return ListView(
           controller: controller,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           children: [
             _SectionLabel('Flow'),
@@ -217,7 +261,17 @@ class _LogSheetState extends ConsumerState<LogSheet> {
             ],
             for (final group in groupOrder) ...[
               const SizedBox(height: 14),
-              _SectionLabel(group),
+              _SectionLabel(_groupLabels[group] ?? group),
+              if (_groupHints[group] case final hint?)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    hint,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -226,34 +280,15 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               ),
             ],
             const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _sleep,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      labelText: 'Sleep (hours)',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: _bbt,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      labelText: 'Temperature (°C)',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  ),
-                ),
-              ],
+            TextField(
+              controller: _sleep,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(
+                labelText: 'Sleep last night (hours)',
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
             ),
             const SizedBox(height: 16),
             TextField(

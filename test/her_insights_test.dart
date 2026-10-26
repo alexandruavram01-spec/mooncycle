@@ -272,7 +272,7 @@ void main() {
   }
 
   test('almost everything she can log has a card', () {
-    const noCard = {'Protected', 'Unprotected', 'High drive'};
+    const noCard = {'Protected', 'Unprotected', 'High drive', 'Usual drive'};
     for (final symptom in SymptomCatalog.all) {
       if (noCard.contains(symptom)) continue;
       final found = picker.candidates(

@@ -48,7 +48,7 @@ const SYMPTOMS = [
   'Sensitive', 'Confident', 'Bloating', 'Acne', 'Nausea', 'Fatigue',
   'Dizziness', 'Hot flush', 'Food cravings', 'Constipation', 'Diarrhoea',
   'Appetite up', 'Appetite down', 'Dry', 'Sticky', 'Creamy', 'Egg white',
-  'Watery', 'High drive', 'Low drive', 'Protected', 'Unprotected',
+  'Watery', 'High drive', 'Low drive', 'Usual drive', 'Protected', 'Unprotected',
 ];
 const FLOWS = ['spotting', 'light', 'medium', 'heavy'];
 // Not symptoms, but things an opening line can be about.
