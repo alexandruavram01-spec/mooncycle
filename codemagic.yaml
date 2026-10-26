@@ -1,0 +1,61 @@
+# Codemagic: builds the iPhone app on a Mac in the cloud, signs it and sends
+# it to TestFlight. Start it by hand from the Codemagic build page
+# ("iOS → TestFlight"); nothing starts on a push.
+#
+# Before the first build (Codemagic team settings, once):
+#   1. Integrations → Developer Portal: add the App Store Connect API key
+#      (Issuer ID, Key ID, .p8 file) and name it exactly "MoonCycle ASC".
+#   2. Code signing identities → iOS certificates: generate an Apple
+#      Distribution certificate. Codemagic keeps it and makes the App Store
+#      profile for com.ioncodex.mooncycle by itself.
+#   3. Replace APP_STORE_APPLE_ID below with the app's Apple ID: App Store
+#      Connect → the app → App Information → Apple ID (a number).
+#
+# Android is built on the PC (flutter build appbundle), not here.
+
+workflows:
+  ios-testflight:
+    name: iOS → TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: MoonCycle ASC
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.ioncodex.mooncycle
+      vars:
+        APP_STORE_APPLE_ID: 0000000000
+    scripts:
+      - name: Use the App Store signing profile
+        script: xcode-project use-profiles
+      - name: Get packages
+        script: flutter pub get
+      - name: Run the tests
+        script: flutter test
+      - name: Build the iPhone app
+        # The version name comes from pubspec.yaml; the build number is one
+        # more than the latest in TestFlight (1 for the first build).
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          flutter build ipa --release \
+            --build-number=$((LATEST + 1)) \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      email:
+        recipients:
+          - mooncycle_contact@ioncodex.org
+        notify:
+          success: true
+          failure: true
+      app_store_connect:
+        auth: integration
+        # Internal testers get it as soon as Apple has processed it (no
+        # review). External testers need Beta App Review first.
+        submit_to_testflight: true

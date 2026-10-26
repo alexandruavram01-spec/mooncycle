@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/account_service.dart';
+import '../../services/apple_account.dart';
 import '../../services/device_check.dart';
 import '../../services/google_account.dart';
 import '../../state/providers.dart';
@@ -76,6 +77,7 @@ class _AccountSheet extends ConsumerWidget {
                   await session.deleteAccount(
                     password: confirmation.password,
                     googleIdToken: confirmation.googleIdToken,
+                    appleIdentityToken: confirmation.appleIdentityToken,
                   );
                 } catch (e) {
                   messenger.showSnackBar(SnackBar(content: Text('$e')));
@@ -90,17 +92,26 @@ class _AccountSheet extends ConsumerWidget {
 }
 
 /// How deleting was confirmed: by the phone's own lock, by password, or for
-/// accounts made with Google, by Google.
+/// accounts made with Google or Apple, by them.
 class _Confirmation {
   const _Confirmation.byDevice()
       : password = null,
+        googleIdToken = null,
+        appleIdentityToken = null;
+  const _Confirmation.byPassword(String this.password)
+      : googleIdToken = null,
+        appleIdentityToken = null;
+  const _Confirmation.byGoogle(String this.googleIdToken)
+      : password = null,
+        appleIdentityToken = null;
+  const _Confirmation.byApple(String this.appleIdentityToken)
+      : password = null,
         googleIdToken = null;
-  const _Confirmation.byPassword(String this.password) : googleIdToken = null;
-  const _Confirmation.byGoogle(String this.googleIdToken) : password = null;
 
-  /// Both null when the phone's lock confirmed it.
+  /// All null when the phone's lock confirmed it.
   final String? password;
   final String? googleIdToken;
+  final String? appleIdentityToken;
 }
 
 /// Asks first, then checks it is the owner, so a borrowed, unlocked phone is
@@ -129,7 +140,10 @@ Future<_Confirmation?> _confirmDeletion(
         break; // Falls back to the password, or Google.
     }
   }
-  if (GoogleAccount.available && !await accounts.hasPassword()) {
+  final method = GoogleAccount.available || AppleAccount.available
+      ? await accounts.signInMethod()
+      : SignInMethod.password;
+  if (method == SignInMethod.google && GoogleAccount.available) {
     if (!context.mounted) return null;
     final go = await showDialog<String>(
       context: context,
@@ -138,6 +152,18 @@ Future<_Confirmation?> _confirmDeletion(
     if (go == null) return null;
     final token = await GoogleAccount.idToken();
     return token == null ? null : _Confirmation.byGoogle(token);
+  }
+  if (method == SignInMethod.apple && AppleAccount.available) {
+    if (!context.mounted) return null;
+    final go = await showDialog<String>(
+      context: context,
+      builder: (_) => const _DeleteAccountDialog(step: _NextStep.apple),
+    );
+    if (go == null) return null;
+    final credential = await AppleAccount.credential();
+    return credential == null
+        ? null
+        : _Confirmation.byApple(credential.identityToken);
   }
   if (!context.mounted) return null;
   final password = await showDialog<String>(
@@ -148,7 +174,7 @@ Future<_Confirmation?> _confirmDeletion(
 }
 
 /// How the dialog's "Delete account" is confirmed next.
-enum _NextStep { deviceLock, password, google }
+enum _NextStep { deviceLock, password, google, apple }
 
 /// Returns the password, or an empty string when the phone's lock or Google
 /// checks it next. Null if cancelled.
@@ -199,6 +225,9 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
               ),
             _NextStep.google => const Text(
                 'Next, choose your Google account to confirm it is you.',
+              ),
+            _NextStep.apple => const Text(
+                'Next, confirm with your Apple account that it is you.',
               ),
           },
         ],

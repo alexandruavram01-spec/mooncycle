@@ -298,6 +298,16 @@ class SessionNotifier extends AsyncNotifier<String?> {
     return true;
   }
 
+  /// Sign in with Apple (iPhone), the same way as Google.
+  Future<bool> signInWithApple({required bool consent}) async {
+    final email = await ref
+        .read(accountServiceProvider)
+        .signInWithApple(termsVersion: consent ? Legal.version : null);
+    if (email == null) return false;
+    state = AsyncData(email);
+    return true;
+  }
+
   /// Her logs and quiz answers stay on the device, kept for when she signs
   /// back in; nobody else who signs in on this phone sees them. Her
   /// reminders stop until then.
@@ -335,11 +345,17 @@ class SessionNotifier extends AsyncNotifier<String?> {
   /// "delete" leaves nothing behind in either place.
   /// [password] and [googleIdToken] are null when the phone's own lock
   /// confirmed it.
-  Future<void> deleteAccount({String? password, String? googleIdToken}) async {
+  Future<void> deleteAccount({
+    String? password,
+    String? googleIdToken,
+    String? appleIdentityToken,
+  }) async {
     final account = await ref.read(accountStorageProvider.future);
-    await ref
-        .read(accountServiceProvider)
-        .deleteAccount(password: password, googleIdToken: googleIdToken);
+    await ref.read(accountServiceProvider).deleteAccount(
+          password: password,
+          googleIdToken: googleIdToken,
+          appleIdentityToken: appleIdentityToken,
+        );
     await ref.read(partnerLinkServiceProvider).forgetLocal();
     await _remindersSafely(
       () => ref.read(notificationServiceProvider).cancelAll(),

@@ -43,6 +43,29 @@ Optional lines in the same file: `AI_NOTES_REVIEW=off` turns off the second
 reading of each note (half the cost, less checking); `AI_NOTES_EFFORT=low`.
 Without the key, notes simply never arrive and everyone sees the cards.
 
+### Sign in with Apple on the server (once, before the App Store)
+
+Sign in with Apple works without this, but Apple requires that deleting an
+account also cancels Apple's link, and that needs the "Sign in with Apple" key
+(.p8) from the Apple Developer portal. As root on the server:
+
+1. Copy the key from the PC (in PowerShell, on the PC):
+   ```
+   scp -i C:\src\RSA_hetzner C:\src\AuthKey_XXXXXXXXXX.p8 root@178.105.213.196:/etc/mooncycle-apple-key.p8
+   ```
+2. Let only the API read it (find the service's user with
+   `systemctl show -p User mooncycle-api`):
+   ```
+   chown root:<that user> /etc/mooncycle-apple-key.p8 && chmod 640 /etc/mooncycle-apple-key.p8
+   ```
+3. Add to `/etc/mooncycle-api.env` (the IDs are not secret):
+   ```
+   APPLE_TEAM_ID=<Team ID>
+   APPLE_KEY_ID=<Key ID of that key>
+   APPLE_KEY_FILE=/etc/mooncycle-apple-key.p8
+   ```
+   then `systemctl restart mooncycle-api`.
+
 ## One-time setup
 
 ### A. On the PC: create the deploy key

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../legal.dart';
+import '../../services/apple_account.dart';
 import '../../services/google_account.dart';
 import '../../state/providers.dart';
 import '../widgets/consent_boxes.dart';
@@ -117,6 +118,34 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     }
   }
 
+  /// Sign in with Apple (iPhone), the same way as Google.
+  Future<void> _apple() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _googleError = null;
+    });
+    try {
+      final signedIn = await ref
+          .read(sessionProvider.notifier)
+          .signInWithApple(consent: _creating && _terms && _health);
+      if (mounted && !signedIn) {
+        setState(() {
+          _busy = false;
+          _googleError = 'Sign in with Apple was closed before it finished. '
+              'Try again, or use your email and password.';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _googleError = '$e';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -144,8 +173,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                if (GoogleAccount.available) ...[
-                  _GoogleButton(onPressed: _busy ? null : _google),
+                if (GoogleAccount.available || AppleAccount.available) ...[
+                  if (AppleAccount.available) ...[
+                    _AppleButton(onPressed: _busy ? null : _apple),
+                    if (GoogleAccount.available) const SizedBox(height: 12),
+                  ],
+                  if (GoogleAccount.available)
+                    _GoogleButton(onPressed: _busy ? null : _google),
                   if (_googleError case final message?) ...[
                     const SizedBox(height: 8),
                     Text(
@@ -316,6 +350,30 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Apple's sign-in button: black, the Apple logo and "Continue with Apple",
+/// as Apple's design guidelines describe.
+class _AppleButton extends StatelessWidget {
+  const _AppleButton({required this.onPressed});
+
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        minimumSize: const Size.fromHeight(54),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+      icon: const Icon(Icons.apple, size: 22),
+      label: const Text('Continue with Apple'),
     );
   }
 }

@@ -7,18 +7,18 @@
   <link rel="stylesheet" href="legal.css">
 </head>
 <body>
-<!-- DRAFT for review by a UK solicitor before launch. Version 2026-10-22.
+<!-- DRAFT for review by a UK solicitor before launch. Version 2026-10-26.
      Keep in step with Legal.version in lib/legal.dart. -->
 <main>
   <header><a class="brand" href="/"><img src="logo.png" alt=""> MoonCycle</a></header>
   <h1>Privacy policy</h1>
-  <p class="updated">Version 2026-10-22 · Last updated 22 October 2026</p>
+  <p class="updated">Version 2026-10-26 · Last updated 26 October 2026</p>
 
   <div class="summary">
     <strong>The short version</strong>
     <ul>
       <li>What you log (periods, symptoms, mood, notes) stays on your phone. We never receive it.</li>
-      <li>Our server holds your email, a scrambled form of your password (or, if you continue with Google, an ID for your Google account), and, only if you turn on partner sharing, the summary you choose to share.</li>
+      <li>Our server holds your email, a scrambled form of your password (or, if you continue with Google or Apple, an ID for that account), and, only if you turn on partner sharing, the summary you choose to share.</li>
       <li>Only if you turn on AI-written notes, a short summary of your day passes through our server to Anthropic, which writes the note. We don't store the summary or the note, unless you report a note: then we keep that note and its card, without your name or account, for up to 90 days to look into it and improve the notes. Anthropic deletes what we send within 30 days and doesn't use it to train AI.</li>
       <li>No advertising, no selling of data, no tracking or analytics tools.</li>
       <li>You can delete your account and data at any time, in the app. Your phone's own backup (iCloud or your Google account) is separate: you manage it, and we cannot reach it.</li>
@@ -41,6 +41,11 @@
       <tr>
         <td data-label="Information"><strong>Only if you continue with Google:</strong> your email address, which Google confirms to us, and the ID Google gives your Google account. No password is stored for these accounts.</td>
         <td data-label="Why">To create your account and sign you in without a password</td>
+        <td data-label="Legal basis">Providing the service you asked for (contract, Article 6(1)(b))</td>
+      </tr>
+      <tr>
+        <td data-label="Information"><strong>Only if you sign in with Apple (iPhone):</strong> the email address Apple gives us (your own, or a private relay address that forwards to you if you choose to hide it), the ID Apple gives your Apple account, and a token from Apple that we keep only so we can cancel Apple's sign-in link when you delete your account. No password is stored for these accounts.</td>
+        <td data-label="Why">To create your account and sign you in without a password, and to remove the link with Apple when you delete your account</td>
         <td data-label="Legal basis">Providing the service you asked for (contract, Article 6(1)(b))</td>
       </tr>
       <tr>
@@ -100,6 +105,7 @@
     <li><strong>Account emails</strong>: MoonCycle does not send any yet. Before we start (for example for password resets), we will name the email provider here and say what it receives.</li>
     <li><strong>Google Fonts</strong>: the app currently downloads one typeface from Google's servers, which means your device's IP address is visible to Google when it does. We plan to include the typeface in the app instead.</li>
     <li><strong>Google</strong> confirms who you are if you choose Continue with Google, and tells us only your email address and an ID for your Google account. Google's own privacy policy applies to your Google account.</li>
+    <li><strong>Apple</strong> confirms who you are if you choose Sign in with Apple on an iPhone, and tells us only an email address (yours, or a private relay address) and an ID for your Apple account. When you delete your MoonCycle account, we ask Apple to remove the link. Apple's own privacy policy applies to your Apple account.</li>
     <li><strong>Apple and Google</strong> provide the app stores. When you download MoonCycle, their own privacy policies apply to that.</li>
   </ul>
   <p>If your partner connects with you, they see only the summary and messages you choose to share. They are responsible for treating it with respect. What they have already seen cannot be taken back: turning sharing off or disconnecting stops anything new, removes the shared summary from our server, and their app then shows nothing about you.</p>

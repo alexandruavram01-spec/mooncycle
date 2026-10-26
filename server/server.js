@@ -114,6 +114,11 @@ const SCHEMA = `
   ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id text UNIQUE;
   ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL;
 
+  -- Sign in with Apple (iPhone): Apple's ID for the person, and the refresh
+  -- token kept only to cancel Apple's link when the account is deleted.
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS apple_id text UNIQUE;
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS apple_refresh_token text;
+
   -- Her separate, explicit consent to AI-written notes: a summary of her day
   -- goes to Anthropic to write them. Null means off.
   ALTER TABLE users ADD COLUMN IF NOT EXISTS ai_notes_consent_at timestamptz;
@@ -253,32 +258,34 @@ const GOOGLE_CLIENT_IDS = (process.env.GOOGLE_CLIENT_IDS ||
 const GOOGLE_ISSUERS = ['accounts.google.com', 'https://accounts.google.com'];
 const GOOGLE_CERTS_URL = 'https://www.googleapis.com/oauth2/v3/certs';
 
-// Google's signing keys, kept as long as Google says (capped at a day).
-// Fetched again early only for a key we have not seen, at most once a minute.
-let googleKeys = { byId: new Map(), expiresAt: 0, fetchedAt: 0 };
-
-async function googleKey(kid) {
-  const now = Date.now();
-  const stale = now > googleKeys.expiresAt;
-  const unknown = !googleKeys.byId.has(kid) && now - googleKeys.fetchedAt > 60 * 1000;
-  if (stale || unknown) {
-    const response = await fetch(GOOGLE_CERTS_URL, { signal: AbortSignal.timeout(10 * 1000) });
-    if (!response.ok) throw httpError(502, 'Could not reach Google. Try again.');
-    const { keys } = await response.json();
-    const maxAge = Number(/max-age=(\d+)/.exec(response.headers.get('cache-control') || '')?.[1] || 3600);
-    googleKeys = {
-      byId: new Map(keys.map((jwk) => [jwk.kid, crypto.createPublicKey({ key: jwk, format: 'jwk' })])),
-      expiresAt: now + Math.min(maxAge, 24 * 60 * 60) * 1000,
-      fetchedAt: now,
-    };
-  }
-  return googleKeys.byId.get(kid);
+// Signing keys published by Google and Apple, kept as long as they say
+// (capped at a day). Fetched again early only for a key we have not seen, at
+// most once a minute.
+function signingKeys(url, provider) {
+  let cache = { byId: new Map(), expiresAt: 0, fetchedAt: 0 };
+  return async (kid) => {
+    const now = Date.now();
+    const stale = now > cache.expiresAt;
+    const unknown = !cache.byId.has(kid) && now - cache.fetchedAt > 60 * 1000;
+    if (stale || unknown) {
+      const response = await fetch(url, { signal: AbortSignal.timeout(10 * 1000) });
+      if (!response.ok) throw httpError(502, `Could not reach ${provider}. Try again.`);
+      const { keys } = await response.json();
+      const maxAge = Number(/max-age=(\d+)/.exec(response.headers.get('cache-control') || '')?.[1] || 3600);
+      cache = {
+        byId: new Map(keys.map((jwk) => [jwk.kid, crypto.createPublicKey({ key: jwk, format: 'jwk' })])),
+        expiresAt: now + Math.min(maxAge, 24 * 60 * 60) * 1000,
+        fetchedAt: now,
+      };
+    }
+    return cache.byId.get(kid);
+  };
 }
+const googleKey = signingKeys(GOOGLE_CERTS_URL, 'Google');
 
-// Checks an ID token from Google's sign-in on the phone: Google's signature,
-// made for our client, not expired, with an email Google has confirmed.
-async function verifyGoogleToken(idToken) {
-  const failed = () => httpError(401, 'Google sign-in did not work. Try again.');
+// Checks a sign-in token from the phone: the provider's signature, made for
+// our app, not expired. Returns its claims.
+async function verifySignInToken(idToken, { keyFor, issuers, audiences, failed }) {
   const token = String(idToken || '');
   const parts = token.split('.');
   if (parts.length !== 3 || token.length > 4096) throw failed();
@@ -291,7 +298,7 @@ async function verifyGoogleToken(idToken) {
     throw failed();
   }
   if (header.alg !== 'RS256' || typeof header.kid !== 'string') throw failed();
-  const key = await googleKey(header.kid);
+  const key = await keyFor(header.kid);
   const signed = key && crypto.verify(
     'sha256',
     Buffer.from(`${parts[0]}.${parts[1]}`),
@@ -300,18 +307,104 @@ async function verifyGoogleToken(idToken) {
   );
   const now = Date.now() / 1000;
   if (!signed ||
-      !GOOGLE_ISSUERS.includes(claims.iss) ||
-      !GOOGLE_CLIENT_IDS.includes(claims.aud) ||
+      !issuers.includes(claims.iss) ||
+      !audiences.includes(claims.aud) ||
       !(claims.exp > now - 60) ||
       typeof claims.sub !== 'string' || claims.sub.length === 0) {
     throw failed();
   }
+  return claims;
+}
+
+const confirmedEmail = (claims) => {
   const email = String(claims.email || '').trim().toLowerCase();
-  if ((claims.email_verified !== true && claims.email_verified !== 'true') ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
-    throw httpError(401, 'Your Google account has no confirmed email address.');
-  }
+  const verified = claims.email_verified === true || claims.email_verified === 'true';
+  return verified && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254 ? email : null;
+};
+
+// Google's ID token, with an email Google has confirmed.
+async function verifyGoogleToken(idToken) {
+  const claims = await verifySignInToken(idToken, {
+    keyFor: googleKey,
+    issuers: GOOGLE_ISSUERS,
+    audiences: GOOGLE_CLIENT_IDS,
+    failed: () => httpError(401, 'Google sign-in did not work. Try again.'),
+  });
+  const email = confirmedEmail(claims);
+  if (!email) throw httpError(401, 'Your Google account has no confirmed email address.');
   return { googleId: claims.sub, email };
+}
+
+// ---- Sign in with Apple -----------------------------------------------------
+// iPhone only. Apple requires it beside Continue with Google. The email may be
+// Apple's private relay (…@privaterelay.appleid.com), which forwards to her.
+
+const APPLE_BUNDLE_ID = process.env.APPLE_BUNDLE_ID || 'com.ioncodex.mooncycle';
+const APPLE_ISSUER = 'https://appleid.apple.com';
+const appleKey = signingKeys('https://appleid.apple.com/auth/keys', 'Apple');
+
+async function verifyAppleToken(identityToken) {
+  const claims = await verifySignInToken(identityToken, {
+    keyFor: appleKey,
+    issuers: [APPLE_ISSUER],
+    audiences: [APPLE_BUNDLE_ID],
+    failed: () => httpError(401, 'Sign in with Apple did not work. Try again.'),
+  });
+  return { appleId: claims.sub, email: confirmedEmail(claims) };
+}
+
+// Apple asks apps to cancel its sign-in link when an account is deleted. That
+// needs the "Sign in with Apple" key from the Apple Developer portal, on the
+// server only (DEPLOY.md): APPLE_TEAM_ID, APPLE_KEY_ID and APPLE_KEY_FILE.
+// Without them, sign-in still works and the cancelling is skipped (logged).
+function appleClientSecret() {
+  const { APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_KEY_FILE } = process.env;
+  if (!APPLE_TEAM_ID || !APPLE_KEY_ID || !APPLE_KEY_FILE) return null;
+  const now = Math.floor(Date.now() / 1000);
+  const part = (value) => Buffer.from(JSON.stringify(value)).toString('base64url');
+  const input = `${part({ alg: 'ES256', kid: APPLE_KEY_ID })}.${part({
+    iss: APPLE_TEAM_ID, iat: now, exp: now + 300, aud: APPLE_ISSUER, sub: APPLE_BUNDLE_ID,
+  })}`;
+  const signature = crypto.sign('sha256', Buffer.from(input), {
+    key: require('node:fs').readFileSync(APPLE_KEY_FILE, 'utf8'),
+    dsaEncoding: 'ieee-p1363',
+  });
+  return `${input}.${signature.toString('base64url')}`;
+}
+
+async function appleRequest(path, fields) {
+  const secret = appleClientSecret();
+  if (!secret) {
+    console.error(`apple ${path} skipped: the Sign in with Apple key is not set up`);
+    return null;
+  }
+  const response = await fetch(`${APPLE_ISSUER}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ client_id: APPLE_BUNDLE_ID, client_secret: secret, ...fields }),
+    signal: AbortSignal.timeout(10 * 1000),
+  });
+  if (!response.ok) {
+    console.error(`apple ${path} failed:`, response.status);
+    return null;
+  }
+  return path === '/auth/token' ? response.json() : {};
+}
+
+// The refresh token, kept only so the link can be cancelled on deletion.
+async function appleRefreshToken(authorizationCode) {
+  if (typeof authorizationCode !== 'string' || authorizationCode.length > 1024) return null;
+  const tokens = await appleRequest('/auth/token', {
+    code: authorizationCode, grant_type: 'authorization_code',
+  }).catch(() => null);
+  return tokens?.refresh_token ?? null;
+}
+
+async function revokeApple(refreshToken) {
+  if (!refreshToken) return;
+  await appleRequest('/auth/revoke', {
+    token: refreshToken, token_type_hint: 'refresh_token',
+  }).catch((err) => console.error('apple revoke failed:', err?.constructor?.name));
 }
 
 async function requireAdmin(req) {
@@ -432,7 +525,10 @@ const routes = {
   'GET /api/account': async (req) => {
     const { userId } = await authenticate(req);
     const { rows } = await pool.query(
-      `SELECT email, terms_version, ai_notes_version, password_hash IS NOT NULL AS password
+      `SELECT email, terms_version, ai_notes_version, password_hash IS NOT NULL AS password,
+              CASE WHEN password_hash IS NOT NULL THEN 'password'
+                   WHEN apple_id IS NOT NULL THEN 'apple'
+                   ELSE 'google' END AS "signIn"
          FROM users WHERE id = $1`,
       [userId],
     );
@@ -441,8 +537,10 @@ const routes = {
       admin: ADMIN_EMAILS.includes(rows[0].email),
       termsVersion: rows[0].terms_version,
       aiNotesVersion: rows[0].ai_notes_version,
-      // False for accounts made with Google, which confirm with Google instead.
+      // False for accounts made with Google or Apple, which confirm with
+      // them instead; signIn says which.
       password: rows[0].password,
+      signIn: rows[0].signIn,
     };
   },
 
@@ -597,7 +695,7 @@ const routes = {
     const body = await readJson(req);
     if (body.deviceConfirmed !== true) {
       const { rows } = await pool.query(
-        'SELECT password_hash, google_id FROM users WHERE id = $1',
+        'SELECT password_hash, google_id, apple_id FROM users WHERE id = $1',
         [userId],
       );
       if (body.googleIdToken !== undefined) {
@@ -605,12 +703,20 @@ const routes = {
         if (googleId !== rows[0].google_id) {
           throw httpError(403, 'That is a different Google account.');
         }
+      } else if (body.appleIdentityToken !== undefined) {
+        const { appleId } = await verifyAppleToken(body.appleIdentityToken);
+        if (appleId !== rows[0].apple_id) {
+          throw httpError(403, 'That is a different Apple account.');
+        }
       } else if (rows[0].password_hash === null) {
-        throw httpError(403, 'Confirm with Google to delete this account.');
+        throw httpError(403, 'Confirm with Google or Apple to delete this account.');
       } else if (!(await verifyPassword(String(body.password || ''), rows[0].password_hash))) {
         throw httpError(403, 'Wrong password.');
       }
     }
+    // Apple's link is cancelled first (Apple's rule for deleted accounts).
+    const apple = await pool.query('SELECT apple_refresh_token FROM users WHERE id = $1', [userId]);
+    await revokeApple(apple.rows[0]?.apple_refresh_token);
     // Sessions and her pairing go with the user; a pairing he had joined is unlinked.
     await pool.query('DELETE FROM users WHERE id = $1', [userId]);
     return { ok: true };
@@ -624,7 +730,7 @@ const routes = {
     // Sign-up already tells anyone that an email has an account, so saying
     // how it signs in gives nothing more away.
     if (rows.length > 0 && rows[0].password_hash === null) {
-      throw httpError(401, 'This account uses Continue with Google.');
+      throw httpError(401, 'This account uses Continue with Google or Sign in with Apple.');
     }
     let ok = false;
     if (rows.length > 0) {
@@ -669,6 +775,47 @@ const routes = {
       const raced = await signIn();
       if (raced) return raced;
       throw httpError(409, 'This email already has a MoonCycle account. Sign in with your email and password.');
+    }
+    return signIn();
+  },
+
+  // Sign in with Apple (iPhone). Like Google: the first time makes the
+  // account (Apple confirms the email, or gives a private relay address);
+  // consent is recorded with it when she ticked both boxes first, otherwise
+  // the app asks next. An email that already has another account is not
+  // joined to it.
+  'POST /api/session/apple': async (req) => {
+    throttle(`apple:${clientIp(req)}`, 20, 10 * 60 * 1000);
+    const body = await readJson(req);
+    const { appleId, email } = await verifyAppleToken(body.identityToken);
+    const refreshToken = await appleRefreshToken(body.authorizationCode);
+    const signIn = async () => {
+      const { rows } = await pool.query('SELECT id, email FROM users WHERE apple_id = $1', [appleId]);
+      if (rows.length === 0) return null;
+      if (refreshToken) {
+        await pool.query('UPDATE users SET apple_refresh_token = $2 WHERE id = $1', [rows[0].id, refreshToken]);
+      }
+      return { email: rows[0].email, token: await openSession(rows[0].id) };
+    };
+    const known = await signIn();
+    if (known) return known;
+
+    if (!email) {
+      throw httpError(400, 'Apple did not share an email address. Try again and choose to share or hide your email.');
+    }
+    const termsVersion = body.healthConsent === undefined ? null : readConsent(body);
+    const { rowCount } = await pool.query(
+      `INSERT INTO users (id, email, apple_id, apple_refresh_token, terms_version, terms_accepted_at, health_consent_at)
+       VALUES ($1, $2, $3, $4, $5::text,
+               CASE WHEN $5::text IS NULL THEN NULL ELSE now() END,
+               CASE WHEN $5::text IS NULL THEN NULL ELSE now() END)
+       ON CONFLICT DO NOTHING`,
+      [crypto.randomUUID(), email, appleId, refreshToken, termsVersion],
+    );
+    if (rowCount === 0) {
+      const raced = await signIn();
+      if (raced) return raced;
+      throw httpError(409, 'This email already has a MoonCycle account. Sign in the way you did before.');
     }
     return signIn();
   },

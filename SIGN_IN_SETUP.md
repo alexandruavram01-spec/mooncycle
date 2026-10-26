@@ -10,9 +10,18 @@
 - **Still to do:** `MoonCycle Android (Play)` with the App signing key SHA-1
   from Play Console (Test and release, App integrity), after the first
   upload. Until then Google sign-in fails in builds installed from Play.
-- "Continue with Google" is built for Android only. The iPhone waits for the
-  Apple developer account: the iOS client below, then Sign in with Apple
-  beside it (Apple requires both together).
+- Continue with Google works on Android (Play build tested 23 October 2026).
+- iPhone, prepared 26 October 2026: Sign in with Apple is built (app button,
+  server route `POST /api/session/apple`, entitlement in
+  `ios/Runner/Runner.entitlements`). Google on iPhone waits for the iOS client
+  (needs the Team ID): put its ID in `GoogleAccount.iosClientId`
+  (lib/services/google_account.dart), its reversed ID as a URL scheme in
+  `ios/Runner/Info.plist`, and the ID in `GOOGLE_CLIENT_IDS` on the server.
+- The Apple key for cancelling Apple's link on deletion: DEPLOY.md,
+  "Sign in with Apple on the server".
+- Known gap: an account made with Apple cannot sign in on Android yet (Apple
+  sign-in on Android needs a web flow). Same for Google-only accounts on an
+  iPhone until the iOS client exists.
 - A Google sign-in whose email already has a password account is refused,
   not joined to it: emails are not confirmed for password accounts.
 

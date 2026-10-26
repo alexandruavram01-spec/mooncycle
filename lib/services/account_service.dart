@@ -1,9 +1,14 @@
 import 'package:http/http.dart' as http;
 
 import 'api_client.dart';
+import 'apple_account.dart';
 import 'google_account.dart';
 
-/// Email-and-password accounts, or Continue with Google (Android).
+/// How an account signs in, and so how it confirms deleting itself.
+enum SignInMethod { password, google, apple }
+
+/// Email-and-password accounts, Continue with Google, or Sign in with Apple
+/// (iPhone).
 ///
 /// An account is identity only: it holds the email and the partner
 /// connection. Logs and quiz answers never leave the device, so signing in
@@ -52,12 +57,40 @@ class AccountService {
     return _save(response);
   }
 
-  /// False for accounts made with Google: they confirm with Google, not a
-  /// password.
-  Future<bool> hasPassword() async {
+  /// Sign in with Apple, the same way. Null if she closed Apple's sheet.
+  Future<String?> signInWithApple({String? termsVersion}) async {
+    final credential = await AppleAccount.credential();
+    if (credential == null) return null;
+    final response = await _api.send(
+      'POST',
+      '/session/apple',
+      auth: false,
+      body: {
+        'identityToken': credential.identityToken,
+        'authorizationCode': credential.authorizationCode,
+        if (termsVersion != null) ...{
+          'termsVersion': termsVersion,
+          'healthConsent': true,
+        },
+      },
+    );
+    return _save(response);
+  }
+
+  /// How this account signs in: accounts made with Google or Apple confirm
+  /// with them, not a password.
+  Future<SignInMethod> signInMethod() async {
     final response = await _api.send('GET', '/account');
     if (response.statusCode != 200) throw ApiClient.failure(response);
-    return ApiClient.json(response)['password'] != false;
+    final json = ApiClient.json(response);
+    return switch (json['signIn']) {
+      'google' => SignInMethod.google,
+      'apple' => SignInMethod.apple,
+      // Older servers sent only "password": false for Google accounts.
+      _ => json['password'] == false
+          ? SignInMethod.google
+          : SignInMethod.password,
+    };
   }
 
   /// The terms version this account last agreed to, or null if never.
@@ -135,7 +168,11 @@ class AccountService {
   /// fingerprint, face or PIN check has just passed. Otherwise it is the
   /// [password], asked for again, or for accounts made with Google a fresh
   /// [googleIdToken]; a failed check throws and leaves everything in place.
-  Future<void> deleteAccount({String? password, String? googleIdToken}) async {
+  Future<void> deleteAccount({
+    String? password,
+    String? googleIdToken,
+    String? appleIdentityToken,
+  }) async {
     final response = await _api.send(
       'POST',
       '/account/delete',
@@ -143,7 +180,9 @@ class AccountService {
           ? {'password': password}
           : googleIdToken != null
               ? {'googleIdToken': googleIdToken}
-              : {'deviceConfirmed': true},
+              : appleIdentityToken != null
+                  ? {'appleIdentityToken': appleIdentityToken}
+                  : {'deviceConfirmed': true},
     );
     if (response.statusCode != 200) throw ApiClient.failure(response);
     await _api.clearSession();

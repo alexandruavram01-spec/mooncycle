@@ -4,9 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'api_client.dart';
 
-/// "Continue with Google", on Android for now. The iPhone needs its own
-/// client ID and Sign in with Apple beside it (Apple's rule), and the website
-/// a button drawn by Google, so neither shows it yet.
+/// "Continue with Google", on Android, and on iPhone once [iosClientId] is
+/// set. The website would need a button drawn by Google, so it has none.
 class GoogleAccount {
   GoogleAccount._();
 
@@ -16,14 +15,28 @@ class GoogleAccount {
   static const serverClientId =
       '531774189485-hqam3gqj4ola0p2b277u2e87sv8es266.apps.googleusercontent.com';
 
+  /// The "MoonCycle iPhone" iOS client in Google Cloud. Empty until it is
+  /// made (it needs the Apple Team ID); the iPhone shows no Google button
+  /// until then. Setting it also needs, in ios/Runner/Info.plist, a URL type
+  /// whose scheme is this ID reversed (com.googleusercontent.apps.…), and the
+  /// same ID in GOOGLE_CLIENT_IDS on the server.
+  static const iosClientId = '';
+
+  static bool get _iPhone =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+
   static bool get available =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          (_iPhone && iosClientId.isNotEmpty));
 
   static Future<void>? _ready;
 
   static Future<void> _init() async {
-    final ready = _ready ??=
-        GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+    final ready = _ready ??= GoogleSignIn.instance.initialize(
+      clientId: _iPhone ? iosClientId : null,
+      serverClientId: serverClientId,
+    );
     try {
       await ready;
     } catch (_) {
