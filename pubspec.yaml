@@ -1,7 +1,7 @@
 name: mooncycle
 description: MoonCycle - period, symptom and hormone tracking with partner sharing.
 publish_to: "none"
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -36,6 +36,8 @@ dependencies:
   # "Continue with Google" on Android (lib/services/google_account.dart).
   # The clients are in Google Cloud, project MoonCycle: SIGN_IN_SETUP.md.
   google_sign_in: ^7.2.0
+  # "Export my data": hands her files to the phone's share sheet.
+  share_plus: ^13.3.1
 
 dev_dependencies:
   flutter_test:

@@ -94,7 +94,6 @@ those listed elsewhere here:
   Google Fonts at run time (that shows the user's IP address to Google; the
   privacy policy says so until it is fixed). Then remove that paragraph from
   `web/privacy.html`.
-- **Data export** for her logs, so she can take her data elsewhere.
 
 ## Legal and company (IONCODEX LTD, 16798601)
 

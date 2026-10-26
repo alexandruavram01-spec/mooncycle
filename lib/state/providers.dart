@@ -48,6 +48,36 @@ final accountStorageProvider = FutureProvider<String?>((ref) async {
   return id;
 });
 
+/// Whether this account has seen, once, that its logs live only on this
+/// phone and are lost with it (shown after the quiz). True while nobody is
+/// signed in, so nothing is shown then.
+class DataNoticeNotifier extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() async {
+    final account = await ref.watch(accountStorageProvider.future);
+    if (account == null) return true;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(
+          AccountStorage.key(AccountStorage.dataNoticeKey, account),
+        ) ??
+        false;
+  }
+
+  Future<void> markSeen() async {
+    state = const AsyncData(true);
+    final account = await ref.read(accountStorageProvider.future);
+    if (account == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(
+      AccountStorage.key(AccountStorage.dataNoticeKey, account),
+      true,
+    );
+  }
+}
+
+final dataNoticeProvider =
+    AsyncNotifierProvider<DataNoticeNotifier, bool>(DataNoticeNotifier.new);
+
 final settingsStoreProvider = FutureProvider<SettingsStore>(
   (ref) async => SettingsStore(await ref.watch(accountStorageProvider.future)),
 );

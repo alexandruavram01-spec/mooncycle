@@ -59,10 +59,14 @@ class AccountStorage {
     return prefs.getString(_ownerKey);
   }
 
-  /// Removes this account's settings, card memory and (on web) logs.
+  /// Whether the account has seen the notice that its logs live only on
+  /// this phone.
+  static const dataNoticeKey = 'mooncycle.dataNotice.v1';
+
+  /// Removes this account's settings, card memory, notice and (on web) logs.
   static Future<void> eraseKeys(String id) async {
     final prefs = await SharedPreferences.getInstance();
-    for (final base in legacyKeys) {
+    for (final base in [...legacyKeys, dataNoticeKey]) {
       await prefs.remove(key(base, id));
     }
   }

@@ -5,6 +5,7 @@ import '../../domain/quiz.dart';
 import '../../legal.dart';
 import '../../state/providers.dart';
 import '../widgets/account_sheet.dart';
+import '../widgets/export_data.dart';
 import '../widgets/links.dart';
 import 'ai_notes_screen.dart';
 import 'get_help_screen.dart';
@@ -208,15 +209,28 @@ class SettingsScreen extends ConsumerWidget {
           Text('Your data', style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            'Your logs and quiz answers stay on this device. Your account '
-            'holds only your email and your partner connection. If you turn '
-            'on partner sharing, only the summary you choose is sent to the '
-            'server.',
+            'Your logs and quiz answers are stored only on this phone, not on '
+            'our servers. If you uninstall MoonCycle or lose your phone, they '
+            'cannot be recovered, so save a copy from time to time with '
+            'Export my data. Your account holds only your email and your '
+            'partner connection. If you turn on partner sharing, only the '
+            'summary you choose is sent to the server.',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.download_outlined),
+            title: const Text('Export my data'),
+            subtitle: const Text(
+              'Save a copy of your logs and quiz answers to Drive, email or '
+              'your files: a spreadsheet and a full copy.',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => exportMyData(context, ref),
+          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.delete_outline),
