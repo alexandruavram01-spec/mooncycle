@@ -250,8 +250,10 @@ function readCredentials(body) {
 // The "MoonCycle server" web client in Google Cloud (project MoonCycle). The
 // Android app asks Google for ID tokens made for it. Not a secret; another
 // client can be added through the environment file (comma-separated).
+// The iPhone client ("MoonCycle iPhone") is accepted too.
 const GOOGLE_CLIENT_IDS = (process.env.GOOGLE_CLIENT_IDS ||
-  '531774189485-hqam3gqj4ola0p2b277u2e87sv8es266.apps.googleusercontent.com')
+  '531774189485-hqam3gqj4ola0p2b277u2e87sv8es266.apps.googleusercontent.com,' +
+  '531774189485-d3phbm38s9tbget6rj5qvl1gbicv3c4o.apps.googleusercontent.com')
   .split(',')
   .map((id) => id.trim())
   .filter(Boolean);

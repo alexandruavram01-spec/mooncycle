@@ -13,15 +13,15 @@
 - Continue with Google works on Android (Play build tested 23 October 2026).
 - iPhone, prepared 26 October 2026: Sign in with Apple is built (app button,
   server route `POST /api/session/apple`, entitlement in
-  `ios/Runner/Runner.entitlements`). Google on iPhone waits for the iOS client
-  (needs the Team ID): put its ID in `GoogleAccount.iosClientId`
-  (lib/services/google_account.dart), its reversed ID as a URL scheme in
-  `ios/Runner/Info.plist`, and the ID in `GOOGLE_CLIENT_IDS` on the server.
+  `ios/Runner/Runner.entitlements`). Google on iPhone: client `MoonCycle iPhone`
+  (531774189485-d3phbm38s9tbget6rj5qvl1gbicv3c4o.apps.googleusercontent.com,
+  Team ID 4889D8DM69, App Store ID 6827181527), set in
+  `GoogleAccount.iosClientId`, as a URL scheme in `ios/Runner/Info.plist`,
+  and in the server's default `GOOGLE_CLIENT_IDS` (26 October 2026).
 - The Apple key for cancelling Apple's link on deletion: DEPLOY.md,
   "Sign in with Apple on the server".
 - Known gap: an account made with Apple cannot sign in on Android yet (Apple
-  sign-in on Android needs a web flow). Same for Google-only accounts on an
-  iPhone until the iOS client exists.
+  sign-in on Android needs a web flow).
 - A Google sign-in whose email already has a password account is refused,
   not joined to it: emails are not confirmed for password accounts.
 

@@ -15,12 +15,11 @@ class GoogleAccount {
   static const serverClientId =
       '531774189485-hqam3gqj4ola0p2b277u2e87sv8es266.apps.googleusercontent.com';
 
-  /// The "MoonCycle iPhone" iOS client in Google Cloud. Empty until it is
-  /// made (it needs the Apple Team ID); the iPhone shows no Google button
-  /// until then. Setting it also needs, in ios/Runner/Info.plist, a URL type
-  /// whose scheme is this ID reversed (com.googleusercontent.apps.…), and the
-  /// same ID in GOOGLE_CLIENT_IDS on the server.
-  static const iosClientId = '';
+  /// The "MoonCycle iPhone" iOS client in Google Cloud. Its ID reversed is a
+  /// URL scheme in ios/Runner/Info.plist, and the server accepts its tokens
+  /// too (GOOGLE_CLIENT_IDS in server/server.js).
+  static const iosClientId =
+      '531774189485-d3phbm38s9tbget6rj5qvl1gbicv3c4o.apps.googleusercontent.com';
 
   static bool get _iPhone =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;

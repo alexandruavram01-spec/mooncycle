@@ -8,8 +8,8 @@
 #   2. Code signing identities → iOS certificates: generate an Apple
 #      Distribution certificate. Codemagic keeps it and makes the App Store
 #      profile for com.ioncodex.mooncycle by itself.
-#   3. Replace APP_STORE_APPLE_ID below with the app's Apple ID: App Store
-#      Connect → the app → App Information → Apple ID (a number).
+#   3. APP_STORE_APPLE_ID below is the app's Apple ID (App Store Connect →
+#      the app → App Information). Team ID: 4889D8DM69.
 #
 # Android is built on the PC (flutter build appbundle), not here.
 
@@ -28,7 +28,7 @@ workflows:
         distribution_type: app_store
         bundle_identifier: com.ioncodex.mooncycle
       vars:
-        APP_STORE_APPLE_ID: 0000000000
+        APP_STORE_APPLE_ID: 6827181527
     scripts:
       - name: Use the App Store signing profile
         script: xcode-project use-profiles
