@@ -9,6 +9,7 @@ import '../../domain/profile.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
 import 'moon_face.dart';
+import '../../l10n/ui.dart';
 
 /// Icons for the asks and offers, by code. Kept here because the domain
 /// layer has no Flutter in it.
@@ -259,7 +260,7 @@ class _ReplyChipsState extends State<ReplyChips> {
         if (collapsed)
           ActionChip(
             avatar: const Icon(Icons.expand_more, size: 18),
-            label: Text('More (${entries.length - limit})'),
+            label: Text(trf('More ({n})', {'n': entries.length - limit})),
             onPressed: () => setState(() => _expanded = true),
           ),
       ],
@@ -311,9 +312,9 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
       await ref.read(tipLibraryServiceProvider).rate(code, kind);
       if (kind == 'not_okay') {
         messenger.showSnackBar(
-          const SnackBar(
-            content: Text('🚩 Taken down for everyone. They get a different '
-                'tip.'),
+          SnackBar(
+            content: Text(tr('🚩 Taken down for everyone. They get a different '
+                'tip.')),
           ),
         );
         // The replacement pops up here in its place.
@@ -323,8 +324,8 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
           SnackBar(
             content: Text(
               kind == 'like'
-                  ? '👍 Glad that one works.'
-                  : '😐 Noted. Fewer like that.',
+                  ? tr('👍 Glad that one works.')
+                  : tr('😐 Noted. Fewer like that.'),
             ),
           ),
         );
@@ -373,7 +374,7 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
 
     Widget option(String emoji, String label, String kind) => ActionChip(
           avatar: Text(emoji),
-          label: Text(label),
+          label: Text(tr(label)),
           onPressed: _busy ? null : () => _rate(lineId, marker, kind),
         );
 
@@ -399,13 +400,13 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        "Today's tip for your partner",
+                        tr("Today's tip for your partner"),
                         style: theme.textTheme.titleSmall
                             ?.copyWith(color: ink),
                       ),
                     ),
                     IconButton(
-                      tooltip: 'Hide for today',
+                      tooltip: tr('Hide for today'),
                       icon: Icon(Icons.close, color: ink),
                       onPressed: () => _dismiss(marker),
                     ),
@@ -420,7 +421,7 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'How does it feel to you?',
+                  tr('How does it feel to you?'),
                   style: theme.textTheme.bodySmall?.copyWith(color: ink),
                 ),
                 const SizedBox(height: 6),
@@ -481,14 +482,14 @@ class PartnerNudgeCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Send a nudge', style: theme.textTheme.titleMedium),
+              Text(tr('Send a nudge'), style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
               Text(
                 linked
-                    ? 'One tap and it shows on their screen for a day. Tap '
-                        'it again to take it back.'
-                    : 'Once your partner connects (Partner tab), one tap '
-                        'sends them any of these.',
+                    ? tr('One tap and it shows on their screen for a day. Tap '
+                        'it again to take it back.')
+                    : tr('Once your partner connects (Partner tab), one tap '
+                        'sends them any of these.'),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -498,11 +499,11 @@ class PartnerNudgeCard extends ConsumerWidget {
                 Center(
                   child: Sticker(
                     key: ValueKey('ask-$ask'),
-                    header: 'You asked',
+                    header: tr('You asked'),
                     text: askLabel,
                     icon: askIcons[ask] ?? Icons.favorite,
                     stamp: pairing.reaction == PartnerReactions.done
-                        ? 'Delivered'
+                        ? tr('Delivered')
                         : null,
                   ),
                 ),
@@ -511,7 +512,7 @@ class PartnerNudgeCard extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Center(
                     child: Text(
-                      'They replied: $replyLabel',
+                      trf('They replied: {reply}', {'reply': replyLabel}),
                       style: theme.textTheme.titleSmall,
                     ),
                   ),
@@ -575,16 +576,16 @@ class PartnerOfferCard extends ConsumerWidget {
             children: [
               Sticker(
                 key: ValueKey('offer-$offer'),
-                header: 'They offer',
+                header: tr('They offer'),
                 text: label,
                 icon: offerIcons[offer] ?? Icons.favorite,
                 stamp: pairing.offerReply == OfferReplies.yes
-                    ? 'Accepted'
+                    ? tr('Accepted')
                     : null,
                 tilt: 0.03,
               ),
               const SizedBox(height: 16),
-              Text('Your answer', style: theme.textTheme.labelLarge),
+              Text(tr('Your answer'), style: theme.textTheme.labelLarge),
               const SizedBox(height: 6),
               ReplyChips(
                 options: messages.offerReplies,

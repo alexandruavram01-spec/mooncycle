@@ -10,6 +10,7 @@ import '../../l10n/partner_messages.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
 import 'moon_face.dart';
+import '../../l10n/ui.dart';
 
 /// The card a partner sees, always in the Night theme.
 ///
@@ -86,13 +87,13 @@ class _ForecastCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Tonight's sky",
+                        tr("Tonight's sky"),
                         style:
                             theme.textTheme.labelMedium?.copyWith(color: muted),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        card?.summary ?? 'Cycle phase not shared',
+                        card?.summary ?? tr('Cycle phase not shared'),
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: theme.colorScheme.primary,
                         ),
@@ -120,7 +121,7 @@ class _ForecastCard extends ConsumerWidget {
             if (move != null) ...[
               const SizedBox(height: 18),
               Text(
-                "Today's move",
+                tr("Today's move"),
                 style: theme.textTheme.labelLarge?.copyWith(color: muted),
               ),
               const SizedBox(height: 4),
@@ -152,7 +153,9 @@ class _ForecastCard extends ConsumerWidget {
             if (snapshot.sharedSymptoms.isNotEmpty || energy != null) ...[
               const SizedBox(height: 18),
               Text(
-                '${name.isEmpty ? 'She' : name} logged today',
+                name.isEmpty
+                    ? tr('She logged today')
+                    : trf('{name} logged today', {'name': name}),
                 style: theme.textTheme.labelLarge?.copyWith(color: muted),
               ),
               const SizedBox(height: 6),
@@ -162,12 +165,12 @@ class _ForecastCard extends ConsumerWidget {
                 children: [
                   if (energy != null)
                     Chip(
-                      label: Text('Energy $energy of 5'),
+                      label: Text(trf('Energy {n} of 5', {'n': energy})),
                       visualDensity: VisualDensity.compact,
                     ),
                   ...snapshot.sharedSymptoms.map(
                     (s) => Chip(
-                      label: Text(s),
+                      label: Text(tr(s)),
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
@@ -185,18 +188,20 @@ class _ForecastCard extends ConsumerWidget {
                 shape: const Border(),
                 collapsedShape: const Border(),
                 title: Text(
-                  'More about this phase',
+                  tr('More about this phase'),
                   style: theme.textTheme.labelLarge,
                 ),
                 children: [
                   Text(
-                    'What ${name.isEmpty ? 'she' : name} may be feeling',
+                    name.isEmpty
+                        ? tr('What she may be feeling')
+                        : trf('What {name} may be feeling', {'name': name}),
                     style: theme.textTheme.labelLarge,
                   ),
                   const SizedBox(height: 6),
                   ...card.mayFeel.map(_bullet),
                   const SizedBox(height: 10),
-                  Text('How to help', style: theme.textTheme.labelLarge),
+                  Text(tr('How to help'), style: theme.textTheme.labelLarge),
                   const SizedBox(height: 6),
                   ...card.howToHelp.map(_bullet),
                   if (note != null) ...[
@@ -221,8 +226,8 @@ class _ForecastCard extends ConsumerWidget {
             ] else
               const SizedBox(height: 14),
             Text(
-              'A forecast from typical patterns, not a readout of how she '
-              'actually feels. Ask her.',
+              tr('A forecast from typical patterns, not a readout of how she '
+              'actually feels. Ask her.'),
               style: theme.textTheme.bodySmall?.copyWith(color: muted),
             ),
           ],
@@ -274,9 +279,9 @@ class _TipRatingState extends ConsumerState<_TipRating> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(switch (kind) {
-            'not_okay' => 'Removed for everyone. Thanks for flagging it.',
-            'not_funny' => 'Noted. Fewer like that.',
-            _ => 'Glad that one landed.',
+            'not_okay' => tr('Removed for everyone. Thanks for flagging it.'),
+            'not_funny' => tr('Noted. Fewer like that.'),
+            _ => tr('Glad that one landed.'),
           }),
         ),
       );
@@ -296,7 +301,7 @@ class _TipRatingState extends ConsumerState<_TipRating> {
       return TextButton.icon(
         onPressed: chosen ? null : () => _rate(kind),
         icon: Icon(icon, size: 16),
-        label: Text(label),
+        label: Text(tr(label)),
         style: TextButton.styleFrom(
           visualDensity: VisualDensity.compact,
           foregroundColor: theme.colorScheme.onSurfaceVariant,

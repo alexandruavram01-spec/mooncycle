@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../l10n/ui.dart';
 
 /// The MoonCycle logo as text, with a crescent moon standing in for the
 /// capital C: Moon☾ycle.
@@ -18,7 +19,7 @@ class Wordmark extends StatelessWidget {
   Widget build(BuildContext context) {
     final colour = color ?? Theme.of(context).colorScheme.primary;
     return Semantics(
-      label: 'MoonCycle',
+      label: tr('MoonCycle'),
       excludeSemantics: true,
       child: Text.rich(
         TextSpan(
@@ -28,7 +29,7 @@ class Wordmark extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           children: [
-            const TextSpan(text: 'Moon'),
+            TextSpan(text: tr('Moon')),
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,
               child: Padding(
@@ -58,7 +59,7 @@ class LogoMark extends StatelessWidget {
   Widget build(BuildContext context) => Image.asset(
         'assets/brand/logo_mark.png',
         height: size,
-        semanticLabel: 'MoonCycle logo',
+        semanticLabel: tr('MoonCycle logo'),
         filterQuality: FilterQuality.medium,
       );
 }

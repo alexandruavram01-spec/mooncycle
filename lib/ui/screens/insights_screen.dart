@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/insights.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
+import '../../l10n/ui.dart';
 
 class InsightsScreen extends ConsumerWidget {
   const InsightsScreen({super.key});
@@ -17,7 +18,7 @@ class InsightsScreen extends ConsumerWidget {
     final history = ref.watch(cycleLengthHistoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Patterns')),
+      appBar: AppBar(title: Text(tr('Patterns'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
@@ -26,20 +27,23 @@ class InsightsScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(18),
                 child: Text(
-                  'Patterns need at least ${InsightsEngine.minCyclesForPattern} '
-                  'complete cycles before they mean anything. Keep logging — '
-                  'this page fills in on its own.',
+                  trf(
+                    'Patterns need at least {n} complete cycles before they '
+                    'mean anything. Keep logging — this page fills in on its '
+                    'own.',
+                    {'n': InsightsEngine.minCyclesForPattern},
+                  ),
                   style: theme.textTheme.bodyMedium,
                 ),
               ),
             ),
           if (history.length >= 2) ...[
-            Text('Cycle length', style: theme.textTheme.titleMedium),
+            Text(tr('Cycle length'), style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
             SizedBox(height: 180, child: _CycleLengthChart(history: history)),
             const SizedBox(height: 28),
           ],
-          Text('How each phase tends to feel',
+          Text(tr('How each phase tends to feel'),
               style: theme.textTheme.titleMedium),
           const SizedBox(height: 12),
           ...phases.where((p) => p.sampleDays > 0).map(
@@ -62,12 +66,15 @@ class InsightsScreen extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              Text(p.phase.label,
+                              Text(tr(p.phase.label),
                                   style: theme.textTheme.titleSmall),
                               const Spacer(),
                               if (p.averageEnergy != null)
                                 Text(
-                                  'Energy ${p.averageEnergy!.toStringAsFixed(1)}/5',
+                                  trf('Energy {value}/5', {
+                                    'value':
+                                        p.averageEnergy!.toStringAsFixed(1),
+                                  }),
                                   style: theme.textTheme.labelMedium,
                                 ),
                             ],
@@ -79,7 +86,7 @@ class InsightsScreen extends ConsumerWidget {
                               runSpacing: 4,
                               children: p.topSymptoms
                                   .map((s) => Chip(
-                                        label: Text(s),
+                                        label: Text(tr(s)),
                                         visualDensity: VisualDensity.compact,
                                       ))
                                   .toList(),
@@ -87,7 +94,8 @@ class InsightsScreen extends ConsumerWidget {
                           ],
                           const SizedBox(height: 6),
                           Text(
-                            '${p.sampleDays} days logged',
+                            trCount(p.sampleDays, '{n} day logged',
+                                '{n} days logged'),
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
@@ -100,7 +108,7 @@ class InsightsScreen extends ConsumerWidget {
               ),
           if (patterns.isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('What repeats', style: theme.textTheme.titleMedium),
+            Text(tr('What repeats'), style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
             ...patterns.map(
               (p) => ListTile(
@@ -112,8 +120,14 @@ class InsightsScreen extends ConsumerWidget {
                         style: theme.textTheme.labelLarge),
                   ),
                 ),
-                title: Text(p.title),
-                subtitle: Text(p.detail),
+                title: Text(trf('{symptom} in your {phase} phase', {
+                  'symptom': tr(p.symptom),
+                  'phase': tr(p.phase.label).toLowerCase(),
+                })),
+                subtitle: Text(trf(
+                  'Logged in {hits} of {cycles} recent cycles.',
+                  {'hits': p.hits, 'cycles': p.cycles},
+                )),
               ),
             ),
           ],

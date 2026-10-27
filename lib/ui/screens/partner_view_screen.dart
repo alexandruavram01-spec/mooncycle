@@ -15,6 +15,7 @@ import '../widgets/partner_stickers.dart';
 import 'language_screen.dart';
 import 'partner_settings_screen.dart';
 import 'tip_library_screen.dart';
+import '../../l10n/ui.dart';
 
 final _joinedProvider = FutureProvider<bool>(
   (ref) => ref.watch(partnerLinkServiceProvider).hasJoined(),
@@ -93,11 +94,15 @@ class PartnerViewScreen extends ConsumerWidget {
   ) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name.isEmpty ? 'Her cycle' : "$name's cycle"),
+        title: Text(
+          name.isEmpty
+              ? tr('Her cycle')
+              : trf("{name}'s cycle", {'name': name}),
+        ),
         actions: [
           if (joined.valueOrNull == true)
             IconButton(
-              tooltip: 'Refresh',
+              tooltip: tr('Refresh'),
               icon: const Icon(Icons.refresh),
               onPressed: () => ref.invalidate(_sharedSnapshotProvider),
             ),
@@ -137,20 +142,20 @@ class PartnerViewScreen extends ConsumerWidget {
                 }
               },
               itemBuilder: (_) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'edit',
-                  child: Text('Her name and tip tone'),
+                  child: Text(tr('Her name and tip tone')),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'switch',
-                  child: Text('I track my own cycle'),
+                  child: Text(tr('I track my own cycle')),
                 ),
-                const PopupMenuItem(value: 'language', child: Text('Language')),
-                const PopupMenuItem(value: 'account', child: Text('Account')),
+                PopupMenuItem(value: 'language', child: Text(tr('Language'))),
+                PopupMenuItem(value: 'account', child: Text(tr('Account'))),
                 if (ref.read(isEditorProvider).valueOrNull == true)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'library',
-                    child: Text('Tip library'),
+                    child: Text(tr('Tip library')),
                   ),
               ],
             ),
@@ -206,11 +211,11 @@ class _CodeEntryState extends ConsumerState<_CodeEntry> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        Text('Enter her pairing code', style: theme.textTheme.titleMedium),
+        Text(tr('Enter her pairing code'), style: theme.textTheme.titleMedium),
         const SizedBox(height: 6),
         Text(
-          'She creates it under Partner in her app. You will see only the '
-          'summary she chooses to share.',
+          tr('She creates it under Partner in her app. You will see only the '
+          'summary she chooses to share.'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
@@ -225,7 +230,7 @@ class _CodeEntryState extends ConsumerState<_CodeEntry> {
           style: theme.textTheme.headlineSmall?.copyWith(letterSpacing: 4),
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
-            hintText: 'ABCD2345',
+            hintText: tr('ABCD2345'),
             errorText: _error,
             errorMaxLines: 3,
           ),
@@ -234,7 +239,7 @@ class _CodeEntryState extends ConsumerState<_CodeEntry> {
         const SizedBox(height: 12),
         FilledButton(
           onPressed: _busy ? null : _connect,
-          child: Text(_busy ? 'Connecting…' : 'Connect'),
+          child: Text(_busy ? tr('Connecting…') : tr('Connect')),
         ),
       ],
     );
@@ -261,8 +266,8 @@ class _SharedView extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.edit_outlined),
-              title: const Text('What do you call her?'),
-              subtitle: const Text('Add her name or a nickname.'),
+              title: Text(tr('What do you call her?')),
+              subtitle: Text(tr('Add her name or a nickname.')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -283,10 +288,10 @@ class _SharedView extends ConsumerWidget {
             ),
           ),
           data: (value) => value == null
-              ? const Card(
+              ? Card(
                   child: Padding(
                     padding: EdgeInsets.all(18),
-                    child: Text('Nothing is being shared with you right now.'),
+                    child: Text(tr('Nothing is being shared with you right now.')),
                   ),
                 )
               : Column(
@@ -297,17 +302,21 @@ class _SharedView extends ConsumerWidget {
                       Center(
                         child: Sticker(
                           key: ValueKey('ask-${value.ask}'),
-                          header: '${name.isEmpty ? 'She' : name} asks'
-                              '${value.askAt == null ? '' : ' · ${_ago(value.askAt!)}'}',
+                          header: trf('{name} asks', {
+                                'name': name.isEmpty ? tr('She') : name,
+                              }) +
+                              (value.askAt == null
+                                  ? ''
+                                  : ' · ${_ago(value.askAt!)}'),
                           text: ask.text,
                           icon: askIcons[value.ask] ?? Icons.favorite,
                           stamp: value.reaction == PartnerReactions.done
-                              ? 'Delivered'
+                              ? tr('Delivered')
                               : null,
                         ),
                       ),
                       const SizedBox(height: 18),
-                      Text('Your reply', style: theme.textTheme.labelLarge),
+                      Text(tr('Your reply'), style: theme.textTheme.labelLarge),
                       const SizedBox(height: 6),
                       // Nothing is sent until he taps one.
                       ReplyChips(
@@ -331,7 +340,7 @@ class _SharedView extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Updated ${_ago(value.updatedAt)}',
+                      trf('Updated {when}', {'when': _ago(value.updatedAt)}),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -367,7 +376,7 @@ class _SharedView extends ConsumerWidget {
                 }
               }
             },
-            child: const Text('Use a different code'),
+            child: Text(tr('Use a different code')),
           ),
         ),
       ],
@@ -376,10 +385,10 @@ class _SharedView extends ConsumerWidget {
 
   static String _ago(DateTime time) {
     final diff = DateTime.now().difference(time);
-    if (diff.inMinutes < 1) return 'just now';
-    if (diff.inHours < 1) return '${diff.inMinutes} min ago';
-    if (diff.inDays < 1) return '${diff.inHours} h ago';
-    return '${diff.inDays} day${diff.inDays == 1 ? '' : 's'} ago';
+    if (diff.inMinutes < 1) return tr('just now');
+    if (diff.inHours < 1) return trf('{n} min ago', {'n': diff.inMinutes});
+    if (diff.inDays < 1) return trf('{n} h ago', {'n': diff.inHours});
+    return trCount(diff.inDays, '{n} day ago', '{n} days ago');
   }
 
   /// Runs one of his one-tap actions, then refreshes the screen.
@@ -422,7 +431,7 @@ class _OfferPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final who = name.isEmpty ? 'She' : name;
+    final who = name.isEmpty ? tr('She') : name;
     final replyLabel = messages.offerReplies[reply];
 
     return Card(
@@ -431,10 +440,11 @@ class _OfferPicker extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Offer something', style: theme.textTheme.titleSmall),
+            Text(tr('Offer something'), style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             Text(
-              '$who gets it as a sticker and can answer with one tap.',
+              trf('{name} gets it as a sticker and can answer with one tap.',
+                  {'name': who}),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -444,7 +454,7 @@ class _OfferPicker extends StatelessWidget {
               Center(
                 child: Sticker(
                   key: ValueKey('reply-$offer-$reply'),
-                  header: '$who answered',
+                  header: trf('{name} answered', {'name': who}),
                   text: replyLabel,
                   icon: Icons.favorite,
                   tilt: 0.04,

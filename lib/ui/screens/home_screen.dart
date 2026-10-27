@@ -16,6 +16,7 @@ import '../widgets/moon_face.dart';
 import '../widgets/partner_stickers.dart';
 import '../widgets/wordmark.dart';
 import 'get_help_screen.dart';
+import '../../l10n/ui.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -67,14 +68,11 @@ class _HomeBody extends ConsumerWidget {
     final sharing = ref.watch(settingsProvider).valueOrNull?.sharing;
     final sharingOn = sharing?.enabled ?? false;
     final requestsOn = sharing?.allowRequests ?? false;
-    final conceiving =
-        ref.watch(profileProvider).goal == TrackingGoal.conceive;
+    final conceiving = ref.watch(profileProvider).goal == TrackingGoal.conceive;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
       children: [
-        // First thing she sees: the tip her partner got today, to rate.
-        if (sharingOn) const PartnerTipBanner(),
         Center(
           child: CycleWheel(
             status: status,
@@ -85,15 +83,15 @@ class _HomeBody extends ConsumerWidget {
                 MoonFace(phase: status.phase, size: 44),
                 const SizedBox(height: 6),
                 Text(
-                  'Day ${status.dayOfCycle}',
+                  trf('Day {n}', {'n': status.dayOfCycle}),
                   style: theme.textTheme.headlineMedium
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  status.phase.label,
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(color: phaseColor),
+                  tr(status.phase.label),
+                  style:
+                      theme.textTheme.titleMedium?.copyWith(color: phaseColor),
                 ),
               ],
             ),
@@ -103,12 +101,6 @@ class _HomeBody extends ConsumerWidget {
         _WheelLegend(showFertile: showFertile),
         // Today's insight card: test accounts only until our NHS check is done.
         const HerInsightsSection(),
-        // Her nudges to him and his offers to her live here, where she looks
-        // every day, rather than on the Partner tab.
-        if (sharingOn) ...[
-          const PartnerOfferCard(),
-          if (requestsOn) const PartnerNudgeCard(),
-        ],
         const SizedBox(height: 24),
         _NextPeriodCard(status: status),
         if (showFertile && conceiving) ...[
@@ -124,7 +116,7 @@ class _HomeBody extends ConsumerWidget {
           onPressed: () => showLogSheet(context, ref, today),
           icon: const Icon(Icons.edit_outlined),
           label: Text(
-            todayLog == null ? 'Log how today feels' : 'Edit today',
+            todayLog == null ? tr('Log how today feels') : tr('Edit today'),
           ),
           style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(52),
@@ -135,10 +127,17 @@ class _HomeBody extends ConsumerWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: todayLog.symptoms
-                .map((s) => Chip(label: Text(s)))
-                .toList(),
+            children:
+                todayLog.symptoms.map((s) => Chip(label: Text(tr(s)))).toList(),
           ),
+        ],
+        // The partner part sits below her own cards: the tip he got today
+        // (to rate), his offers to her and her nudges to him.
+        if (sharingOn) ...[
+          const SizedBox(height: 16),
+          const PartnerTipBanner(),
+          const PartnerOfferCard(),
+          if (requestsOn) const PartnerNudgeCard(),
         ],
         const SizedBox(height: 24),
         const _MedicalDisclaimer(),
@@ -156,7 +155,7 @@ class _WheelLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.labelSmall;
+    final style = theme.textTheme.labelMedium;
 
     Widget item(Color color, String label, {bool line = false}) => Row(
           mainAxisSize: MainAxisSize.min,
@@ -182,17 +181,18 @@ class _WheelLegend extends StatelessWidget {
           runSpacing: 6,
           children: [
             for (final phase in CyclePhase.values)
-              item(MoonColors.forPhase(phase), phase.label),
+              item(MoonColors.forPhase(phase), tr(phase.label)),
             if (showFertile)
-              item(MoonColors.ovulatory, 'Fertile days', line: true),
+              item(MoonColors.ovulatory, tr('Fertile days'), line: true),
           ],
         ),
         const SizedBox(height: 6),
         Text(
-          'Solid segments are days so far, faded ones are still to come. '
-          'The small moon is today.',
+          tr('Solid segments are days so far, faded ones are still to come. '
+              'The small moon is today.'),
           textAlign: TextAlign.center,
-          style: style?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          style: theme.textTheme.bodySmall
+              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
         ),
       ],
     );
@@ -213,13 +213,13 @@ class _NextPeriodCard extends StatelessWidget {
 
     final String headline;
     if (days == null || next == null) {
-      headline = 'Not enough data yet';
+      headline = tr('Not enough data yet');
     } else if (status.isLate) {
-      headline = 'Period is ${-days} day${days == -1 ? '' : 's'} late';
+      headline = trCount(-days, 'Period is {n} day late', 'Period is {n} days late');
     } else if (days == 0) {
-      headline = 'Period expected today';
+      headline = tr('Period expected today');
     } else {
-      headline = 'Period in $days day${days == 1 ? '' : 's'}';
+      headline = trCount(days, 'Period in {n} day', 'Period in {n} days');
     }
 
     return Card(
@@ -249,22 +249,22 @@ class _NextPeriodCard extends StatelessWidget {
             Row(
               children: [
                 _Stat(
-                  label: 'Cycle',
+                  label: tr('Cycle'),
                   value: '${status.typicalCycleLength}d',
                 ),
                 _Stat(
-                  label: 'Period',
+                  label: tr('Period'),
                   value: '${status.typicalPeriodLength}d',
                 ),
                 // Variation needs two full cycles to mean anything.
                 _Stat(
-                  label: 'Variation',
+                  label: tr('Variation'),
                   value: status.completedCycles < 2
                       ? '—'
                       : '±${status.cycleLengthVariation.toStringAsFixed(1)}d',
                 ),
                 _Stat(
-                  label: 'Cycles',
+                  label: tr('Cycles'),
                   value: status.completedCycles == 0
                       ? '—'
                       : '${status.completedCycles}',
@@ -274,8 +274,8 @@ class _NextPeriodCard extends StatelessWidget {
             if (status.completedCycles == 0) ...[
               const SizedBox(height: 10),
               Text(
-                'Estimated from your quiz answers until you have logged a '
-                'full cycle.',
+                tr('Estimated from your quiz answers until you have logged a '
+                    'full cycle.'),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -327,8 +327,8 @@ class _ConfidenceChip extends StatelessWidget {
       PredictionConfidence.high => ('High confidence', Colors.green),
     };
     return Tooltip(
-      message: 'Based on how many cycles you have logged and how much their '
-          'length varies.',
+      message: tr('Based on how many cycles you have logged and how much their '
+          'length varies.'),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
@@ -336,7 +336,7 @@ class _ConfidenceChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
-          label,
+          tr(label),
           style: Theme.of(context)
               .textTheme
               .labelSmall
@@ -366,12 +366,12 @@ class _FertileDaysCard extends StatelessWidget {
 
     final String headline;
     if (status.isInFertileWindow) {
-      headline = 'You are in your estimated fertile days';
+      headline = tr('You are in your estimated fertile days');
     } else if (untilStart > 0) {
-      headline =
-          'Fertile days start in $untilStart day${untilStart == 1 ? '' : 's'}';
+      headline = trCount(untilStart, 'Fertile days start in {n} day',
+          'Fertile days start in {n} days');
     } else {
-      headline = 'Fertile days have passed for this cycle';
+      headline = tr('Fertile days have passed for this cycle');
     }
 
     return Card(
@@ -391,9 +391,10 @@ class _FertileDaysCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              '${formatter.format(start.toDateTime())} to '
-              '${formatter.format(end.toDateTime())}, estimated from your '
-              'cycle history.',
+              trf('{start} to {end}, estimated from your cycle history.', {
+                'start': formatter.format(start.toDateTime()),
+                'end': formatter.format(end.toDateTime()),
+              }),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -446,14 +447,14 @@ class _PhaseExplainerCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${status.phase.label} phase',
+                  tr('${status.phase.label} phase'),
                   style: theme.textTheme.titleSmall,
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              _hormones[status.phase]!,
+              tr(_hormones[status.phase]!),
               style: theme.textTheme.bodyMedium,
             ),
             if (showFertile && status.isInFertileWindow) ...[
@@ -464,7 +465,7 @@ class _PhaseExplainerCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      'You are in your estimated fertile window.',
+                      tr('You are in your estimated fertile window.'),
                       style: theme.textTheme.bodySmall,
                     ),
                   ),
@@ -492,15 +493,14 @@ class _QuickFlowCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Today's flow",
-                style: Theme.of(context).textTheme.titleSmall),
+            Text(tr("Today's flow"), style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
               children: FlowIntensity.values.map((f) {
                 final selected = (current ?? FlowIntensity.none) == f;
                 return ChoiceChip(
-                  label: Text(f.label),
+                  label: Text(tr(f.label)),
                   selected: selected,
                   onSelected: (_) async {
                     final existing = ref.read(logByDayProvider(today)) ??
@@ -533,13 +533,13 @@ class _EmptyState extends ConsumerWidget {
           children: [
             const MoonFace(phase: CyclePhase.follicular, size: 72),
             const SizedBox(height: 20),
-            Text('Let us find your rhythm',
+            Text(tr('Let us find your rhythm'),
                 style: theme.textTheme.headlineSmall,
                 textAlign: TextAlign.center),
             const SizedBox(height: 10),
             Text(
-              'Mark the first day of your last period. Predictions get sharper '
-              'with every cycle you log.',
+              tr('Mark the first day of your last period. Predictions get sharper '
+                  'with every cycle you log.'),
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -553,7 +553,7 @@ class _EmptyState extends ConsumerWidget {
                   initialDate: DateTime.now(),
                   firstDate: DateTime.now().subtract(const Duration(days: 365)),
                   lastDate: DateTime.now(),
-                  helpText: 'First day of your last period',
+                  helpText: tr('First day of your last period'),
                 );
                 if (picked == null) return;
                 final day = DayKey.fromDateTime(picked);
@@ -565,7 +565,7 @@ class _EmptyState extends ConsumerWidget {
                       ),
                     );
               },
-              child: const Text('Set my last period'),
+              child: Text(tr('Set my last period')),
             ),
           ],
         ),
@@ -581,8 +581,8 @@ class _MedicalDisclaimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Text(
-      'Predictions are estimates based on your own history. They are not '
-      'contraception and not medical advice.',
+      tr('Predictions are estimates based on your own history. They are not '
+          'contraception and not medical advice.'),
       style: theme.textTheme.bodySmall?.copyWith(
         color: theme.colorScheme.onSurfaceVariant,
       ),
@@ -599,7 +599,7 @@ class _ErrorView extends StatelessWidget {
   Widget build(BuildContext context) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text('Something went wrong.\n\n$message',
+          child: Text('${tr('Something went wrong.')}\n\n$message',
               textAlign: TextAlign.center),
         ),
       );

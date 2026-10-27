@@ -60,9 +60,10 @@ class _WheelPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final centre = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) / 2 - 14;
+    // A thick ring, with room outside it for the fertile-days bracket.
+    const stroke = 26.0;
+    final radius = math.min(size.width, size.height) / 2 - stroke / 2 - 10;
     final rect = Rect.fromCircle(center: centre, radius: radius);
-    final stroke = 18.0;
 
     canvas.drawCircle(
       centre,
@@ -149,10 +150,10 @@ class _WheelPainter extends CustomPainter {
         Offset(math.cos(angle), math.sin(angle)) * radius;
     // Today is a small half-lit moon sitting on the ring.
     canvas
-      ..drawCircle(markerCentre, 10, Paint()..color = markerColor)
-      ..drawCircle(markerCentre, 8, Paint()..color = surfaceColor)
+      ..drawCircle(markerCentre, 13, Paint()..color = markerColor)
+      ..drawCircle(markerCentre, 11, Paint()..color = surfaceColor)
       ..drawArc(
-        Rect.fromCircle(center: markerCentre, radius: 8),
+        Rect.fromCircle(center: markerCentre, radius: 11),
         -math.pi / 2,
         math.pi,
         true,

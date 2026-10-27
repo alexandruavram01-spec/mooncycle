@@ -5,6 +5,7 @@ import '../../legal.dart';
 import '../../services/api_client.dart';
 import '../../state/providers.dart';
 import '../widgets/links.dart';
+import '../../l10n/ui.dart';
 
 /// AI-written notes: what they are, what is sent and to whom, and her
 /// explicit consent before anything is. Off unless she turns them on here.
@@ -30,13 +31,13 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
         SnackBar(
           content: Text(
             on
-                ? 'AI-written notes are on.'
-                : 'AI-written notes are off. Nothing more will be sent.',
+                ? tr('AI-written notes are on.')
+                : tr('AI-written notes are off. Nothing more will be sent.'),
           ),
         ),
       );
     } on ApiException catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+      messenger.showSnackBar(SnackBar(content: Text('$e')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -48,12 +49,13 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
     final on = ref.watch(aiNotesProvider).valueOrNull ?? false;
     Widget heading(String text) => Padding(
           padding: const EdgeInsets.only(top: 18, bottom: 6),
-          child: Text(text, style: theme.textTheme.titleSmall),
+          child: Text(tr(text), style: theme.textTheme.titleSmall),
         );
-    Widget para(String text) => Text(text, style: theme.textTheme.bodyMedium);
+    Widget para(String text) =>
+        Text(tr(text), style: theme.textTheme.bodyMedium);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('AI-written notes')),
+      appBar: AppBar(title: Text(tr('AI-written notes'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
@@ -95,14 +97,14 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
                 Uri.parse(Legal.privacyUrl),
                 'Could not open the link.',
               ),
-              child: const Text('Privacy policy'),
+              child: Text(tr('Privacy policy')),
             ),
           ),
           const SizedBox(height: 8),
           if (on)
             OutlinedButton(
               onPressed: _saving ? null : () => _set(false),
-              child: const Text('Turn AI-written notes off'),
+              child: Text(tr('Turn AI-written notes off')),
             )
           else ...[
             CheckboxListTile(
@@ -110,15 +112,15 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
               controlAffinity: ListTileControlAffinity.leading,
               value: _agreed,
               onChanged: (v) => setState(() => _agreed = v ?? false),
-              title: const Text(
-                'I agree to MoonCycle sending this summary about my health to '
-                'Anthropic to write my notes.',
+              title: Text(
+                tr('I agree to MoonCycle sending this summary about my health to '
+                'Anthropic to write my notes.'),
               ),
             ),
             const SizedBox(height: 8),
             FilledButton(
               onPressed: _agreed && !_saving ? () => _set(true) : null,
-              child: const Text('Turn on'),
+              child: Text(tr('Turn on')),
             ),
           ],
         ],

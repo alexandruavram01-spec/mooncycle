@@ -6,6 +6,7 @@ import '../../services/apple_account.dart';
 import '../../services/device_check.dart';
 import '../../services/google_account.dart';
 import '../../state/providers.dart';
+import '../../l10n/ui.dart';
 
 /// The account actions, shared by Settings and the partner's menu.
 Future<void> showAccountSheet(BuildContext context) {
@@ -31,14 +32,14 @@ class _AccountSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Signed in as', style: theme.textTheme.labelMedium),
+            Text(tr('Signed in as'), style: theme.textTheme.labelMedium),
             Text(email, style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.logout),
-              title: const Text('Sign out'),
-              subtitle: const Text('Your logs stay on this device.'),
+              title: Text(tr('Sign out')),
+              subtitle: Text(tr('Your logs stay on this device.')),
               onTap: () async {
                 // The sheet closes first; both are captured while it is open.
                 final session = ref.read(sessionProvider.notifier);
@@ -53,11 +54,11 @@ class _AccountSheet extends ConsumerWidget {
                 color: theme.colorScheme.error,
               ),
               title: Text(
-                'Delete account',
+                tr('Delete account'),
                 style: TextStyle(color: theme.colorScheme.error),
               ),
-              subtitle: const Text(
-                'Removes your account and erases this device.',
+              subtitle: Text(
+                tr('Removes your account and erases this device.'),
               ),
               onTap: () async {
                 final session = ref.read(sessionProvider.notifier);
@@ -130,7 +131,7 @@ Future<_Confirmation?> _confirmDeletion(
     );
     if (go == null) return null;
     switch (await DeviceCheck.confirm(
-      'Confirm it is you to delete your MoonCycle account.',
+      tr('Confirm it is you to delete your MoonCycle account.'),
     )) {
       case DeviceCheckResult.passed:
         return const _Confirmation.byDevice();
@@ -199,15 +200,15 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Delete your account?'),
+      title: Text(tr('Delete your account?')),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Your account and partner connection are removed from the '
+          Text(
+            tr('Your account and partner connection are removed from the '
             'server, and your logs and quiz answers are erased from this '
-            'device. This cannot be undone.',
+            'device. This cannot be undone.'),
           ),
           const SizedBox(height: 16),
           switch (widget.step) {
@@ -215,19 +216,19 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                 controller: _password,
                 obscureText: true,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
+                decoration: InputDecoration(
+                  labelText: tr('Password'),
                   border: OutlineInputBorder(),
                 ),
               ),
-            _NextStep.deviceLock => const Text(
-                'Next, your phone asks for your fingerprint, face or PIN.',
+            _NextStep.deviceLock => Text(
+                tr('Next, your phone asks for your fingerprint, face or PIN.'),
               ),
-            _NextStep.google => const Text(
-                'Next, choose your Google account to confirm it is you.',
+            _NextStep.google => Text(
+                tr('Next, choose your Google account to confirm it is you.'),
               ),
-            _NextStep.apple => const Text(
-                'Next, confirm with your Apple account that it is you.',
+            _NextStep.apple => Text(
+                tr('Next, confirm with your Apple account that it is you.'),
               ),
           },
         ],
@@ -235,7 +236,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(tr('Cancel')),
         ),
         FilledButton(
           onPressed: () {
@@ -246,7 +247,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
             if (_password.text.isEmpty) return;
             Navigator.of(context).pop(_password.text);
           },
-          child: const Text('Delete account'),
+          child: Text(tr('Delete account')),
         ),
       ],
     );

@@ -3,6 +3,7 @@ import '../domain/profile.dart';
 import 'app_language.dart';
 import 'partner_messages_en_gb.dart';
 import 'partner_messages_en_int.dart';
+import 'partner_messages_ro.dart';
 
 /// One line of partner copy and its stable code (T01, T49...). The code is
 /// what ratings refer to; the text depends on the reader's language.
@@ -113,6 +114,7 @@ class PartnerMessages {
   static PartnerMessages of(AppLanguage language) => switch (language) {
         AppLanguage.enGB => enGbMessages,
         AppLanguage.enInt => enIntMessages,
+        AppLanguage.ro => roMessages,
       };
 
   String days(int n) => n == 1 ? oneDay : manyDays.replaceAll('{n}', '$n');

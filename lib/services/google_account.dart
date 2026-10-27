@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart'
     show TargetPlatform, debugPrint, defaultTargetPlatform, kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../l10n/ui.dart';
 import 'api_client.dart';
 
 /// "Continue with Google", on Android, and on iPhone once [iosClientId] is
@@ -59,7 +60,7 @@ class GoogleAccount {
       debugPrint('Google sign-in: ${e.code.name} ${e.description ?? ''}');
       if (e.code == GoogleSignInExceptionCode.canceled) return null;
       // The code helps tell a setup problem from anything else.
-      throw ApiException('$_failed (${e.code.name})');
+      throw ApiException('${tr(_failed)} (${e.code.name})');
     }
   }
 

@@ -3,7 +3,8 @@
 #
 #   C:\src\mooncycle-store\raw\          the screenshots + captions.txt
 #   C:\src\mooncycle-store\play\         1080 x 1920 for Google Play
-#   C:\src\mooncycle-store\appstore\     1320 x 2868 for the App Store (6.9")
+#   C:\src\mooncycle-store\appstore-medium\  1206 x 2622, App Store (required slot)
+#   C:\src\mooncycle-store\appstore-large\   1320 x 2868, App Store (Pro Max, Air)
 #
 # captions.txt, one line per screenshot, in store order:
 #   1.png | Know where you are in your cycle
@@ -23,7 +24,10 @@ Add-Type -AssemblyName System.Drawing
 $raw = Join-Path $Folder 'raw'
 $targets = @(
   @{ Name = 'play'; W = 1080; H = 1920 },
-  @{ Name = 'appstore'; W = 1320; H = 2868 }
+  # App Store: "iPhone with Dynamic Island (medium display)" is the required
+  # slot; "large display" covers the Pro Max and Air models.
+  @{ Name = 'appstore-medium'; W = 1206; H = 2622 },
+  @{ Name = 'appstore-large'; W = 1320; H = 2868 }
 )
 $cream = [System.Drawing.ColorTranslator]::FromHtml('#FAEDE3')
 $ink = [System.Drawing.ColorTranslator]::FromHtml('#3A2E3F')
@@ -119,4 +123,4 @@ foreach ($line in $lines) {
   $source.Dispose()
   Write-Host "Made $file"
 }
-Write-Host "Done: $Folder\play and $Folder\appstore"
+Write-Host "Done: $Folder\play, $Folder\appstore-medium and $Folder\appstore-large"

@@ -6,6 +6,7 @@ import '../../domain/day_key.dart';
 import '../../domain/enums.dart';
 import '../../domain/models.dart';
 import '../../state/providers.dart';
+import '../../l10n/ui.dart';
 
 Future<void> showLogSheet(BuildContext context, WidgetRef ref, DayKey day) {
   return showModalBottomSheet<void>(
@@ -73,7 +74,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
       // Never fail silently: a Save that does nothing looks like a lost day.
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not save this day: $e')),
+          SnackBar(content: Text('${tr('Could not save this day:')} $e')),
         );
       }
       return;
@@ -82,7 +83,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
   }
 
   Widget _symptomChip(String symptom) => FilterChip(
-        label: Text(symptom),
+        label: Text(tr(symptom)),
         selected: _symptoms.contains(symptom),
         onSelected: (on) => setState(() {
           if (on) {
@@ -153,11 +154,11 @@ class _LogSheetState extends ConsumerState<LogSheet> {
                   if (bottomInset > 0)
                     TextButton(
                       onPressed: () => FocusScope.of(context).unfocus(),
-                      child: const Text('Done'),
+                      child: Text(tr('Done')),
                     ),
                   FilledButton(
                     onPressed: _save,
-                    child: const Text('Save'),
+                    child: Text(tr('Save')),
                   ),
                 ],
               ),
@@ -167,8 +168,8 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Everything here is about this day, whether or not you are '
-                  'on your period.',
+                  tr('Everything here is about this day, whether or not you are '
+                  'on your period.'),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -207,7 +208,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               children: FlowIntensity.values
                   .map(
                     (f) => ChoiceChip(
-                      label: Text(f.label),
+                      label: Text(tr(f.label)),
                       selected: _flow == f,
                       onSelected: (_) => setState(() => _flow = f),
                     ),
@@ -243,7 +244,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(
-                '1 = drained, 5 = energised',
+                tr('1 = drained, 5 = energised'),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -266,7 +267,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    hint,
+                    tr(hint),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -284,8 +285,8 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               controller: _sleep,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
-                labelText: 'Sleep last night (hours)',
+              decoration: InputDecoration(
+                labelText: tr('Sleep last night (hours)'),
                 border: OutlineInputBorder(),
                 isDense: true,
               ),
@@ -294,8 +295,8 @@ class _LogSheetState extends ConsumerState<LogSheet> {
             TextField(
               controller: _notes,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Notes',
+              decoration: InputDecoration(
+                labelText: tr('Notes'),
                 border: OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
@@ -306,9 +307,9 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               onChanged: (on) => setState(
                 () => _periodStartOverride = on ? true : null,
               ),
-              title: const Text('This is the first day of my period'),
-              subtitle: const Text(
-                'Use this if the app grouped your days incorrectly.',
+              title: Text(tr('This is the first day of my period')),
+              subtitle: Text(
+                tr('Use this if the app grouped your days incorrectly.'),
               ),
               contentPadding: EdgeInsets.zero,
             ),
@@ -318,7 +319,7 @@ class _LogSheetState extends ConsumerState<LogSheet> {
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save'),
+              child: Text(tr('Save')),
             ),
           ],
         );
@@ -334,7 +335,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(
-          text,
+          tr(text),
           style: Theme.of(context)
               .textTheme
               .labelLarge

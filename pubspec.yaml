@@ -1,13 +1,16 @@
 name: mooncycle
 description: MoonCycle - period, symptom and hormone tracking with partner sharing.
 publish_to: "none"
-version: 1.0.0+5
+version: 1.0.0+6
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
+    sdk: flutter
+  # Romanian buttons, date pickers and dialogs from Flutter itself.
+  flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^2.5.1
   sqflite: ^2.3.3
@@ -18,7 +21,8 @@ dependencies:
   # to load on Windows and fails at startup.
   sqlite3_flutter_libs: ^0.5.24
   path: ^1.9.0
-  intl: ^0.19.0
+  # flutter_localizations needs 0.20.
+  intl: ^0.20.3
   shared_preferences: ^2.2.3
   http: ^1.2.0
   # Gelasio, a free serif with Georgia's proportions, for the wordmark and

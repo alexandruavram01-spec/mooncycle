@@ -1,6 +1,7 @@
 import '../domain/enums.dart';
 import 'app_language.dart';
 import 'her_insights_en_gb.dart';
+import 'her_insights_ro.dart';
 
 /// One insight card's wording. The code (I01...) is the same in every
 /// language; which card shows is decided in `lib/domain/her_insights.dart`.
@@ -125,5 +126,6 @@ class HerInsightTexts {
   static HerInsightTexts of(AppLanguage language) => switch (language) {
         AppLanguage.enGB => enGbHerInsights,
         AppLanguage.enInt => enGbHerInsights,
+        AppLanguage.ro => roHerInsights,
       };
 }

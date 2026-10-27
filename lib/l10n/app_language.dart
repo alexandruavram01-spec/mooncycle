@@ -15,6 +15,12 @@ enum AppLanguage {
     'en-INT',
     'English (International)',
     'Plain English that reads naturally anywhere.',
+  ),
+  // Each language describes itself in its own words.
+  ro(
+    'ro',
+    'Română',
+    'Toată aplicația în limba română.',
   );
 
   const AppLanguage(this.code, this.label, this.hint);

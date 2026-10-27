@@ -9,6 +9,7 @@ import '../widgets/consent_boxes.dart';
 import '../widgets/links.dart';
 import '../widgets/wordmark.dart';
 import 'language_screen.dart';
+import '../../l10n/ui.dart';
 
 /// Create an account or sign in. Shown by the gate in `main.dart` whenever
 /// nobody is signed in; a successful submit replaces it with the app.
@@ -47,18 +48,19 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     String? problem;
     if (email.isEmpty || !email.contains('@')) {
-      problem = 'Enter your email address.';
+      problem = tr('Enter your email address.');
     } else if (_creating && password.length < _minPasswordLength) {
-      problem = 'Use a password of at least $_minPasswordLength characters.';
+      problem = trf('Use a password of at least {n} characters.',
+          {'n': _minPasswordLength});
     } else if (_creating && !RegExp('[A-Z]').hasMatch(password)) {
-      problem = 'Add at least one capital letter to your password.';
+      problem = tr('Add at least one capital letter to your password.');
     } else if (_creating && !RegExp(r'[^A-Za-z0-9\s]').hasMatch(password)) {
-      problem = 'Add at least one special character to your password, '
-          'such as ! # or ?.';
+      problem = tr('Add at least one special character to your password, '
+          'such as ! # or ?.');
     } else if (password.isEmpty) {
-      problem = 'Enter your password.';
+      problem = tr('Enter your password.');
     } else if (_creating && !(_terms && _health)) {
-      problem = 'Please tick both boxes to create your account.';
+      problem = tr('Please tick both boxes to create your account.');
     }
     if (problem != null) {
       setState(() => _error = problem);
@@ -104,8 +106,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       if (mounted && !signedIn) {
         setState(() {
           _busy = false;
-          _googleError = 'Google sign-in was closed before it finished. '
-              'Try again, or use your email and password.';
+          _googleError = tr('Google sign-in was closed before it finished. '
+              'Try again, or use your email and password.');
         });
       }
     } catch (e) {
@@ -132,8 +134,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       if (mounted && !signedIn) {
         setState(() {
           _busy = false;
-          _googleError = 'Sign in with Apple was closed before it finished. '
-              'Try again, or use your email and password.';
+          _googleError = tr('Sign in with Apple was closed before it finished. '
+              'Try again, or use your email and password.');
         });
       }
     } catch (e) {
@@ -168,7 +170,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 const Center(child: Wordmark(size: 32)),
                 const SizedBox(height: 16),
                 Text(
-                  _creating ? 'Create your account' : 'Welcome back',
+                  _creating ? tr('Create your account') : tr('Welcome back'),
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
@@ -193,7 +195,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       const Expanded(child: Divider()),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('or use your email', style: muted),
+                        child: Text(tr('or use your email'), style: muted),
                       ),
                       const Expanded(child: Divider()),
                     ],
@@ -207,8 +209,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   keyboardType: TextInputType.emailAddress,
                   autofillHints: const [AutofillHints.email],
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
+                  decoration: InputDecoration(
+                    labelText: tr('Email'),
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -223,15 +225,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                         : AutofillHints.password,
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: tr('Password'),
                     helperText: _creating
-                        ? 'At least $_minPasswordLength characters, with a '
-                            'capital letter and a special character'
+                        ? trf(
+                            'At least {n} characters, with a capital letter '
+                            'and a special character',
+                            {'n': _minPasswordLength},
+                          )
                         : null,
                     helperMaxLines: 2,
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      tooltip: _obscure ? 'Show password' : 'Hide password',
+                      tooltip: _obscure ? tr('Show password') : tr('Hide password'),
                       icon: Icon(
                         _obscure
                             ? Icons.visibility_outlined
@@ -245,10 +250,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 const SizedBox(height: 8),
                 Text(
                   _creating
-                      ? 'Choose a password you will remember. It cannot be '
-                          'reset yet.'
-                      : 'Password reset is not available yet. If you have '
-                          'forgotten it, you will need a new account.',
+                      ? tr('Choose a password you will remember. It cannot be '
+                          'reset yet.')
+                      : tr('Password reset is not available yet. If you have '
+                          'forgotten it, you will need a new account.'),
                   style: muted,
                 ),
                 if (_creating) ...[
@@ -279,10 +284,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                   child: Text(
                     _busy
-                        ? 'One moment…'
+                        ? tr('One moment…')
                         : _creating
-                            ? 'Create account'
-                            : 'Sign in',
+                            ? tr('Create account')
+                            : tr('Sign in'),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -295,15 +300,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           }),
                   child: Text(
                     _creating
-                        ? 'I already have an account'
-                        : 'Create an account',
+                        ? tr('I already have an account')
+                        : tr('Create an account'),
                   ),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Your logs and quiz answers stay on this device. The '
+                  tr('Your logs and quiz answers stay on this device. The '
                   'account holds only your email and your partner connection '
-                  '(and, with Google, an ID for your Google account).',
+                  '(and, with Google, an ID for your Google account).'),
                   style: muted,
                   textAlign: TextAlign.center,
                 ),
@@ -321,7 +326,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     icon: const Icon(Icons.language, size: 18),
                     label: Text(
                       ref.watch(languageProvider).valueOrNull?.label ??
-                          'Language',
+                          tr('Language'),
                     ),
                   ),
                 ),
@@ -331,9 +336,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     alignment: WrapAlignment.center,
                     children: [
                       for (final (label, url) in [
-                        ('Privacy policy', Legal.privacyUrl),
-                        ('Terms of use', Legal.termsUrl),
-                        ('Health information', Legal.healthUrl),
+                        (tr('Privacy policy'), Legal.privacyUrl),
+                        (tr('Terms of use'), Legal.termsUrl),
+                        (tr('Health information'), Legal.healthUrl),
                       ])
                         TextButton(
                           onPressed: () => openExternal(
@@ -373,7 +378,7 @@ class _AppleButton extends StatelessWidget {
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       icon: const Icon(Icons.apple, size: 22),
-      label: const Text('Continue with Apple'),
+      label: Text(tr('Continue with Apple')),
     );
   }
 }
@@ -397,7 +402,7 @@ class _GoogleButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27)),
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
@@ -406,7 +411,7 @@ class _GoogleButton extends StatelessWidget {
             child: CustomPaint(painter: _GoogleG()),
           ),
           SizedBox(width: 12),
-          Text('Continue with Google'),
+          Text(tr('Continue with Google')),
         ],
       ),
     );

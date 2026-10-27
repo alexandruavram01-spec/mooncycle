@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/settings_store.dart';
 import '../../services/data_export.dart';
 import '../../state/providers.dart';
+import '../../l10n/ui.dart';
 
 /// Opens the share sheet with her logs and quiz answers, so she can keep a
 /// copy in Drive, email or her files.
@@ -16,12 +17,12 @@ Future<void> exportMyData(BuildContext context, WidgetRef ref) async {
     final saved = await DataExport.share(logs, settings);
     if (saved) {
       messenger.showSnackBar(
-        const SnackBar(content: Text('Your data was saved.')),
+        SnackBar(content: Text(tr('Your data was saved.'))),
       );
     }
   } catch (e) {
     messenger.showSnackBar(
-      SnackBar(content: Text('Could not export your data: $e')),
+      SnackBar(content: Text('${tr('Could not export your data:')} $e')),
     );
   }
 }
@@ -36,21 +37,21 @@ Future<void> showDataNotice(BuildContext context, WidgetRef ref) async {
     barrierDismissible: false,
     builder: (context) => AlertDialog(
       icon: const Icon(Icons.phone_android_outlined),
-      title: const Text('Your data lives on this phone'),
-      content: const Text(
-        'What you log is stored only on this phone, not on our servers. '
+      title: Text(tr('Your data lives on this phone')),
+      content: Text(
+        tr('What you log is stored only on this phone, not on our servers. '
         'That keeps it private, but if you uninstall MoonCycle or lose your '
         'phone, your logs cannot be recovered.\n\n'
-        'You can save a copy at any time: Settings, then Export my data.',
+        'You can save a copy at any time: Settings, then Export my data.'),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Export now'),
+          child: Text(tr('Export now')),
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('I understand'),
+          child: Text(tr('I understand')),
         ),
       ],
     ),

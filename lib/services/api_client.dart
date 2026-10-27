@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../l10n/ui.dart';
+
 /// A failure the UI can show as-is.
 class ApiException implements Exception {
   const ApiException(this.message, {this.status});
@@ -11,8 +13,9 @@ class ApiException implements Exception {
   final String message;
   final int? status;
 
+  /// In her language: server and app messages are keys in the dictionary.
   @override
-  String toString() => message;
+  String toString() => tr(message);
 }
 
 /// Talks to the MoonCycle API and holds the signed-in session for this

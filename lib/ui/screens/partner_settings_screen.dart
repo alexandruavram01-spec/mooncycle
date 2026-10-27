@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/settings_store.dart';
 import '../../domain/profile.dart';
 import '../../state/providers.dart';
+import '../../l10n/ui.dart';
 
 /// His name for her and how funny his tips should be. No longer part of the
 /// quiz; reached from the menu on his home screen.
@@ -44,7 +45,7 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
       if (mounted) {
         setState(() => _saving = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not save: $e')),
+          SnackBar(content: Text('${tr('Could not save:')} $e')),
         );
       }
       return;
@@ -56,14 +57,14 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Name and tone')),
+      appBar: AppBar(title: Text(tr('Name and tone'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
-          Text('What do you call her?', style: theme.textTheme.titleMedium),
+          Text(tr('What do you call her?'), style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            'A name or a nickname. It stays on this device.',
+            tr('A name or a nickname. It stays on this device.'),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
@@ -72,20 +73,20 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
             controller: _name,
             textCapitalization: TextCapitalization.words,
             maxLength: 24,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
-              hintText: 'Ana',
+              hintText: tr('Ana'),
             ),
           ),
           const SizedBox(height: 16),
           Text(
-            'How funny should your tips be?',
+            tr('How funny should your tips be?'),
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
           Text(
-            'Jokes switch off on their own on days she might not feel like '
-            'laughing, whatever you pick.',
+            tr('Jokes switch off on their own on days she might not feel like '
+            'laughing, whatever you pick.'),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
@@ -93,8 +94,8 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
           for (final tone in PartnerTone.values)
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(tone.label),
-              subtitle: Text(tone.hint),
+              title: Text(tr(tone.label)),
+              subtitle: Text(tr(tone.hint)),
               trailing: _tone == tone
                   ? Icon(Icons.check_circle, color: theme.colorScheme.primary)
                   : const Icon(Icons.circle_outlined),
@@ -106,7 +107,7 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(50),
             ),
-            child: Text(_saving ? 'Saving…' : 'Save'),
+            child: Text(_saving ? tr('Saving…') : tr('Save')),
           ),
         ],
       ),

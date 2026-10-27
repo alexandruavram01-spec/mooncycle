@@ -12,6 +12,7 @@ import 'get_help_screen.dart';
 import 'language_screen.dart';
 import 'onboarding_screen.dart';
 import 'tip_library_screen.dart';
+import '../../l10n/ui.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -33,15 +34,15 @@ class SettingsScreen extends ConsumerWidget {
         : 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(tr('Settings'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
-          Text('Account', style: theme.textTheme.titleMedium),
+          Text(tr('Account'), style: theme.textTheme.titleMedium),
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(ref.watch(sessionProvider).valueOrNull ?? ''),
-            subtitle: const Text('Sign out or delete your account.'),
+            subtitle: Text(tr('Sign out or delete your account.')),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => showAccountSheet(context),
           ),
@@ -49,9 +50,9 @@ class SettingsScreen extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.language),
             title: Text(
-              ref.watch(languageProvider).valueOrNull?.label ?? 'Language',
+              ref.watch(languageProvider).valueOrNull?.label ?? tr('Language'),
             ),
-            subtitle: const Text('Language of partner tips and messages.'),
+            subtitle: Text(tr('Language of the app and of partner tips.')),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -62,8 +63,8 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.health_and_safety_outlined),
-            title: const Text('Get help now'),
-            subtitle: const Text('Emergency and urgent help services.'),
+            title: Text(tr('Get help now')),
+            subtitle: Text(tr('Emergency and urgent help services.')),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => const GetHelpScreen()),
@@ -73,8 +74,8 @@ class SettingsScreen extends ConsumerWidget {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.auto_awesome),
-              title: const Text('Tip library'),
-              subtitle: const Text('Ratings and pulled partner tips.'),
+              title: Text(tr('Tip library')),
+              subtitle: Text(tr('Ratings and pulled partner tips.')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -83,15 +84,18 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           const Divider(height: 40),
-          Text('Your goal', style: theme.textTheme.titleMedium),
+          Text(tr('Your goal'), style: theme.textTheme.titleMedium),
           if (questionsLeft > 0)
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.more_time),
-              title: const Text('Finish your quiz'),
+              title: Text(tr('Finish your quiz')),
               subtitle: Text(
-                '$questionsLeft question${questionsLeft == 1 ? '' : 's'} '
-                'left. Your answers so far are kept.',
+                trCount(
+                  questionsLeft,
+                  '{n} question left. Your answers so far are kept.',
+                  '{n} questions left. Your answers so far are kept.',
+                ),
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
@@ -103,8 +107,8 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(journey?.name ?? profile.goal.label),
-            subtitle: const Text('Choose your journey again to change it.'),
+            title: Text(tr(journey?.name ?? profile.goal.label)),
+            subtitle: Text(tr('Choose your journey again to change it.')),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -116,21 +120,22 @@ class SettingsScreen extends ConsumerWidget {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             value: profile.showFertileDays,
-            title: const Text('Show estimated fertile days'),
-            subtitle: const Text('For information. It is not contraception.'),
+            title: Text(tr('Show estimated fertile days')),
+            subtitle: Text(tr('For information. It is not contraception.')),
             onChanged: (v) => notifier
                 .updateProfile(profile.copyWith(showFertileDays: v)),
           ),
           if (ref.watch(herInsightsEnabledProvider))
             ..._insightCards(context, ref),
           const Divider(height: 40),
-          Text('Reminders', style: theme.textTheme.titleMedium),
+          Text(tr('Reminders'), style: theme.textTheme.titleMedium),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             value: reminders.periodReminder,
-            title: const Text('Period is coming'),
+            title: Text(tr('Period is coming')),
             subtitle: Text(
-              '${reminders.periodReminderDaysBefore} days before',
+              trCount(reminders.periodReminderDaysBefore, '{n} day before',
+                  '{n} days before'),
             ),
             onChanged: (v) => notifier
                 .updateReminders(reminders.copyWith(periodReminder: v)),
@@ -141,7 +146,8 @@ class SettingsScreen extends ConsumerWidget {
               min: 1,
               max: 5,
               divisions: 4,
-              label: '${reminders.periodReminderDaysBefore} days',
+              label: trCount(
+                  reminders.periodReminderDaysBefore, '{n} day', '{n} days'),
               onChanged: (v) => notifier.updateReminders(
                 reminders.copyWith(periodReminderDaysBefore: v.round()),
               ),
@@ -149,14 +155,14 @@ class SettingsScreen extends ConsumerWidget {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             value: reminders.fertileWindowReminder,
-            title: const Text('Fertile window starts'),
+            title: Text(tr('Fertile window starts')),
             onChanged: (v) => notifier
                 .updateReminders(reminders.copyWith(fertileWindowReminder: v)),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             value: reminders.dailyLogReminder,
-            title: const Text('Daily logging nudge'),
+            title: Text(tr('Daily logging nudge')),
             subtitle: Text(
               '${reminders.dailyLogHour.toString().padLeft(2, '0')}:'
               '${reminders.dailyLogMinute.toString().padLeft(2, '0')}',
@@ -167,7 +173,7 @@ class SettingsScreen extends ConsumerWidget {
           if (reminders.dailyLogReminder)
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Reminder time'),
+              title: Text(tr('Reminder time')),
               trailing: const Icon(Icons.schedule),
               onTap: () async {
                 final picked = await showTimePicker(
@@ -196,25 +202,25 @@ class SettingsScreen extends ConsumerWidget {
                 SnackBar(
                   content: Text(
                     granted
-                        ? 'Notifications enabled'
-                        : 'Notification permission denied',
+                        ? tr('Notifications enabled')
+                        : tr('Notification permission denied'),
                   ),
                 ),
               );
             },
             icon: const Icon(Icons.notifications_outlined),
-            label: const Text('Grant notification permission'),
+            label: Text(tr('Grant notification permission')),
           ),
           const Divider(height: 40),
-          Text('Your data', style: theme.textTheme.titleMedium),
+          Text(tr('Your data'), style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            'Your logs and quiz answers are stored only on this phone, not on '
+            tr('Your logs and quiz answers are stored only on this phone, not on '
             'our servers. If you uninstall MoonCycle or lose your phone, they '
             'cannot be recovered, so save a copy from time to time with '
             'Export my data. Your account holds only your email and your '
             'partner connection. If you turn on partner sharing, only the '
-            'summary you choose is sent to the server.',
+            'summary you choose is sent to the server.'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -223,10 +229,10 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.download_outlined),
-            title: const Text('Export my data'),
-            subtitle: const Text(
-              'Save a copy of your logs and quiz answers to Drive, email or '
-              'your files: a spreadsheet and a full copy.',
+            title: Text(tr('Export my data')),
+            subtitle: Text(
+              tr('Save a copy of your logs and quiz answers to Drive, email or '
+              'your files: a spreadsheet and a full copy.'),
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => exportMyData(context, ref),
@@ -234,16 +240,16 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.delete_outline),
-            title: const Text('Delete my account and data'),
-            subtitle: const Text(
-              'Removes your account from our server and everything MoonCycle '
-              'stored on this device.',
+            title: Text(tr('Delete my account and data')),
+            subtitle: Text(
+              tr('Removes your account from our server and everything MoonCycle '
+              'stored on this device.'),
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => showAccountSheet(context),
           ),
           const Divider(height: 40),
-          Text('About MoonCycle', style: theme.textTheme.titleMedium),
+          Text(tr('About MoonCycle'), style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
             Legal.healthNotice,
@@ -253,9 +259,9 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           for (final (title, url) in [
-            ('Privacy policy', Legal.privacyUrl),
-            ('Terms of use', Legal.termsUrl),
-            ('Health information notice', Legal.healthUrl),
+            (tr('Privacy policy'), Legal.privacyUrl),
+            (tr('Terms of use'), Legal.termsUrl),
+            (tr('Health information notice'), Legal.healthUrl),
           ])
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -268,8 +274,16 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           Text(
-            '${Legal.appName} is provided by ${Legal.company}, '
-            'company number ${Legal.companyNumber}, ${Legal.address}.',
+            trf(
+              '{app} is provided by {company}, company number {number}, '
+              '{address}.',
+              {
+                'app': Legal.appName,
+                'company': Legal.company,
+                'number': Legal.companyNumber,
+                'address': Legal.address,
+              },
+            ),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -289,25 +303,25 @@ class SettingsScreen extends ConsumerWidget {
 
     return [
       const Divider(height: 40),
-      Text('Insight cards', style: theme.textTheme.titleMedium),
+      Text(tr('Insight cards'), style: theme.textTheme.titleMedium),
       SwitchListTile(
         contentPadding: EdgeInsets.zero,
         value: memory.screeningReminders,
-        title: const Text('Cervical screening reminders'),
-        subtitle: const Text(
-          'An occasional card about NHS cervical screening, for people aged '
-          '25 to 64 with a cervix.',
+        title: Text(tr('Cervical screening reminders')),
+        subtitle: Text(
+          tr('An occasional card about NHS cervical screening, for people aged '
+          '25 to 64 with a cervix.'),
         ),
         onChanged: notifier.setScreeningReminders,
       ),
       ListTile(
         contentPadding: EdgeInsets.zero,
         leading: const Icon(Icons.auto_awesome_outlined),
-        title: const Text('AI-written notes'),
+        title: Text(tr('AI-written notes')),
         subtitle: Text(
           (ref.watch(aiNotesProvider).valueOrNull ?? false)
-              ? 'On. Your daily card is written around your own log.'
-              : 'Off. Have your daily card written around your own log.',
+              ? tr('On. Your daily card is written around your own log.')
+              : tr('Off. Have your daily card written around your own log.'),
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(
@@ -317,10 +331,10 @@ class SettingsScreen extends ConsumerWidget {
       SwitchListTile(
         contentPadding: EdgeInsets.zero,
         value: memory.sexualWellbeing,
-        title: const Text('Cards about sex and desire'),
-        subtitle: const Text(
-          'For example when you log low desire and low mood on the same '
-          'day. Only you see them.',
+        title: Text(tr('Cards about sex and desire')),
+        subtitle: Text(
+          tr('For example when you log low desire and low mood on the same '
+          'day. Only you see them.'),
         ),
         onChanged: notifier.setSexualWellbeing,
       ),
@@ -329,9 +343,10 @@ class SettingsScreen extends ConsumerWidget {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.visibility_outlined),
           title: Text(
-            'Show $hidden hidden card${hidden == 1 ? '' : 's'} again',
+            trCount(hidden, 'Show {n} hidden card again',
+                'Show {n} hidden cards again'),
           ),
-          subtitle: const Text('Cards you marked "Not relevant to me".'),
+          subtitle: Text(tr('Cards you marked "Not relevant to me".')),
           onTap: notifier.restoreHidden,
         ),
     ];

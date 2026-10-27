@@ -14,6 +14,7 @@ import '../../domain/quiz.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
 import '../widgets/wordmark.dart';
+import '../../l10n/ui.dart';
 
 /// How the quiz was opened.
 enum OnboardingEntry {
@@ -250,7 +251,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _joinPartner() async {
     if (_code.text.trim().isEmpty) {
-      setState(() => _error = 'Enter the code first.');
+      setState(() => _error = tr('Enter the code first.'));
       return;
     }
     setState(() {
@@ -416,7 +417,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = 'Could not save your answers. $e';
+          _error = '${tr('Could not save your answers.')} $e';
         });
       }
     }
@@ -549,7 +550,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               const Spacer(),
                               if (_retaking)
                                 IconButton(
-                                  tooltip: 'Close',
+                                  tooltip: tr('Close'),
                                   icon: const Icon(Icons.close),
                                   onPressed: () => Navigator.of(context).pop(),
                                 ),
@@ -588,11 +589,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = Theme.of(context);
     return [
       const SizedBox(height: 25),
-      Text("Let's make MoonCycle yours", style: _headline(theme)),
+      Text(tr("Let's make MoonCycle yours"), style: _headline(theme)),
       const SizedBox(height: 8),
       Text(
-        'Every journey is unique. Are you here for yourself or to support '
-        'your partner?',
+        tr('Every journey is unique. Are you here for yourself or to support '
+        'your partner?'),
         style: _muted(theme),
       ),
       const SizedBox(height: 8),
@@ -623,27 +624,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _Progress(count: total, current: _step),
       const SizedBox(height: 10),
       Text(
-        '${journey.name} · ${optional ? 'Optional preferences · ' : ''}'
-        'Question ${_step + 1} of $total',
+        '${tr(journey.name)} · ${optional ? tr('Optional preferences · ') : ''}'
+        '${trf('Question {n} of {total}', {'n': _step + 1, 'total': total})}',
         style: theme.textTheme.bodySmall
             ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
       ),
       const SizedBox(height: 14),
-      Text(question.text, style: _headline(theme)),
+      Text(tr(question.text), style: _headline(theme)),
       const SizedBox(height: 4),
       for (final (title, body) in quizNotes(question))
         _InfoBox(title: title, body: body),
       if (journey.partner && _step >= 1)
-        const _InfoBox(
-          title: 'Privacy first',
-          body: 'She decides whether to connect and exactly which cycle, '
+        _InfoBox(
+          title: tr('Privacy first'),
+          body: tr('She decides whether to connect and exactly which cycle, '
               'mood or pain details to share. Choosing an alert here does '
-              'not grant access or send any notification.',
+              'not grant access or send any notification.'),
         ),
       const SizedBox(height: 8),
       Text(
-        'Choose the answer that feels right for you. You can skip any '
-        'question.',
+        tr('Choose the answer that feels right for you. You can skip any '
+        'question.'),
         style: _muted(theme),
       ),
       const SizedBox(height: 6),
@@ -656,11 +657,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       const SizedBox(height: 22),
       Row(
         children: [
-          _Button(label: 'Back', secondary: true, onPressed: _back),
+          _Button(label: tr('Back'), secondary: true, onPressed: _back),
           const SizedBox(width: 9),
           Expanded(
             child: _Button(
-              label: last ? 'See my summary' : 'Continue →',
+              label: last ? tr('See my summary') : tr('Continue →'),
               onPressed: _next,
             ),
           ),
@@ -672,12 +673,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           children: [
             TextButton(
               onPressed: _skip,
-              child: Text('Skip for now', style: muted),
+              child: Text(tr('Skip for now'), style: muted),
             ),
             if (canFinishLater)
               TextButton(
                 onPressed: _finishLater,
-                child: Text('Finish the rest later', style: muted),
+                child: Text(tr('Finish the rest later'), style: muted),
               ),
           ],
         ),
@@ -733,8 +734,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
               hintText: question.id == 'cycleLength'
-                  ? 'Enter number of days (typically 21–35)'
-                  : 'Enter number of days',
+                  ? tr('Enter number of days (typically 21–35)')
+                  : tr('Enter number of days'),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -772,7 +773,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               maxLength: 8,
               style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 4),
               decoration: InputDecoration(
-                hintText: 'ABCD2345',
+                hintText: tr('ABCD2345'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -783,7 +784,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   Icon(Icons.check_circle, color: theme.colorScheme.primary),
                   const SizedBox(width: 8),
-                  const Text('Connected with her.'),
+                  Text(tr('Connected with her.')),
                 ],
               )
             else
@@ -791,32 +792,32 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 alignment: Alignment.centerLeft,
                 child: FilledButton(
                   onPressed: _saving ? null : _joinPartner,
-                  child: Text(_saving ? 'Connecting…' : 'Connect'),
+                  child: Text(_saving ? tr('Connecting…') : tr('Connect')),
                 ),
               ),
           ],
           if (question.id == 'connect' &&
               answer == 'Send a connection invitation') ...[
-            const _InfoBox(
-              title: 'How connecting works',
-              body: 'She creates a code in her MoonCycle app (Partner tab) and '
-                  'sends it to you. Send her this message to ask for it:',
+            _InfoBox(
+              title: tr('How connecting works'),
+              body: tr('She creates a code in her MoonCycle app (Partner tab) and '
+                  'sends it to you. Send her this message to ask for it:'),
             ),
-            const _StatusBox(text: _inviteMessage),
+            _StatusBox(text: tr(_inviteMessage)),
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton.icon(
                 onPressed: () async {
                   final messenger = ScaffoldMessenger.of(context);
                   await Clipboard.setData(
-                    const ClipboardData(text: _inviteMessage),
+                    ClipboardData(text: tr(_inviteMessage)),
                   );
                   messenger.showSnackBar(
-                    const SnackBar(content: Text('Message copied')),
+                    SnackBar(content: Text(tr('Message copied'))),
                   );
                 },
                 icon: const Icon(Icons.copy_outlined),
-                label: const Text('Copy message'),
+                label: Text(tr('Copy message')),
               ),
             ),
           ],
@@ -831,31 +832,31 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final share = (consent['share'] as List).whereType<String>().toList();
 
     return [
-      const _InfoBox(
-        title: 'Your body. Your choice.',
-        body: 'Nothing is shared by default. You can connect accounts without '
+      _InfoBox(
+        title: tr('Your body. Your choice.'),
+        body: tr('Nothing is shared by default. You can connect accounts without '
             'sharing health information, choose individual categories, and '
             'withdraw access at any time. Your partner must also accept the '
-            'invitation.',
+            'invitation.'),
       ),
       _Option(
-        title: 'Keep my information private',
-        subtitle: 'Do not invite a partner or share any health updates.',
+        title: tr('Keep my information private'),
+        subtitle: tr('Do not invite a partner or share any health updates.'),
         radio: true,
         selected: !inviting,
         onTap: () => _setConsent('no', const []),
       ),
       _Option(
         title: "I'd like to invite my partner",
-        subtitle: 'I will choose exactly what can be shared.',
+        subtitle: tr('I will choose exactly what can be shared.'),
         radio: true,
         selected: inviting,
         onTap: () => _setConsent('yes', inviting ? share : const []),
       ),
       if (inviting) ...[
-        const _InfoBox(
-          title: 'Choose what to share',
-          body: 'Tick only what feels comfortable. No boxes are preselected.',
+        _InfoBox(
+          title: tr('Choose what to share'),
+          body: tr('Tick only what feels comfortable. No boxes are preselected.'),
         ),
         for (final (key, title, subtitle) in sharingCategories)
           _Option(
@@ -868,10 +869,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text(
-            'Choosing a category allows only that type of update. Mood and '
+            tr('Choosing a category allows only that type of update. Mood and '
             'pain show what you log for the day; support requests go only '
             'when you send one. You can change or revoke access at any time '
-            'on the Partner tab.',
+            'on the Partner tab.'),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
@@ -879,9 +880,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ],
       _StatusBox(
         text: inviting
-            ? 'Next, the Partner tab gives you the code your partner needs. '
-                'Nothing is shared until they enter it.'
-            : 'Private by default. You can set up sharing later.',
+            ? tr('Next, the Partner tab gives you the code your partner needs. '
+                'Nothing is shared until they enter it.')
+            : tr('Private by default. You can set up sharing later.'),
       ),
     ];
   }
@@ -894,7 +895,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return [
       const SizedBox(height: 25),
       Text(
-        'YOUR MOONCYCLE EXPERIENCE',
+        tr('YOUR MOONCYCLE EXPERIENCE'),
         style: theme.textTheme.labelMedium?.copyWith(
           color: theme.colorScheme.primary,
           fontWeight: FontWeight.w700,
@@ -902,7 +903,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
       ),
       const SizedBox(height: 6),
-      Text(journey.name, style: _headline(theme)),
+      Text(tr(journey.name), style: _headline(theme)),
       const SizedBox(height: 12),
       Container(
         width: double.infinity,
@@ -915,7 +916,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "What's set up",
+              tr("What's set up"),
               style: theme.textTheme.titleSmall
                   ?.copyWith(color: theme.colorScheme.onPrimaryContainer),
             ),
@@ -943,7 +944,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
       ),
       const SizedBox(height: 16),
-      Text('Your answers', style: theme.textTheme.titleMedium),
+      Text(tr('Your answers'), style: theme.textTheme.titleMedium),
       for (final question in _questions)
         if (_answers[question.id] case final answer?)
           Container(
@@ -957,7 +958,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(question.text, style: theme.textTheme.titleSmall),
+                Text(tr(question.text), style: theme.textTheme.titleSmall),
                 const SizedBox(height: 2),
                 Text(_describe(answer), style: _muted(theme)),
               ],
@@ -972,7 +973,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       Row(
         children: [
           _Button(
-            label: 'Back',
+            label: tr('Back'),
             secondary: true,
             onPressed: _saving
                 ? null
@@ -985,7 +986,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           const SizedBox(width: 9),
           Expanded(
             child: _Button(
-              label: _saving ? 'Saving…' : 'Start using MoonCycle',
+              label: _saving ? tr('Saving…') : tr('Start using MoonCycle'),
               onPressed: _saving ? null : _finish,
             ),
           ),
@@ -998,7 +999,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               _extrasAdded = true;
               _syncDays();
             }),
-            child: const Text('Would you like to personalise more? (optional)'),
+            child: Text(tr('Would you like to personalise more? (optional)')),
           ),
         ),
       Center(
@@ -1012,7 +1013,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     _resumeAt = null;
                   }),
           child: Text(
-            'Choose a different journey',
+            tr('Choose a different journey'),
             style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
           ),
         ),
@@ -1024,18 +1025,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (answer is String && _isIsoDate(answer)) {
       return DateFormat('d MMMM yyyy').format(DayKey.parse(answer).toDateTime());
     }
-    if (answer is List) return answer.join(', ');
+    if (answer is List) return answer.map((a) => tr('$a')).join(', ');
     if (answer is Map) {
-      if (answer['connect'] != 'yes') return 'Keep private';
+      if (answer['connect'] != 'yes') return tr('Keep private');
       final share = (answer['share'] as List).whereType<String>().toList();
       final names = [
         for (final (key, title, _) in sharingCategories)
-          if (share.contains(key)) title.toLowerCase(),
+          if (share.contains(key)) tr(title).toLowerCase(),
       ];
-      return 'Invite partner; share: '
-          '${names.isEmpty ? 'no health categories' : names.join(', ')}';
+      return trf('Invite partner; share: {what}', {
+        'what': names.isEmpty ? tr('no health categories') : names.join(', '),
+      });
     }
-    return '$answer';
+    return tr('$answer');
   }
 
   /// Built with the real engine, so the dates match what the home screen
@@ -1047,7 +1049,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final rows = <(IconData, String)>[
       (
         Icons.explore_outlined,
-        'Journey: ${journey.name}. You can change it any time in Settings.',
+        trf('Journey: {name}. You can change it any time in Settings.',
+            {'name': tr(journey.name)}),
       ),
     ];
 
@@ -1072,8 +1075,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             plan.cycleLength == null;
         rows.add((
           Icons.calendar_month_outlined,
-          'Next period expected around ${format.format(next.toDateTime())}'
-              '${rough ? '. Treat it as rough for the first few cycles.' : '.'}',
+          trf(
+            rough
+                ? 'Next period expected around {date}. Treat it as rough for '
+                    'the first few cycles.'
+                : 'Next period expected around {date}.',
+            {'date': format.format(next.toDateTime())},
+          ),
         ));
       }
 
@@ -1083,35 +1091,43 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (blockedBy != null) {
         rows.add((
           Icons.visibility_off_outlined,
-          'Fertile days hidden: calendar estimates do not apply with '
-              '$blockedBy.',
+          trf(
+            'Fertile days hidden: calendar estimates do not apply with '
+            '{reason}.',
+            {'reason': tr(blockedBy)},
+          ),
         ));
       } else if (plan.showFertileDays && start != null && end != null) {
         rows.add((
           Icons.visibility_outlined,
-          'Estimated fertile days this cycle: '
-              '${format.format(start.toDateTime())} to '
-              '${format.format(end.toDateTime())}. An estimate, not '
-              'contraception.',
+          trf(
+            'Estimated fertile days this cycle: {start} to {end}. An '
+            'estimate, not contraception.',
+            {
+              'start': format.format(start.toDateTime()),
+              'end': format.format(end.toDateTime()),
+            },
+          ),
         ));
       } else if (!plan.showFertileDays) {
         rows.add((
           Icons.visibility_off_outlined,
-          'Fertile days hidden. You can turn them on in Settings.',
+          tr('Fertile days hidden. You can turn them on in Settings.'),
         ));
       }
     }
 
     final reminders = [
-      if (plan.periodReminder == true) 'a reminder before your period',
-      if (plan.dailyReminder == true) 'a daily check-in',
+      if (plan.periodReminder == true) tr('a reminder before your period'),
+      if (plan.dailyReminder == true) tr('a daily check-in'),
     ];
     if (plan.periodReminder != null || plan.dailyReminder != null) {
       rows.add((
         Icons.notifications_outlined,
         reminders.isEmpty
-            ? 'No reminders.'
-            : 'Reminders: ${reminders.join(' and ')}.',
+            ? tr('No reminders.')
+            : trf('Reminders: {list}.',
+                {'list': reminders.join(' ${tr('and')} ')}),
       ));
     }
 
@@ -1119,8 +1135,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       rows.add((
         Icons.medical_services_outlined,
         // NHS guidance: https://www.nhs.uk/conditions/infertility/
-        'The NHS suggests seeing a GP after a year of trying, or sooner if '
-            "you're 36 or over. Worth a conversation when you feel ready.",
+        tr('The NHS suggests seeing a GP after a year of trying, or sooner '
+            "if you're 36 or over. Worth a conversation when you feel ready."),
       ));
     }
 
@@ -1129,23 +1145,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (plan.inviting) {
       final names = [
         for (final (key, title, _) in sharingCategories)
-          if (plan.share.contains(key)) title.toLowerCase(),
+          if (plan.share.contains(key)) tr(title).toLowerCase(),
       ];
       rows.add((
         Icons.favorite_border,
-        'Partner sharing: '
-            '${names.isEmpty ? 'connected, no health details' : names.join(', ')}. '
-            'Get the code for your partner on the Partner tab.',
+        trf(
+          'Partner sharing: {what}. Get the code for your partner on the '
+          'Partner tab.',
+          {
+            'what': names.isEmpty
+                ? tr('connected, no health details')
+                : names.join(', '),
+          },
+        ),
       ));
     } else if (!plan.consentAnswered && sharingNow) {
       rows.add((
         Icons.favorite_border,
-        'Partner sharing stays as you set it on the Partner tab.',
+        tr('Partner sharing stays as you set it on the Partner tab.'),
       ));
     } else {
       rows.add((
         Icons.lock_outline,
-        'Private: nothing is shared with anyone.',
+        tr('Private: nothing is shared with anyone.'),
       ));
     }
 
@@ -1153,8 +1175,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       final left = _questions.length - at;
       rows.add((
         Icons.more_time,
-        '$left more question${left == 1 ? '' : 's'} for later. Pick up where '
-            'you left off from Settings.',
+        trCount(
+          left,
+          '{n} more question for later. Pick up where you left off from '
+          'Settings.',
+          '{n} more questions for later. Pick up where you left off from '
+          'Settings.',
+        ),
       ));
     }
     return rows;
@@ -1162,21 +1189,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   List<(IconData, String)> _partnerRows() => [
         _connected
-            ? (Icons.link, 'Connected with her.')
+            ? (Icons.link, tr('Connected with her.'))
             : (
                 Icons.link_off,
-                'Not connected yet. You can enter her code on your home '
-                    'screen once she sends it.',
+                tr('Not connected yet. You can enter her code on your home '
+                    'screen once she sends it.'),
               ),
         (
           Icons.tune,
-          'Your tips come with "a little humour" until you change it. Set '
-              'her name and the tone from the menu on your home screen.',
+          tr('Your tips come with "a little humour" until you change it. Set '
+              'her name and the tone from the menu on your home screen.'),
         ),
         (
           Icons.lock_outline,
-          'You only ever see what she chooses to share, and she can stop '
-              'sharing at any time.',
+          tr('You only ever see what she chooses to share, and she can stop '
+              'sharing at any time.'),
         ),
       ];
 }
@@ -1316,7 +1343,7 @@ class _Option extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title,
+                        tr(title),
                         style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: subtitle == null ? null : FontWeight.w600,
                           color: selected
@@ -1327,7 +1354,7 @@ class _Option extends StatelessWidget {
                       if (subtitle != null) ...[
                         const SizedBox(height: 3),
                         Text(
-                          subtitle!,
+                          tr(subtitle!),
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: scheme.onSurfaceVariant,
                           ),
@@ -1368,12 +1395,12 @@ class _InfoBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            tr(title),
             style: theme.textTheme.titleSmall?.copyWith(color: scheme.primary),
           ),
           const SizedBox(height: 4),
           Text(
-            body,
+            tr(body),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: scheme.onSurface,
               height: 1.5,

@@ -6,6 +6,7 @@ import '../../domain/profile.dart';
 import '../../l10n/partner_messages.dart';
 import '../../services/tip_library_service.dart';
 import '../../state/providers.dart';
+import '../../l10n/ui.dart';
 
 final _ratingsProvider = FutureProvider.autoDispose<Map<String, TipRating>>(
   (ref) async {
@@ -83,10 +84,10 @@ class _TipLibraryScreenState extends ConsumerState<TipLibraryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tip library'),
+        title: Text(tr('Tip library')),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: tr('Refresh'),
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(_ratingsProvider),
           ),
@@ -230,14 +231,14 @@ class _TipCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Pulled: nobody gets this tip.',
+                        tr('Pulled: nobody gets this tip.'),
                         style: theme.textTheme.bodySmall
                             ?.copyWith(color: theme.colorScheme.error),
                       ),
                     ),
                     FilledButton.tonal(
                       onPressed: onRestore,
-                      child: const Text('Put back'),
+                      child: Text(tr('Put back')),
                     ),
                   ],
                 ),

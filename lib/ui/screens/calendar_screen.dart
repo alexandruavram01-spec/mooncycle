@@ -9,6 +9,7 @@ import '../../domain/models.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
 import '../widgets/log_sheet.dart';
+import '../../l10n/ui.dart';
 
 /// How a single calendar cell should be rendered.
 enum DayMarker { none, logged, predictedPeriod, fertile, ovulation }
@@ -65,7 +66,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Calendar')),
+      appBar: AppBar(title: Text(tr('Calendar'))),
       body: Column(
         children: [
           _Legend(showFertile: showFertile),
@@ -138,7 +139,7 @@ class _MonthView extends StatelessWidget {
           child: Row(
             children: [
               IconButton(
-                tooltip: 'Previous month',
+                tooltip: tr('Previous month'),
                 icon: const Icon(Icons.chevron_left),
                 onPressed: onPrevious,
               ),
@@ -150,7 +151,7 @@ class _MonthView extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Next month',
+                tooltip: tr('Next month'),
                 icon: const Icon(Icons.chevron_right),
                 onPressed: onNext,
               ),
@@ -337,14 +338,14 @@ class _Legend extends StatelessWidget {
         spacing: 14,
         runSpacing: 4,
         children: [
-          const _LegendDot(color: MoonColors.menstrual, label: 'Period'),
-          const _LegendDot(
+          _LegendDot(color: MoonColors.menstrual, label: tr('Period')),
+          _LegendDot(
             color: MoonColors.menstrual,
-            label: 'Predicted',
+            label: tr('Predicted'),
             outlined: true,
           ),
           if (showFertile)
-            const _LegendDot(color: MoonColors.ovulatory, label: 'Fertile'),
+            _LegendDot(color: MoonColors.ovulatory, label: tr('Fertile')),
         ],
       ),
     );

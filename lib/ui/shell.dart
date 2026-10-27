@@ -8,6 +8,7 @@ import 'screens/insights_screen.dart';
 import 'screens/partner_screen.dart';
 import 'screens/settings_screen.dart';
 import 'widgets/export_data.dart';
+import '../l10n/ui.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -42,31 +43,31 @@ class _AppShellState extends ConsumerState<AppShell> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.brightness_3_outlined),
             selectedIcon: Icon(Icons.brightness_3),
-            label: 'Today',
+            label: tr('Today'),
           ),
           NavigationDestination(
             icon: Icon(Icons.calendar_month_outlined),
             selectedIcon: Icon(Icons.calendar_month),
-            label: 'Calendar',
+            label: tr('Calendar'),
           ),
           NavigationDestination(
             icon: Icon(Icons.insights_outlined),
             selectedIcon: Icon(Icons.insights),
-            label: 'Patterns',
+            label: tr('Patterns'),
           ),
           NavigationDestination(
             icon: Icon(Icons.favorite_outline),
             selectedIcon: Icon(Icons.favorite),
-            label: 'Partner',
+            label: tr('Partner'),
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
+            label: tr('Settings'),
           ),
         ],
       ),

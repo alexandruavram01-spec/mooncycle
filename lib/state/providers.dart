@@ -175,9 +175,14 @@ final logByDayProvider = Provider.family<DayLog?, DayKey>((ref, day) {
   return null;
 });
 
-final patternsProvider = Provider<List<Pattern>>((ref) {
+/// Worded on the Patterns screen, in her language.
+final patternsProvider = Provider<List<PhasePattern>>((ref) {
   final logs = ref.watch(logsProvider).valueOrNull ?? const <DayLog>[];
-  return ref.watch(insightsEngineProvider).detectPatterns(logs);
+  return ref
+      .watch(insightsEngineProvider)
+      .phasePatterns(logs)
+      .take(8)
+      .toList();
 });
 
 final phaseAveragesProvider = Provider<List<PhaseAverages>>((ref) {
@@ -593,6 +598,9 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
   /// Asks for the AI-written note for [pick] once, and keeps it with today's
   /// choice. Nothing is kept if there is no note: the card shows as it is.
   Future<void> fetchNote(InsightPick pick, Map<String, Object?> request) async {
+    // The notes are written in English only for now; in Romanian the card
+    // keeps its standard Romanian wording.
+    if (ref.read(languageProvider).valueOrNull == AppLanguage.ro) return;
     final day = _current.pickDay;
     final key = '${day?.iso}:${pick.id}:${pick.wording}';
     if (day == null || !_asked.add(key)) return;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../l10n/ui.dart';
 
 /// Opens a web page or the phone's dialler, with a message if it can't.
 Future<void> openExternal(
@@ -19,5 +20,5 @@ Future<void> openExternal(
   } catch (_) {
     opened = false;
   }
-  if (!opened) messenger.showSnackBar(SnackBar(content: Text(failedMessage)));
+  if (!opened) messenger.showSnackBar(SnackBar(content: Text(tr(failedMessage))));
 }

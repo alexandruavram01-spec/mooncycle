@@ -9,6 +9,7 @@ import '../../state/providers.dart';
 import '../screens/ai_notes_screen.dart';
 import '../screens/get_help_screen.dart';
 import 'links.dart';
+import '../../l10n/ui.dart';
 
 /// Today's insight card on her Today screen, chosen on her phone in the
 /// reviewed order: safety, what she logged, her own patterns, then moments
@@ -85,7 +86,7 @@ class HerInsightsSection extends ConsumerWidget {
                 minimumSize: const Size.fromHeight(50),
               ),
               icon: const Icon(Icons.auto_awesome_outlined, size: 20),
-              label: const Text('Turn on AI-written notes'),
+              label: Text(tr('Turn on AI-written notes')),
             ),
           ),
       ],
@@ -426,11 +427,27 @@ class _InsightCard extends ConsumerWidget {
     values.forEach(
       (key, value) => result = result.replaceAll('{$key}', format(key, value)),
     );
-    // Both editions are English: one of something is singular.
-    return result
-        .replaceAll(RegExp(r'\b1 days\b'), '1 day')
-        .replaceAll(RegExp(r'\b1 hours\b'), '1 hour');
+    // One of something is singular.
+    return _counts(
+      result
+          .replaceAll(RegExp(r'\b1 days\b'), '1 day')
+          .replaceAll(RegExp(r'\b1 hours\b'), '1 hour'),
+    );
   }
+
+  /// Romanian number agreement: "1 zi", and "de" from 20 ("21 de zile").
+  /// Leaves English, and decimals such as "7.5 ore", untouched.
+  static String _counts(String text) => text.replaceAllMapped(
+        RegExp(r'(?<![\d.,])(\d+) (zile|ore|cicluri)\b'),
+        (m) {
+          final n = int.parse(m[1]!);
+          const one = {'zile': 'zi', 'ore': 'oră', 'cicluri': 'ciclu'};
+          if (n == 1) return '1 ${one[m[2]]}';
+          final rest = n % 100;
+          final de = rest >= 20 || (rest == 0 && n != 0) ? 'de ' : '';
+          return '$n $de${m[2]}';
+        },
+      );
 
   String _friendlyDate(DayKey day, int daysFromToday) => switch (daysFromToday) {
         0 => texts.ui['today']!,
@@ -470,7 +487,7 @@ class _InsightCard extends ConsumerWidget {
           .replaceAll('{high}', texts.when[high]!)
           .replaceAll('{low}', texts.when[low]!);
     }
-    return result;
+    return _counts(result);
   }
 
   static IconData _icon(InsightTier tier) => switch (tier) {

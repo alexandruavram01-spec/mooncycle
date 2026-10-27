@@ -6,6 +6,11 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ro</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>MoonCycle</string>
 	<!-- The app only uses standard HTTPS, so no export compliance paperwork. -->

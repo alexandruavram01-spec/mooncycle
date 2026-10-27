@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../legal.dart';
 import 'links.dart';
+import '../../l10n/ui.dart';
 
 /// The two boxes everyone ticks before using MoonCycle: the terms (with age
 /// and the privacy policy), and explicit consent for health data, which UK
@@ -47,8 +48,11 @@ class ConsentBoxes extends StatelessWidget {
           controlAffinity: ListTileControlAffinity.leading,
           contentPadding: EdgeInsets.zero,
           title: Text(
-            "I'm ${Legal.minimumAge} or over, I agree to the Terms of use, "
-            "and I've read the Privacy policy.",
+            trf(
+              "I'm {age} or over, I agree to the Terms of use, and I've read "
+              'the Privacy policy.',
+              {'age': Legal.minimumAge},
+            ),
             style: theme.textTheme.bodyMedium,
           ),
         ),
@@ -58,17 +62,17 @@ class ConsentBoxes extends StatelessWidget {
           controlAffinity: ListTileControlAffinity.leading,
           contentPadding: EdgeInsets.zero,
           title: Text(
-            'I give my explicit consent for MoonCycle to process my health '
+            tr('I give my explicit consent for MoonCycle to process my health '
             'information, such as periods, symptoms and mood, to provide the '
-            'app. I can withdraw it at any time by deleting my data.',
+            'app. I can withdraw it at any time by deleting my data.'),
             style: theme.textTheme.bodyMedium,
           ),
         ),
         Wrap(
           children: [
-            link('Terms of use', Legal.termsUrl),
-            link('Privacy policy', Legal.privacyUrl),
-            link('Health information', Legal.healthUrl),
+            link(tr('Terms of use'), Legal.termsUrl),
+            link(tr('Privacy policy'), Legal.privacyUrl),
+            link(tr('Health information'), Legal.healthUrl),
           ],
         ),
         const SizedBox(height: 4),

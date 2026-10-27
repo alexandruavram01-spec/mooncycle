@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_language.dart';
 import '../../state/providers.dart';
 import '../widgets/wordmark.dart';
+import '../../l10n/ui.dart';
 
 /// Choose the app's language. Shown by the gate in `main.dart` before
 /// sign-in on a new device, and from Settings (or his menu) afterwards with
@@ -48,7 +49,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
         theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant);
 
     return Scaffold(
-      appBar: widget.pushed ? AppBar(title: const Text('Language')) : null,
+      appBar: widget.pushed ? AppBar(title: Text(tr('Language'))) : null,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -63,7 +64,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
                   const Center(child: Wordmark(size: 32)),
                   const SizedBox(height: 20),
                   Text(
-                    'Choose your language',
+                    tr('Choose your language'),
                     style: theme.textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
@@ -92,9 +93,9 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
                   ),
                 const SizedBox(height: 12),
                 Text(
-                  'It sets the wording of partner tips and messages. Your '
-                  'partner chooses their own, and you can change yours any '
-                  'time in Settings.',
+                  tr('It sets the language of the app and of partner tips and '
+                  'messages. Your partner chooses their own, and you can '
+                  'change yours any time in Settings.'),
                   style: muted,
                   textAlign: TextAlign.center,
                 ),
@@ -109,10 +110,10 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
                   ),
                   child: Text(
                     _saving
-                        ? 'Saving…'
+                        ? tr('Saving…')
                         : widget.pushed
-                            ? 'Save'
-                            : 'Continue',
+                            ? tr('Save')
+                            : tr('Continue'),
                   ),
                 ),
               ],

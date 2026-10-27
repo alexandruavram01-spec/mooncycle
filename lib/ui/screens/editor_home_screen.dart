@@ -7,6 +7,7 @@ import '../widgets/account_sheet.dart';
 import '../widgets/moon_face.dart';
 import 'language_screen.dart';
 import 'tip_library_screen.dart';
+import '../../l10n/ui.dart';
 
 /// How many daily tips are pulled and how many have been rated.
 final _countsProvider = FutureProvider.autoDispose<(int, int)>((ref) async {
@@ -69,15 +70,15 @@ class EditorHomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MoonCycle editor'),
+        title: Text(tr('MoonCycle editor')),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: tr('Refresh'),
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(_countsProvider),
           ),
           IconButton(
-            tooltip: 'Language',
+            tooltip: tr('Language'),
             icon: const Icon(Icons.language),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -86,7 +87,7 @@ class EditorHomeScreen extends ConsumerWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Account',
+            tooltip: tr('Account'),
             icon: const Icon(Icons.account_circle_outlined),
             onPressed: () => showAccountSheet(context),
           ),
@@ -107,7 +108,7 @@ class EditorHomeScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Partner tips',
+                          tr('Partner tips'),
                           style: theme.textTheme.headlineSmall,
                         ),
                         Text('Signed in as $email', style: muted),
@@ -140,9 +141,9 @@ class EditorHomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                'The wording is reviewed in the files in content/ and built '
+                tr('The wording is reviewed in the files in content/ and built '
                 'into the app. To see the app the way she or he does, sign '
-                'in with a test account in a private browser window.',
+                'in with a test account in a private browser window.'),
                 style: muted,
               ),
             ],

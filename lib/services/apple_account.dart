@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart'
     show TargetPlatform, debugPrint, defaultTargetPlatform, kIsWeb;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../l10n/ui.dart';
 import 'api_client.dart';
 
 /// What Apple returns for the server to check: the signed identity token,
@@ -29,7 +30,7 @@ class AppleAccount {
     } on SignInWithAppleAuthorizationException catch (e) {
       debugPrint('Sign in with Apple: ${e.code.name} ${e.message}');
       if (e.code == AuthorizationErrorCode.canceled) return null;
-      throw ApiException('$_failed (${e.code.name})');
+      throw ApiException('${tr(_failed)} (${e.code.name})');
     }
   }
 

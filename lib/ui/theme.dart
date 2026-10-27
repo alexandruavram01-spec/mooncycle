@@ -20,7 +20,8 @@ class MoonColors {
   static const dawnCard = Color(0xFFFFFFFF);
   static const dawnLine = Color(0xFFF3DDD6);
   static const dawnInk = Color(0xFF3B2A33);
-  static const dawnMuted = Color(0xFF8A6F78);
+  // Dark enough to read easily on the light background.
+  static const dawnMuted = Color(0xFF654D57);
   static const dawnTint = Color(0xFFFDE9E4);
   static const dawnTintInk = Color(0xFF6B2238);
 

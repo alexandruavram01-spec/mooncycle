@@ -7,6 +7,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../data/settings_store.dart';
 import '../domain/cycle_engine.dart';
 import '../domain/day_key.dart';
+import '../l10n/ui.dart';
 
 /// Local, on-device reminders. No server, no push token.
 class NotificationService {
@@ -113,10 +114,11 @@ class NotificationService {
         id: _periodId,
         day: when,
         hour: 9,
-        title: 'Your period is coming',
+        title: tr('Your period is coming'),
         body: settings.periodReminderDaysBefore == 1
-            ? 'Expected tomorrow. Worth having what you need to hand.'
-            : 'Expected in ${settings.periodReminderDaysBefore} days.',
+            ? tr('Expected tomorrow. Worth having what you need to hand.')
+            : trCount(settings.periodReminderDaysBefore, 'Expected in {n} day.',
+                'Expected in {n} days.'),
         details: _cycleChannel,
       );
     }
@@ -126,9 +128,9 @@ class NotificationService {
         id: _fertileId,
         day: status.fertileWindowStart!,
         hour: 9,
-        title: 'Fertile window starts today',
-        body: 'Based on your recent cycles. Predictions are estimates, not '
-            'contraception.',
+        title: tr('Fertile window starts today'),
+        body: tr('Based on your recent cycles. Predictions are estimates, not '
+            'contraception.'),
         details: _cycleChannel,
       );
     }
@@ -138,8 +140,8 @@ class NotificationService {
         id: _dailyId,
         hour: settings.dailyLogHour,
         minute: settings.dailyLogMinute,
-        title: 'How did today feel?',
-        body: 'A few taps keeps your predictions sharp.',
+        title: tr('How did today feel?'),
+        body: tr('A few taps keeps your predictions sharp.'),
       );
     }
   }
@@ -156,8 +158,8 @@ class NotificationService {
       id: _partnerTipId,
       hour: 10,
       minute: 0,
-      title: "💌 Today's tip for your partner",
-      body: 'Have a look, and flag it if it does not feel right.',
+      title: '💌 ${tr("Today's tip for your partner")}',
+      body: tr('Have a look, and flag it if it does not feel right.'),
       details: _partnerChannel,
     );
   }

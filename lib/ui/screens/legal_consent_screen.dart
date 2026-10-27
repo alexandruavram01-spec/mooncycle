@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/providers.dart';
 import '../widgets/consent_boxes.dart';
 import '../widgets/wordmark.dart';
+import '../../l10n/ui.dart';
 
 /// Shown once to accounts that have not agreed to the current terms: those
 /// made with Google from the sign-in screen, those made before consent was
@@ -32,8 +33,8 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
       if (mounted) {
         setState(() {
           _busy = false;
-          _error = 'Could not save your answer. Check your connection and '
-              'try again. ($e)';
+          _error = '${tr('Could not save your answer. Check your connection '
+              'and try again.')} ($e)';
         });
       }
     }
@@ -58,14 +59,14 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                 const Center(child: Wordmark(size: 32)),
                 const SizedBox(height: 16),
                 Text(
-                  'Before you continue',
+                  tr('Before you continue'),
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Please read our terms and privacy policy, and tick both '
-                  'boxes to use MoonCycle.',
+                  tr('Please read our terms and privacy policy, and tick both '
+                  'boxes to use MoonCycle.'),
                   style: theme.textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -88,14 +89,14 @@ class _LegalConsentScreenState extends ConsumerState<LegalConsentScreen> {
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                   ),
-                  child: Text(_busy ? 'One moment…' : 'Continue'),
+                  child: Text(_busy ? tr('One moment…') : tr('Continue')),
                 ),
                 const SizedBox(height: 4),
                 TextButton(
                   onPressed: _busy
                       ? null
                       : () => ref.read(sessionProvider.notifier).signOut(),
-                  child: const Text('Sign out'),
+                  child: Text(tr('Sign out')),
                 ),
               ],
             ),

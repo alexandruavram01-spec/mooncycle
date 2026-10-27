@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 import 'domain/profile.dart';
+import 'l10n/app_language.dart';
+import 'l10n/ui.dart';
 import 'state/providers.dart';
 import 'ui/screens/account_screen.dart';
 import 'ui/screens/editor_home_screen.dart';
@@ -14,6 +19,9 @@ import 'ui/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Month and day names for the dates shown in each language.
+  await initializeDateFormatting('en_GB');
+  await initializeDateFormatting('ro');
 
   // Own the container explicitly so notification channels can be created
   // before the first frame.
@@ -67,8 +75,19 @@ class MoonCycleApp extends ConsumerWidget {
     // for someone tracking her cycle, Night for a partner.
     final partner = ref.watch(profileProvider).role == AppRole.partner;
 
+    // Every text on screen follows the language chosen on this phone. The
+    // key rebuilds the whole app when it changes in Settings.
+    final language = ref.watch(languageProvider).valueOrNull;
+    final romanian = language == AppLanguage.ro;
+    UiText.language = language ?? AppLanguage.enGB;
+    Intl.defaultLocale = romanian ? 'ro' : 'en_GB';
+
     return MaterialApp(
+      key: ValueKey(language),
       title: 'MoonCycle',
+      locale: romanian ? const Locale('ro') : const Locale('en', 'GB'),
+      supportedLocales: const [Locale('en', 'GB'), Locale('ro')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       debugShowCheckedModeBanner: false,
       theme: partner ? nightTheme : dawnTheme,
       // On a wide screen the app keeps a phone-like width, centred, instead

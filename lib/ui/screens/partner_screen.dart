@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../state/providers.dart';
+import '../../l10n/ui.dart';
 
 class PartnerScreen extends ConsumerWidget {
   const PartnerScreen({super.key});
@@ -18,7 +19,7 @@ class PartnerScreen extends ConsumerWidget {
     final sharing = settings.sharing;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Partner')),
+      appBar: AppBar(title: Text(tr('Partner'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
@@ -28,13 +29,13 @@ class PartnerScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Share with a partner',
+                  Text(tr('Share with a partner'),
                       style: theme.textTheme.titleMedium),
                   const SizedBox(height: 6),
                   Text(
-                    'They see a summary you choose — never your raw logs. '
+                    tr('They see a summary you choose — never your raw logs. '
                     'You can turn it off at any time and they lose access '
-                    'immediately.',
+                    'immediately.'),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -43,7 +44,7 @@ class PartnerScreen extends ConsumerWidget {
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     value: sharing.enabled,
-                    title: const Text('Sharing on'),
+                    title: Text(tr('Sharing on')),
                     onChanged: (v) => ref
                         .read(settingsProvider.notifier)
                         .updateSharing(sharing.copyWith(enabled: v)),
@@ -57,23 +58,23 @@ class PartnerScreen extends ConsumerWidget {
             const _PairingCard(),
             const SizedBox(height: 8),
             Text(
-              'Nudges to them and their offers to you are on the Today tab.',
+              tr('Nudges to them and their offers to you are on the Today tab.'),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 20),
-            Text('What they can see', style: theme.textTheme.titleMedium),
+            Text(tr('What they can see'), style: theme.textTheme.titleMedium),
             const SizedBox(height: 4),
             _ShareToggle(
-              label: 'Cycle phase and support tips',
+              label: tr('Cycle phase and support tips'),
               value: sharing.sharePhase,
               onChanged: (v) => ref
                   .read(settingsProvider.notifier)
                   .updateSharing(sharing.copyWith(sharePhase: v)),
             ),
             _ShareToggle(
-              label: 'Days until next period',
+              label: tr('Days until next period'),
               value: sharing.shareNextPeriodDate,
               onChanged: (v) => ref
                   .read(settingsProvider.notifier)
@@ -83,8 +84,8 @@ class PartnerScreen extends ConsumerWidget {
             // are cleared whenever these change, so they can't keep sharing
             // in the background.
             _ShareToggle(
-              label: 'Mood',
-              subtitle: 'The mood and energy you log for the day.',
+              label: tr('Mood'),
+              subtitle: tr('The mood and energy you log for the day.'),
               value: sharing.shareMood || sharing.shareSymptoms,
               onChanged: (v) => ref.read(settingsProvider.notifier).updateSharing(
                     sharing.copyWith(
@@ -96,8 +97,8 @@ class PartnerScreen extends ConsumerWidget {
                   ),
             ),
             _ShareToggle(
-              label: 'Pain and discomfort',
-              subtitle: 'The pain and discomfort you log for the day.',
+              label: tr('Pain and discomfort'),
+              subtitle: tr('The pain and discomfort you log for the day.'),
               value: sharing.sharePain || sharing.shareSymptoms,
               onChanged: (v) => ref.read(settingsProvider.notifier).updateSharing(
                     sharing.copyWith(
@@ -109,26 +110,26 @@ class PartnerScreen extends ConsumerWidget {
                   ),
             ),
             _ShareToggle(
-              label: 'Support requests',
-              subtitle: 'Lets you send nudges like "I need a hug" from the '
-                  'Today tab.',
+              label: tr('Support requests'),
+              subtitle: tr('Lets you send nudges like "I need a hug" from the '
+                  'Today tab.'),
               value: sharing.allowRequests,
               onChanged: (v) => ref
                   .read(settingsProvider.notifier)
                   .updateSharing(sharing.copyWith(allowRequests: v)),
             ),
             _ShareToggle(
-              label: 'Fertile window',
-              subtitle: 'Off by default — the most sensitive thing here.',
+              label: tr('Fertile window'),
+              subtitle: tr('Off by default — the most sensitive thing here.'),
               value: sharing.shareFertileWindow,
               onChanged: (v) => ref
                   .read(settingsProvider.notifier)
                   .updateSharing(sharing.copyWith(shareFertileWindow: v)),
             ),
             _ShareToggle(
-              label: 'Let their tips be funny',
-              subtitle: 'Jokes switch off on their own on days you log as '
-                  'rough, and when your period is late.',
+              label: tr('Let their tips be funny'),
+              subtitle: tr('Jokes switch off on their own on days you log as '
+                  'rough, and when your period is late.'),
               value: sharing.allowJokes,
               onChanged: (v) => ref
                   .read(settingsProvider.notifier)
@@ -136,9 +137,9 @@ class PartnerScreen extends ConsumerWidget {
             ),
             if (sharing.allowJokes)
               _ShareToggle(
-                label: 'Humour during my period too',
-                subtitle: 'Off unless you turn it on. Their tips stay plain '
-                    'during your period otherwise.',
+                label: tr('Humour during my period too'),
+                subtitle: tr('Off unless you turn it on. Their tips stay plain '
+                    'during your period otherwise.'),
                 value: sharing.allowPeriodHumour,
                 onChanged: (v) => ref
                     .read(settingsProvider.notifier)
@@ -203,7 +204,7 @@ class _PairingCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Pairing', style: theme.textTheme.titleSmall),
+            Text(tr('Pairing'), style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
             pairing.when(
               loading: () => const LinearProgressIndicator(),
@@ -211,7 +212,7 @@ class _PairingCard extends ConsumerWidget {
                 children: [
                   Expanded(child: Text('$e')),
                   IconButton(
-                    tooltip: 'Try again',
+                    tooltip: tr('Try again'),
                     icon: const Icon(Icons.refresh),
                     onPressed: () => ref.invalidate(pairingProvider),
                   ),
@@ -224,12 +225,12 @@ class _PairingCard extends ConsumerWidget {
                     children: [
                       const Icon(Icons.check_circle_outline),
                       const SizedBox(width: 8),
-                      const Expanded(
-                        child: Text('Your partner is connected.'),
+                      Expanded(
+                        child: Text(tr('Your partner is connected.')),
                       ),
                       TextButton(
                         onPressed: issueNewCode,
-                        child: const Text('Disconnect'),
+                        child: Text(tr('Disconnect')),
                       ),
                     ],
                   );
@@ -247,19 +248,19 @@ class _PairingCard extends ConsumerWidget {
                           ),
                         ),
                         IconButton(
-                          tooltip: 'Copy',
+                          tooltip: tr('Copy'),
                           icon: const Icon(Icons.copy_outlined),
                           onPressed: () async {
                             await Clipboard.setData(ClipboardData(text: code));
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Code copied')),
+                                SnackBar(content: Text(tr('Code copied'))),
                               );
                             }
                           },
                         ),
                         IconButton(
-                          tooltip: 'Generate a new code',
+                          tooltip: tr('Generate a new code'),
                           icon: const Icon(Icons.refresh),
                           onPressed: issueNewCode,
                         ),
@@ -267,15 +268,15 @@ class _PairingCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Give this code to your partner. It works once and '
-                      'expires after 24 hours.',
+                      tr('Give this code to your partner. It works once and '
+                      'expires after 24 hours.'),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                     TextButton(
                       onPressed: () => ref.invalidate(pairingProvider),
-                      child: const Text('Check if they have connected'),
+                      child: Text(tr('Check if they have connected')),
                     ),
                   ],
                 );
