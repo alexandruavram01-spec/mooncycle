@@ -1,7 +1,7 @@
 name: mooncycle
 description: MoonCycle - period, symptom and hormone tracking with partner sharing.
 publish_to: "none"
-version: 1.0.0+7
+version: 1.0.0+8
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -61,16 +61,17 @@ flutter:
     # screens. Made from the full logo; see assets/icon/ for the app icon.
     - assets/brand/logo_mark.png
 
+# All made by tool/app_icon.ps1 from assets/icon/source/icon_art.webp.
 # icon.png: 1024 x 1024, square edges, no transparency, no text.
-# icon_foreground.png: the artwork alone on a transparent background, kept
-# inside the middle two thirds, for Android's shaped icons.
+# icon_background.png: Android's shaped icon, the artwork within the middle
+# two thirds on its own purple; icon_foreground.png is left empty.
 flutter_launcher_icons:
   image_path: "assets/icon/icon.png"
   android: true
   ios: true
   remove_alpha_ios: true
   min_sdk_android: 26
-  adaptive_icon_background: "#FAEDE3"
+  adaptive_icon_background: "assets/icon/icon_background.png"
   adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   web:
     generate: true
