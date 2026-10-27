@@ -7,23 +7,23 @@ const Map<String, String> uiRo = {
   'Your period is coming':
       'Menstruația se apropie',
   'Expected tomorrow. Worth having what you need to hand.':
-      'E așteptată mâine. Bine să ai la îndemână ce-ți trebuie.',
+      'Este estimată pentru mâine. Poate fi util să ai tot ce-ți trebuie la îndemână.',
   'Expected in {n} day.':
-      'E așteptată peste {n} zi.',
+      'Este estimată peste {n} zi.',
   'Expected in {n} days.':
-      'E așteptată peste {n} zile.',
+      'Este estimată peste {n} zile.',
   'Fertile window starts today':
-      'Fereastra fertilă începe azi',
+      'Perioada fertilă estimată începe azi',
   'Based on your recent cycles. Predictions are estimates, not contraception.':
       'Pe baza ciclurilor tale recente. Estimările nu sunt o metodă de contracepție.',
   'How did today feel?':
       'Cum te-ai simțit azi?',
   'A few taps keeps your predictions sharp.':
-      'Câteva atingeri îți păstrează estimările precise.',
+      'Câteva răspunsuri rapide ne ajută să îmbunătățim estimările.',
   'Today\'s tip for your partner':
       'Sfatul de azi pentru partenerul tău',
   'Have a look, and flag it if it does not feel right.':
-      'Aruncă o privire și semnalează-l dacă nu ți se pare potrivit.',
+      'Citește-l și spune-ne dacă ți se pare nepotrivit.',
   'Enter your email address.':
       'Introdu adresa ta de email.',
   'Use a password of at least {n} characters.':
@@ -37,17 +37,17 @@ const Map<String, String> uiRo = {
   'Please tick both boxes to create your account.':
       'Bifează ambele căsuțe ca să-ți creezi contul.',
   'Google sign-in was closed before it finished. Try again, or use your email and password.':
-      'Conectarea cu Google s-a închis înainte să se termine. Încearcă din nou sau folosește emailul și parola.',
+      'Autentificarea cu Google a fost întreruptă. Încearcă din nou sau conectează-te cu adresa de e-mail și parola.',
   'Sign in with Apple was closed before it finished. Try again, or use your email and password.':
-      'Conectarea cu Apple s-a închis înainte să se termine. Încearcă din nou sau folosește emailul și parola.',
+      'Autentificarea cu Apple a fost întreruptă. Încearcă din nou sau conectează-te cu adresa de e-mail și parola.',
   'Create your account':
       'Creează-ți contul',
   'Welcome back':
       'Bine ai revenit',
   'or use your email':
-      'sau folosește emailul',
+      'sau continuă cu adresa de e-mail',
   'Email':
-      'Email',
+      'E-mail',
   'Password':
       'Parolă',
   'At least {n} characters, with a capital letter and a special character':
@@ -57,9 +57,9 @@ const Map<String, String> uiRo = {
   'Hide password':
       'Ascunde parola',
   'Choose a password you will remember. It cannot be reset yet.':
-      'Alege o parolă pe care o ții minte. Deocamdată nu poate fi resetată.',
+      'Alege o parolă pe care o poți ține minte. Momentan nu o poți reseta.',
   'Password reset is not available yet. If you have forgotten it, you will need a new account.':
-      'Resetarea parolei nu e disponibilă încă. Dacă ai uitat-o, va trebui să-ți faci un cont nou.',
+      'Resetarea parolei nu este disponibilă momentan. Dacă ai uitat parola, va trebui să creezi un cont nou.',
   'One moment…':
       'O clipă…',
   'Create account':
@@ -71,9 +71,9 @@ const Map<String, String> uiRo = {
   'Create an account':
       'Creează un cont',
   'Your logs and quiz answers stay on this device. The account holds only your email and your partner connection (and, with Google, an ID for your Google account).':
-      'Ce notezi și răspunsurile la chestionar rămân pe acest telefon. Contul păstrează doar emailul și conexiunea cu partenerul (iar cu Google, un ID al contului tău Google).',
+      'Înregistrările și răspunsurile tale la chestionar rămân pe acest dispozitiv. În cont sunt păstrate doar adresa de e-mail și conexiunea cu partenerul (iar la conectarea cu Google, identificatorul contului Google).',
   'Language':
-      'Limba',
+      'Limbă',
   'Privacy policy':
       'Politica de confidențialitate',
   'Terms of use':
@@ -89,33 +89,33 @@ const Map<String, String> uiRo = {
   'Could not open the link.':
       'Nu am putut deschide linkul.',
   'AI-written notes are on.':
-      'Notițele scrise de AI sunt pornite.',
+      'Recomandările redactate cu AI sunt activate.',
   'AI-written notes are off. Nothing more will be sent.':
-      'Notițele scrise de AI sunt oprite. Nu se mai trimite nimic.',
+      'Recomandările redactate cu AI sunt dezactivate. Nu se vor mai trimite date pentru ele.',
   'AI-written notes':
-      'Notițe scrise de AI',
+      'Recomandări redactate cu AI',
   'Turn AI-written notes off':
-      'Oprește notițele scrise de AI',
+      'Dezactivează recomandările redactate cu AI',
   'I agree to MoonCycle sending this summary about my health to Anthropic to write my notes.':
-      'Sunt de acord ca MoonCycle să trimită acest rezumat despre sănătatea mea către Anthropic, ca să-mi scrie notițele.',
+      'Sunt de acord ca MoonCycle să trimită către Anthropic acest rezumat al datelor mele de sănătate, pentru a-mi personaliza recomandările.',
   'Turn on':
       'Pornește',
   'Turn on AI-written notes':
-      'Pornește notițele scrise de AI',
+      'Activează recomandările redactate cu AI',
   'Instead of the standard wording, MoonCycle can write your daily card as a short note around your own log, using AI. What it says still comes from the same card, which is based on NHS information. The "See a GP" line and where to get help stay exactly as they are.':
-      'În locul textului standard, MoonCycle îți poate scrie cardul zilnic ca o notiță scurtă pornind de la ce ai notat, cu ajutorul AI. Conținutul vine tot din același card, bazat pe informații NHS. Rândul despre mersul la medic și unde găsești ajutor rămân exact la fel.',
+      'Cu ajutorul AI, MoonCycle poate transforma recomandarea zilnică într-un mesaj scurt, adaptat informațiilor pe care le-ai înregistrat. Informațiile despre sănătate provin în continuare din aceeași recomandare, bazată pe surse NHS. Indicațiile despre consultarea medicului și accesarea serviciilor de ajutor rămân neschimbate.',
   'What is sent':
-      'Ce se trimite',
+      'Ce date sunt trimise',
   'The card chosen for you that day, and a short summary worked out on your phone: the symptom the card is about, patterns in your recorded cycles and estimated dates. Never your name, email, notes or the rest of what you logged.':
-      'Cardul ales pentru tine în ziua respectivă și un scurt rezumat calculat pe telefonul tău: simptomul despre care e cardul, tiparele din ciclurile tale și datele estimate. Niciodată numele, emailul, notițele sau restul a ce ai notat.',
+      'Recomandarea selectată pentru ziua respectivă și un rezumat scurt, creat pe telefonul tău: simptomul vizat, tipare observate în ciclurile înregistrate și date estimate. Nu trimitem numele, adresa de e-mail, notițele personale sau restul înregistrărilor tale.',
   'Who it goes to':
-      'Cui ajunge',
+      'Cine primește datele',
   'Anthropic, the company that makes the Claude AI, in the United States. It writes the note for us and deletes what we sent within 30 days (longer only if its safety systems flag misuse). It does not use it to train its AI. MoonCycle keeps neither the summary nor the note on its server.':
-      'Anthropic, compania care face AI-ul Claude, în Statele Unite. Scrie notița pentru noi și șterge ce am trimis în 30 de zile (mai mult doar dacă sistemele sale de siguranță semnalează un abuz). Nu folosește datele ca să-și antreneze AI-ul. MoonCycle nu păstrează pe server nici rezumatul, nici notița.',
+      'Datele ajung la Anthropic, compania din spatele AI-ului Claude. Anthropic le folosește pentru a genera mesajul și, în mod normal, le șterge în cel mult 30 de zile, cu excepțiile prevăzute de politica sa de păstrare. Datele transmise prin API nu sunt folosite implicit pentru antrenarea modelelor. MoonCycle nu păstrează pe server nici rezumatul, nici mesajul generat.',
   'Good to know':
       'Bine de știut',
   'The notes are general information, not medical advice, and AI can make mistakes. If you don\'t feel well, use Get help now. You can turn the notes off here at any time, and nothing more is sent from then on.':
-      'Notițele sunt informații generale, nu sfaturi medicale, iar AI-ul poate greși. Dacă nu te simți bine, folosește Ajutor acum. Poți opri notițele de aici oricând și de atunci nu se mai trimite nimic.',
+      'Aceste recomandări sunt informații generale, nu sfaturi medicale, iar AI-ul poate greși. Dacă ai nevoie de sprijin medical, deschide secțiunea „Ajutor acum”. Poți dezactiva funcția oricând; după dezactivare, nu se mai trimit date noi.',
   'Calendar':
       'Calendar',
   'Previous month':
@@ -125,7 +125,7 @@ const Map<String, String> uiRo = {
   'Period':
       'Menstruație',
   'Predicted':
-      'Estimată',
+      'Estimat',
   'Fertile':
       'Fertilă',
   'Day {n}':
@@ -137,19 +137,19 @@ const Map<String, String> uiRo = {
   'Fertile days':
       'Zile fertile',
   'Solid segments are days so far, faded ones are still to come. The small moon is today.':
-      'Segmentele pline sunt zilele trecute, cele estompate urmează. Luna mică e ziua de azi.',
+      'Porțiunile pline arată zilele care au trecut, iar cele estompate, zilele următoare. Luna mică marchează ziua de azi.',
   'Not enough data yet':
-      'Încă nu sunt destule date',
+      'Nu avem încă suficiente date',
   'Period is {n} day late':
-      'Menstruația întârzie de {n} zi',
+      'Menstruația este cu {n} zi mai târziu decât estimarea',
   'Period is {n} days late':
-      'Menstruația întârzie de {n} zile',
+      'Menstruația este cu {n} zile mai târziu decât estimarea',
   'Period expected today':
-      'Menstruația e așteptată azi',
+      'Menstruația este estimată pentru azi',
   'Period in {n} day':
-      'Menstruația peste {n} zi',
+      'Menstruația este estimată peste {n} zi',
   'Period in {n} days':
-      'Menstruația peste {n} zile',
+      'Menstruația este estimată peste {n} zile',
   'Cycle':
       'Ciclu',
   'Variation':
@@ -157,19 +157,19 @@ const Map<String, String> uiRo = {
   'Cycles':
       'Cicluri',
   'Estimated from your quiz answers until you have logged a full cycle.':
-      'Estimat din răspunsurile la chestionar până notezi un ciclu complet.',
+      'Calculat pe baza răspunsurilor tale la chestionar, până când înregistrezi un ciclu complet.',
   'Based on how many cycles you have logged and how much their length varies.':
-      'Depinde de câte cicluri ai notat și cât de mult variază durata lor.',
+      'Estimarea ține cont de numărul de cicluri înregistrate și de variațiile duratei lor.',
   'You are in your estimated fertile days':
-      'Ești în zilele fertile estimate',
+      'Te afli în perioada fertilă estimată',
   'Fertile days start in {n} day':
-      'Zilele fertile încep peste {n} zi',
+      'Perioada fertilă estimată începe peste {n} zi',
   'Fertile days start in {n} days':
-      'Zilele fertile încep peste {n} zile',
+      'Perioada fertilă estimată începe peste {n} zile',
   'Fertile days have passed for this cycle':
-      'Zilele fertile au trecut pentru acest ciclu',
+      'Perioada fertilă estimată a trecut pentru acest ciclu',
   '{start} to {end}, estimated from your cycle history.':
-      '{start} – {end}, estimat din istoricul ciclurilor tale.',
+      '{start} – {end}, estimare bazată pe istoricul ciclurilor tale.',
   'Menstrual phase':
       'Faza menstruală',
   'Follicular phase':
@@ -179,61 +179,61 @@ const Map<String, String> uiRo = {
   'Luteal phase':
       'Faza luteală',
   'You are in your estimated fertile window.':
-      'Ești în fereastra fertilă estimată.',
+      'Te afli în perioada fertilă estimată.',
   'Today\'s flow':
-      'Fluxul de azi',
+      'Flux menstrual azi',
   'Let us find your rhythm':
-      'Hai să-ți găsim ritmul',
+      'Hai să descoperim ritmul ciclului tău',
   'Mark the first day of your last period. Predictions get sharper with every cycle you log.':
       'Marchează prima zi a ultimei menstruații. Estimările devin mai precise cu fiecare ciclu notat.',
   'First day of your last period':
       'Prima zi a ultimei menstruații',
   'Set my last period':
-      'Setează ultima menstruație',
+      'Adaugă ultima menstruație',
   'Predictions are estimates based on your own history. They are not contraception and not medical advice.':
       'Estimările se bazează pe istoricul tău. Nu sunt o metodă de contracepție și nici sfaturi medicale.',
   'Something went wrong.':
-      'Ceva n-a mers bine.',
+      'A apărut o problemă.',
   'First estimate':
       'Prima estimare',
   'Low confidence':
-      'Încredere scăzută',
+      'Precizie estimată: scăzută',
   'Fair confidence':
-      'Încredere medie',
+      'Precizie estimată: moderată',
   'High confidence':
-      'Încredere mare',
+      'Precizie estimată: ridicată',
   'Oestrogen and progesterone are at their lowest. Low energy and cramps are common; prostaglandins drive the cramping.':
       'Estrogenul și progesteronul sunt la cel mai scăzut nivel. Energia scăzută și crampele sunt frecvente; prostaglandinele provoacă crampele.',
   'Oestrogen is rising as a follicle matures. Energy, mood and focus usually climb with it.':
-      'Estrogenul crește pe măsură ce un folicul se maturizează. Energia, starea și concentrarea cresc de obicei odată cu el.',
+      'Pe măsură ce foliculul se dezvoltă, nivelul estrogenului crește. Unele persoane observă schimbări ale energiei, dispoziției sau concentrării, dar experiențele diferă.',
   'A surge of LH releases the egg. Oestrogen peaks — often the highest energy days of the cycle.':
-      'Un vârf de LH eliberează ovulul. Estrogenul atinge maximul — adesea cele mai energice zile din ciclu.',
+      'Creșterea hormonului LH declanșează eliberarea ovulului. Estrogenul atinge un nivel ridicat, însă energia nu crește la fel pentru toată lumea.',
   'Progesterone rises then falls if there is no pregnancy. That drop is what drives PMS symptoms in the final days.':
-      'Progesteronul crește, apoi scade dacă nu există o sarcină. Scăderea asta provoacă simptomele SPM din ultimele zile.',
+      'Progesteronul crește după ovulație și scade spre sfârșitul ciclului dacă nu apare o sarcină. La unele persoane, această perioadă este asociată cu simptome premenstruale.',
   'Patterns':
       'Tipare',
   'Patterns need at least {n} complete cycles before they mean anything. Keep logging — this page fills in on its own.':
-      'Tiparele au nevoie de cel puțin {n} cicluri complete ca să însemne ceva. Continuă să notezi — pagina se completează singură.',
+      'Pentru a observa tipare, avem nevoie de cel puțin {n} cicluri complete. Continuă să înregistrezi informații, iar această pagină se va completa treptat.',
   'Cycle length':
       'Durata ciclului',
   'How each phase tends to feel':
-      'Cum se simte de obicei fiecare fază',
+      'Cum te-ai simțit în fiecare fază',
   'Energy {value}/5':
       'Energie {value}/5',
   '{n} day logged':
-      '{n} zi notată',
+      '{n} zi înregistrată',
   '{n} days logged':
-      '{n} zile notate',
+      '{n} zile înregistrate',
   'What repeats':
-      'Ce se repetă',
+      'Tipare observate',
   '{symptom} in your {phase} phase':
       '{symptom} în faza {phase}',
   'Logged in {hits} of {cycles} recent cycles.':
-      'Notat în {hits} din {cycles} cicluri recente.',
+      'Înregistrat în {hits} din ultimele {cycles} cicluri.',
   'Choose your language':
       'Alege limba',
   'It sets the language of the app and of partner tips and messages. Your partner chooses their own, and you can change yours any time in Settings.':
-      'Stabilește limba aplicației și a sfaturilor și mesajelor pentru partener. Partenerul își alege limba lui, iar tu o poți schimba oricând din Setări.',
+      'Limba aleasă se aplică interfeței și mesajelor pentru partener. Fiecare își poate alege propria limbă, pe care o poate schimba oricând din Setări.',
   'Saving…':
       'Se salvează…',
   'Save':
@@ -255,9 +255,9 @@ const Map<String, String> uiRo = {
   'Close':
       'Închide',
   'Let\'s make MoonCycle yours':
-      'Hai să facem MoonCycle al tău',
+      'Personalizează MoonCycle pe gustul tău',
   'Every journey is unique. Are you here for yourself or to support your partner?':
-      'Fiecare drum e unic. Ești aici pentru tine sau ca să-ți susții partenera?',
+      'Fiecare experiență e diferită. Folosești MoonCycle pentru tine sau ca să fii alături de partenera ta?',
   'Optional preferences · ':
       'Preferințe opționale · ',
   'Question {n} of {total}':
@@ -265,7 +265,7 @@ const Map<String, String> uiRo = {
   'Privacy first':
       'Confidențialitatea pe primul loc',
   'She decides whether to connect and exactly which cycle, mood or pain details to share. Choosing an alert here does not grant access or send any notification.':
-      'Ea decide dacă vă conectați și exact ce detalii despre ciclu, stare sau durere împarte. Dacă alegi o notificare aici, nu primești acces și nu se trimite nimic.',
+      'Ea decide dacă vă conectați conturile și ce informații despre ciclu, dispoziție sau durere îți permite să vezi. Opțiunea aleasă aici nu îți oferă automat acces și nu trimite nicio notificare.',
   'Choose the answer that feels right for you. You can skip any question.':
       'Alege răspunsul care ți se potrivește. Poți sări peste orice întrebare.',
   'Back':
@@ -277,7 +277,7 @@ const Map<String, String> uiRo = {
   'Skip for now':
       'Sari peste',
   'Finish the rest later':
-      'Termin restul mai târziu',
+      'Continuă mai târziu',
   'Enter number of days (typically 21–35)':
       'Introdu numărul de zile (de obicei 21–35)',
   'Enter number of days':
@@ -285,7 +285,7 @@ const Map<String, String> uiRo = {
   'Choose a date':
       'Alege o dată',
   'Connected with her.':
-      'Conectat cu ea.',
+      'Conturile voastre sunt conectate.',
   'Connecting…':
       'Se conectează…',
   'Connect':
@@ -293,9 +293,9 @@ const Map<String, String> uiRo = {
   'How connecting works':
       'Cum funcționează conectarea',
   'She creates a code in her MoonCycle app (Partner tab) and sends it to you. Send her this message to ask for it:':
-      'Ea creează un cod în aplicația ei MoonCycle (fila Partener) și ți-l trimite. Trimite-i mesajul acesta ca să i-l ceri:',
+      'Ea poate genera un cod din secțiunea Partener a aplicației MoonCycle și ți-l poate trimite. Dacă vrei să-i ceri codul, îi poți trimite mesajul de mai jos:',
   'I\'d like to support you better. Could you turn on partner sharing in MoonCycle (Partner tab) and send me the code? https://mooncycle.fit':
-      'Aș vrea să te susțin mai bine. Poți porni partajarea cu partenerul în MoonCycle (fila Partener) și să-mi trimiți codul? https://mooncycle.fit',
+      'Mi-ar plăcea să fiu mai atent la ce ai nevoie. Dacă te simți confortabil, poți activa partajarea cu partenerul din MoonCycle (secțiunea Partener) și să-mi trimiți codul? https://mooncycle.fit',
   'Message copied':
       'Mesaj copiat',
   'Copy message':
@@ -303,99 +303,99 @@ const Map<String, String> uiRo = {
   'Your body. Your choice.':
       'Corpul tău. Alegerea ta.',
   'Nothing is shared by default. You can connect accounts without sharing health information, choose individual categories, and withdraw access at any time. Your partner must also accept the invitation.':
-      'Implicit nu se împarte nimic. Poți conecta conturile fără să împarți informații despre sănătate, poți alege categorii separate și poți retrage accesul oricând. Și partenerul trebuie să accepte invitația.',
+      'La început, nu este partajată nicio informație. Poți conecta conturile fără să distribui date despre sănătate, poți alege separat ce categorii partajezi și poți opri accesul oricând. Partenerul trebuie să accepte invitația.',
   'I\'d like to invite my partner':
       'Vreau să-mi invit partenerul',
   'Keep my information private':
-      'Păstrez informațiile private',
+      'Păstrează-mi informațiile doar pentru mine',
   'Do not invite a partner or share any health updates.':
-      'Nu invit un partener și nu împart nimic despre sănătate.',
+      'Nu invit un partener și nu partajez informații despre sănătate.',
   'I will choose exactly what can be shared.':
-      'Aleg exact ce se poate împărți.',
+      'Eu decid exact ce informații partajez.',
   'Choose what to share':
-      'Alege ce împarți',
+      'Alege ce vrei să partajezi',
   'Tick only what feels comfortable. No boxes are preselected.':
-      'Bifează doar ce te face să te simți confortabil. Nicio căsuță nu e bifată dinainte.',
+      'Bifează doar opțiunile cu care te simți în largul tău. Niciuna nu este selectată dinainte.',
   'Choosing a category allows only that type of update. Mood and pain show what you log for the day; support requests go only when you send one. You can change or revoke access at any time on the Partner tab.':
-      'O categorie permite doar acel tip de informație. Starea și durerea arată ce notezi pentru ziua respectivă; cererile de sprijin pleacă doar când trimiți tu una. Poți schimba sau retrage accesul oricând din fila Partener.',
+      'Fiecare categorie permite partajarea doar a acelui tip de informație. Dispoziția și durerea reflectă ce înregistrezi în ziua respectivă; cererile de sprijin sunt trimise doar de tine. Poți modifica opțiunile sau retrage accesul oricând din secțiunea Partener.',
   'Next, the Partner tab gives you the code your partner needs. Nothing is shared until they enter it.':
-      'Apoi, fila Partener îți dă codul de care are nevoie partenerul. Nu se împarte nimic până nu îl introduce.',
+      'În secțiunea Partener vei găsi codul de conectare. Nu se partajează nimic până când partenerul nu introduce codul.',
   'Private by default. You can set up sharing later.':
-      'Privat implicit. Poți configura partajarea mai târziu.',
+      'Totul rămâne privat. Poți activa partajarea și mai târziu.',
   'YOUR MOONCYCLE EXPERIENCE':
       'EXPERIENȚA TA MOONCYCLE',
   'What\'s set up':
-      'Ce e pregătit',
+      'Ce ai configurat',
   'Your answers':
       'Răspunsurile tale',
   'Start using MoonCycle':
       'Începe să folosești MoonCycle',
   'Would you like to personalise more? (optional)':
-      'Vrei să personalizezi mai mult? (opțional)',
+      'Vrei să mai personalizezi câteva lucruri? (opțional)',
   'Choose a different journey':
-      'Alege alt drum',
+      'Alege alt obiectiv',
   'Keep private':
-      'Păstrează privat',
+      'Păstrează doar pentru mine',
   'Invite partner; share: {what}':
-      'Invită partenerul; împarte: {what}',
+      'Invită partenerul; partajează: {what}',
   'no health categories':
-      'nicio categorie de sănătate',
+      'nicio categorie de date despre sănătate',
   'Journey: {name}. You can change it any time in Settings.':
-      'Drumul ales: {name}. Îl poți schimba oricând din Setări.',
+      'Obiectivul ales: {name}. Îl poți schimba oricând din Setări.',
   'Next period expected around {date}. Treat it as rough for the first few cycles.':
-      'Următoarea menstruație e așteptată în jur de {date}. În primele cicluri, ia-o ca pe o estimare aproximativă.',
+      'Următoarea menstruație este estimată în jurul datei de {date}. În primele câteva cicluri, estimarea poate fi mai puțin precisă.',
   'Next period expected around {date}.':
-      'Următoarea menstruație e așteptată în jur de {date}.',
+      'Următoarea menstruație este estimată în jurul datei de {date}.',
   'Fertile days hidden: calendar estimates do not apply with {reason}.':
-      'Zilele fertile sunt ascunse: estimările din calendar nu se aplică în caz de {reason}.',
+      'Zilele fertile sunt ascunse: estimările din calendar nu sunt aplicabile în situația „{reason}”.',
   'Estimated fertile days this cycle: {start} to {end}. An estimate, not contraception.':
-      'Zilele fertile estimate în acest ciclu: {start} – {end}. O estimare, nu o metodă de contracepție.',
+      'Zilele fertile estimate în acest ciclu: {start} – {end}. Nu folosi estimările drept metodă contraceptivă.',
   'Fertile days hidden. You can turn them on in Settings.':
-      'Zilele fertile sunt ascunse. Le poți porni din Setări.',
+      'Zilele fertile sunt ascunse. Le poți afișa din Setări.',
   'a reminder before your period':
-      'un memento înainte de menstruație',
+      'o notificare înainte de menstruație',
   'a daily check-in':
-      'o întrebare zilnică despre cum te simți',
+      'o întrebare zilnică despre starea ta',
   'No reminders.':
-      'Fără mementouri.',
+      'Fără reamintiri.',
   'Reminders: {list}.':
-      'Mementouri: {list}.',
+      'Reamintiri: {list}.',
   'and':
       'și',
   'The NHS suggests seeing a GP after a year of trying, or sooner if you\'re 36 or over. Worth a conversation when you feel ready.':
-      'Recomandarea medicală e să mergi la medic după un an de încercări, sau mai devreme dacă ai 36 de ani sau mai mult. Merită o discuție când te simți pregătită.',
+      'NHS recomandă consultarea unui medic după un an de încercări de a obține o sarcină sau mai devreme, de la 36 de ani. Poți discuta cu un medic când te simți pregătită.',
   'Partner sharing: {what}. Get the code for your partner on the Partner tab.':
-      'Partajare cu partenerul: {what}. Codul pentru partener îl găsești în fila Partener.',
+      'Informații partajate cu partenerul: {what}. Codul de conectare se află în secțiunea Partener.',
   'connected, no health details':
       'conectat, fără detalii despre sănătate',
   'Partner sharing stays as you set it on the Partner tab.':
-      'Partajarea rămâne cum ai setat-o în fila Partener.',
+      'Opțiunile de partajare rămân cele alese de tine în secțiunea Partener.',
   'Private: nothing is shared with anyone.':
-      'Privat: nu se împarte nimic cu nimeni.',
+      'Privat: nu partajezi informații cu nimeni.',
   '{n} more question for later. Pick up where you left off from Settings.':
-      'Încă {n} întrebare pentru mai târziu. Continui de unde ai rămas din Setări.',
+      'Mai ai {n} întrebare de completat. Poți continua din Setări.',
   '{n} more questions for later. Pick up where you left off from Settings.':
-      'Încă {n} întrebări pentru mai târziu. Continui de unde ai rămas din Setări.',
+      'Mai ai {n} întrebări de completat. Poți continua din Setări.',
   'Not connected yet. You can enter her code on your home screen once she sends it.':
-      'Încă nu ești conectat. Poți introduce codul ei pe ecranul principal după ce ți-l trimite.',
+      'Conturile voastre nu sunt conectate încă. Introdu codul ei pe ecranul principal după ce ți-l trimite.',
   'Your tips come with "a little humour" until you change it. Set her name and the tone from the menu on your home screen.':
-      'Sfaturile tale vin cu „puțin umor" până schimbi asta. Setează-i numele și tonul din meniul de pe ecranul principal.',
+      'Până schimbi setarea, sfaturile au „puțin umor”. Poți seta numele ei și stilul mesajelor din meniul ecranului principal.',
   'You only ever see what she chooses to share, and she can stop sharing at any time.':
-      'Vezi doar ce alege ea să împartă și poate opri partajarea oricând.',
+      'Vei vedea doar informațiile pe care alege ea să le partajeze. Poate opri partajarea în orice moment.',
   'Partner':
       'Partener',
   'Share with a partner':
-      'Împarte cu partenerul',
+      'Partajează cu partenerul',
   'They see a summary you choose — never your raw logs. You can turn it off at any time and they lose access immediately.':
-      'Partenerul vede un rezumat ales de tine — niciodată notițele tale. Poți opri oricând și pierde accesul imediat.',
+      'Partenerul vede doar rezumatul pe care îl alegi tu, nu toate înregistrările tale. Poți opri oricând partajarea, iar accesul lui se încheie imediat.',
   'Sharing on':
-      'Partajare pornită',
+      'Partajare activă',
   'Nudges to them and their offers to you are on the Today tab.':
-      'Semnalele către partener și ofertele lui pentru tine sunt în fila Azi.',
+      'Mesajele tale pentru partener și gesturile pe care ți le propune sunt în secțiunea Azi.',
   'What they can see':
-      'Ce poate vedea',
+      'Ce informații poate vedea',
   'Cycle phase and support tips':
-      'Faza ciclului și sfaturi de sprijin',
+      'Faza ciclului și sugestii pentru partener',
   'Days until next period':
       'Zile până la următoarea menstruație',
   'Mood':
@@ -407,21 +407,21 @@ const Map<String, String> uiRo = {
   'The pain and discomfort you log for the day.':
       'Durerea și disconfortul pe care le notezi pentru ziua respectivă.',
   'Support requests':
-      'Cereri de sprijin',
+      'Cereri de ajutor',
   'Lets you send nudges like "I need a hug" from the Today tab.':
-      'Îți permite să trimiți semnale ca „Am nevoie de o îmbrățișare" din fila Azi.',
+      'Poți trimite mesaje rapide, precum „Am nevoie de o îmbrățișare”, direct din secțiunea Azi.',
   'Fertile window':
-      'Fereastra fertilă',
+      'Perioada fertilă',
   'Off by default — the most sensitive thing here.':
-      'Oprit implicit — cel mai sensibil lucru de aici.',
+      'Dezactivată inițial — informația cea mai sensibilă dintre acestea.',
   'Let their tips be funny':
-      'Sfaturile lui pot fi amuzante',
+      'Permite și sfaturi amuzante',
   'Jokes switch off on their own on days you log as rough, and when your period is late.':
-      'Glumele se opresc singure în zilele pe care le notezi ca grele și când menstruația întârzie.',
+      'Glumele sunt oprite automat în zilele pe care le marchezi ca dificile și atunci când menstruația este întârziată față de estimare.',
   'Humour during my period too':
       'Umor și în timpul menstruației',
   'Off unless you turn it on. Their tips stay plain during your period otherwise.':
-      'Oprit, dacă nu îl pornești tu. Altfel, în timpul menstruației sfaturile lui rămân serioase.',
+      'Această opțiune este dezactivată inițial. Dacă nu o activezi, partenerul va primi sfaturi fără glume în timpul menstruației.',
   'Pairing':
       'Conectare',
   'Try again':
@@ -435,59 +435,59 @@ const Map<String, String> uiRo = {
   'Code copied':
       'Cod copiat',
   'Generate a new code':
-      'Generează un cod nou',
+      'Generează alt cod',
   'Give this code to your partner. It works once and expires after 24 hours.':
-      'Dă-i acest cod partenerului. Merge o singură dată și expiră după 24 de ore.',
+      'Trimite-i acest cod partenerului. Poate fi folosit o singură dată și expiră după 24 de ore.',
   'Check if they have connected':
       'Verifică dacă s-a conectat',
   'Could not save:':
       'Nu am putut salva:',
   'Name and tone':
-      'Nume și ton',
+      'Nume și stilul mesajelor',
   'What do you call her?':
-      'Cum îi spui?',
+      'Cum îi spui de obicei?',
   'A name or a nickname. It stays on this device.':
-      'Un nume sau o poreclă. Rămâne pe acest telefon.',
+      'Numele sau alintul ei. Rămâne doar pe dispozitivul tău.',
   'How funny should your tips be?':
-      'Cât de amuzante să fie sfaturile?',
+      'Cât umor vrei să aibă sfaturile?',
   'Jokes switch off on their own on days she might not feel like laughing, whatever you pick.':
-      'Glumele se opresc singure în zilele în care s-ar putea să nu-i ardă de râs, orice ai alege.',
+      'Indiferent ce alegi, glumele sunt dezactivate automat în zilele în care ea ar putea prefera mesaje mai serioase.',
   'Her cycle':
       'Ciclul ei',
   '{name}\'s cycle':
-      '{name} · ciclul ei',
+      '{name} · ciclul menstrual',
   'Refresh':
-      'Reîmprospătează',
+      'Actualizează',
   'Her name and tip tone':
-      'Numele ei și tonul sfaturilor',
+      'Numele ei și stilul sfaturilor',
   'I track my own cycle':
       'Îmi urmăresc propriul ciclu',
   'Account':
       'Cont',
   'Tip library':
-      'Biblioteca de sfaturi',
+      'Colecția de sfaturi',
   'Enter her pairing code':
       'Introdu codul ei de conectare',
   'She creates it under Partner in her app. You will see only the summary she chooses to share.':
-      'Ea îl creează la Partener în aplicația ei. Vei vedea doar rezumatul pe care alege să-l împartă.',
+      'Ea îl generează din secțiunea Partener. Vei vedea doar rezumatul pe care acceptă să-l partajeze.',
   'Add her name or a nickname.':
       'Adaugă-i numele sau o poreclă.',
   'Nothing is being shared with you right now.':
-      'Momentan nu se împarte nimic cu tine.',
+      'Momentan, ea nu partajează nicio informație cu tine.',
   '{name} asks':
       '{name} îți cere',
   'She':
       'Ea',
   'Delivered':
-      'Livrat',
+      'Trimis',
   'Your reply':
       'Răspunsul tău',
   'Updated {when}':
-      'Actualizat {when}',
+      'Actualizat: {when}',
   'Use a different code':
       'Folosește alt cod',
   'just now':
-      'chiar acum',
+      'acum câteva clipe',
   '{n} min ago':
       'acum {n} min',
   '{n} h ago':
@@ -497,69 +497,69 @@ const Map<String, String> uiRo = {
   '{n} days ago':
       'acum {n} zile',
   'Offer something':
-      'Oferă-i ceva',
+      'Propune un gest frumos',
   '{name} gets it as a sticker and can answer with one tap.':
-      '{name} îl primește ca autocolant și poate răspunde dintr-o atingere.',
+      '{name} primește mesajul sub forma unui bilețel și îți poate răspunde cu o atingere.',
   '{name} answered':
       '{name} a răspuns',
   'Tonight\'s sky':
-      'Cerul din seara asta',
+      'Cerul din această seară',
   'Cycle phase not shared':
-      'Faza ciclului nu e împărțită',
+      'Faza ciclului nu este partajată',
   'Today\'s move':
-      'Ce poți face azi',
+      'Sugestia de azi',
   'She logged today':
-      'Ea a notat azi',
+      'Ce a înregistrat azi',
   '{name} logged today':
-      '{name} a notat azi',
+      'Ce a înregistrat {name} azi',
   'Energy {n} of 5':
       'Energie {n} din 5',
   'More about this phase':
-      'Mai multe despre această fază',
+      'Despre această fază',
   'What she may be feeling':
-      'Ce ar putea simți ea',
+      'Cum s-ar putea simți',
   'What {name} may be feeling':
-      'Ce ar putea simți {name}',
+      'Cum s-ar putea simți {name}',
   'How to help':
       'Cum poți ajuta',
   'A forecast from typical patterns, not a readout of how she actually feels. Ask her.':
-      'O prognoză după tipare obișnuite, nu o citire a ce simte ea de fapt. Întreab-o.',
+      'Sunt informații generale despre această fază, nu o descriere a felului în care se simte ea. Cel mai bine este să o întrebi.',
   'Removed for everyone. Thanks for flagging it.':
-      'Eliminat pentru toată lumea. Mulțumim că l-ai semnalat.',
+      'Sfatul a fost retras pentru toți utilizatorii. Mulțumim că ne-ai atras atenția.',
   'Noted. Fewer like that.':
-      'Am notat. Mai puține de felul ăsta.',
+      'Am înțeles. Îți vom arăta mai puține mesaje de acest fel.',
   'Glad that one landed.':
-      'Ne bucurăm că a prins.',
+      'Ne bucurăm că ți-a plăcut!',
   'Nice':
       'Fain',
   'Not funny':
-      'Nu e amuzant',
+      'Nu m-a amuzat',
   'Not okay':
       'Nu e în regulă',
   'More ({n})':
-      'Mai multe ({n})',
+      'Încă {n}',
   '🚩 Taken down for everyone. They get a different tip.':
-      '🚩 Eliminat pentru toată lumea. Primește alt sfat.',
+      '🚩 Am retras acest sfat pentru toată lumea. Partenerul va primi altul.',
   '👍 Glad that one works.':
-      '👍 Ne bucurăm că merge.',
+      '👍 Ne bucurăm că ți-a plăcut!',
   '😐 Noted. Fewer like that.':
-      '😐 Am notat. Mai puține de felul ăsta.',
+      '😐 Am înțeles. Mai puține de acest fel.',
   'Hide for today':
-      'Ascunde pentru azi',
+      'Ascunde azi',
   'How does it feel to you?':
-      'Ce zici de el?',
+      'Cum ți se pare?',
   'Send a nudge':
-      'Trimite un semnal',
+      'Trimite un bilețel',
   'One tap and it shows on their screen for a day. Tap it again to take it back.':
-      'O atingere și apare pe ecranul lui o zi. Atinge din nou ca să-l retragi.',
+      'Apare timp de o zi pe ecranul partenerului. Atinge din nou pentru a-l retrage.',
   'Once your partner connects (Partner tab), one tap sends them any of these.':
-      'După ce partenerul se conectează (fila Partener), o atingere îi trimite oricare dintre acestea.',
+      'După ce vă conectați conturile din secțiunea Partener, poți trimite oricare dintre aceste mesaje dintr-o atingere.',
   'You asked':
       'Ai cerut',
   'They replied: {reply}':
       'A răspuns: {reply}',
   'They offer':
-      'Îți oferă',
+      'Îți propune',
   'Accepted':
       'Acceptat',
   'Your answer':
@@ -569,33 +569,33 @@ const Map<String, String> uiRo = {
   'Settings':
       'Setări',
   'Sign out or delete your account.':
-      'Deconectează-te sau șterge-ți contul.',
+      'Deconectează-te sau șterge contul.',
   'Language of the app and of partner tips.':
-      'Limba aplicației și a sfaturilor pentru partener.',
+      'Limba aplicației și a mesajelor pentru partener.',
   'Get help now':
       'Ajutor acum',
   'Emergency and urgent help services.':
-      'Servicii de urgență și ajutor rapid.',
+      'Servicii medicale și contacte utile.',
   'Ratings and pulled partner tips.':
       'Evaluări și sfaturi retrase.',
   'Your goal':
       'Obiectivul tău',
   'Finish your quiz':
-      'Termină chestionarul',
+      'Completează chestionarul',
   '{n} question left. Your answers so far are kept.':
       'A mai rămas {n} întrebare. Răspunsurile de până acum sunt păstrate.',
   '{n} questions left. Your answers so far are kept.':
       'Au mai rămas {n} întrebări. Răspunsurile de până acum sunt păstrate.',
   'Choose your journey again to change it.':
-      'Alege din nou drumul ca să-l schimbi.',
+      'Alege din nou obiectivul dacă vrei să-l schimbi.',
   'Show estimated fertile days':
       'Arată zilele fertile estimate',
   'For information. It is not contraception.':
       'Doar informativ. Nu este o metodă de contracepție.',
   'Reminders':
-      'Mementouri',
+      'Reamintiri',
   'Period is coming':
-      'Vine menstruația',
+      'Se apropie menstruația',
   '{n} day before':
       'Cu {n} zi înainte',
   '{n} days before':
@@ -605,11 +605,11 @@ const Map<String, String> uiRo = {
   '{n} days':
       '{n} zile',
   'Fertile window starts':
-      'Începe fereastra fertilă',
+      'Începe perioada fertilă estimată',
   'Daily logging nudge':
-      'Memento zilnic pentru notare',
+      'Reamintire pentru jurnalul zilnic',
   'Reminder time':
-      'Ora mementoului',
+      'Ora reamintirii',
   'Notifications enabled':
       'Notificări pornite',
   'Notification permission denied':
@@ -619,11 +619,11 @@ const Map<String, String> uiRo = {
   'Your data':
       'Datele tale',
   'Your logs and quiz answers are stored only on this phone, not on our servers. If you uninstall MoonCycle or lose your phone, they cannot be recovered, so save a copy from time to time with Export my data. Your account holds only your email and your partner connection. If you turn on partner sharing, only the summary you choose is sent to the server.':
-      'Ce notezi și răspunsurile la chestionar sunt păstrate doar pe acest telefon, nu pe serverele noastre. Dacă dezinstalezi MoonCycle sau pierzi telefonul, nu mai pot fi recuperate, așa că salvează din când în când o copie cu Exportă datele mele. Contul păstrează doar emailul și conexiunea cu partenerul. Dacă pornești partajarea, pe server ajunge doar rezumatul ales de tine.',
+      'Înregistrările și răspunsurile tale la chestionar sunt stocate doar pe acest telefon, nu pe serverele noastre. Dacă dezinstalezi MoonCycle sau pierzi telefonul, este posibil să nu le mai poți recupera. Salvează periodic o copie din „Exportă datele mele”. Contul păstrează adresa de e-mail și conexiunea cu partenerul. Dacă activezi partajarea, pe server ajunge doar rezumatul ales de tine.',
   'Export my data':
       'Exportă datele mele',
   'Save a copy of your logs and quiz answers to Drive, email or your files: a spreadsheet and a full copy.':
-      'Salvează o copie a notițelor și a răspunsurilor în Drive, pe email sau în fișierele tale: un tabel și o copie completă.',
+      'Salvează în Drive, prin e-mail sau în fișierele tale o copie a înregistrărilor și a răspunsurilor la chestionar: un tabel și o copie completă.',
   'Delete my account and data':
       'Șterge-mi contul și datele',
   'Removes your account from our server and everything MoonCycle stored on this device.':
@@ -631,29 +631,29 @@ const Map<String, String> uiRo = {
   'About MoonCycle':
       'Despre MoonCycle',
   'Health information notice':
-      'Notă despre informațiile medicale',
+      'Informații importante despre sănătate',
   '{app} is provided by {company}, company number {number}, {address}.':
       '{app} este oferit de {company}, număr de înregistrare {number}, {address}.',
   'Insight cards':
-      'Carduri cu informații',
+      'Recomandări zilnice',
   'Cervical screening reminders':
-      'Mementouri pentru testul Babeș-Papanicolau',
+      'Reamintiri pentru screeningul de col uterin',
   'An occasional card about NHS cervical screening, for people aged 25 to 64 with a cervix.':
-      'Un card ocazional despre testul de col uterin, pentru persoanele între 25 și 64 de ani care au col uterin.',
+      'O recomandare ocazională despre screeningul de col uterin, pentru persoanele eligibile. Intervalele și procedurile din România pot fi diferite de cele ale NHS.',
   'On. Your daily card is written around your own log.':
-      'Pornit. Cardul tău zilnic e scris pornind de la ce ai notat.',
+      'Activat. Recomandarea zilnică este personalizată pe baza înregistrărilor tale.',
   'Off. Have your daily card written around your own log.':
-      'Oprit. Poți primi cardul zilnic scris pornind de la ce ai notat.',
+      'Dezactivat. Activează pentru a primi recomandări redactate pe baza înregistrărilor tale.',
   'Cards about sex and desire':
-      'Carduri despre sex și dorință',
+      'Recomandări despre sex și dorință',
   'For example when you log low desire and low mood on the same day. Only you see them.':
-      'De exemplu când notezi dorință scăzută și stare proastă în aceeași zi. Doar tu le vezi.',
+      'De exemplu, când înregistrezi dorință sexuală scăzută și o stare emoțională dificilă în aceeași zi. Doar tu le poți vedea.',
   'Show {n} hidden card again':
-      'Arată din nou {n} card ascuns',
+      'Afișează din nou {n} recomandare ascunsă',
   'Show {n} hidden cards again':
-      'Arată din nou {n} carduri ascunse',
+      'Afișează din nou {n} recomandări ascunse',
   'Cards you marked "Not relevant to me".':
-      'Cardurile marcate „Nu e relevant pentru mine".',
+      'Recomandările pe care le-ai marcat „Nu mi se potrivește”.',
   'Today':
       'Azi',
   'Signed in as':
@@ -663,13 +663,13 @@ const Map<String, String> uiRo = {
   'Delete account':
       'Șterge contul',
   'Removes your account and erases this device.':
-      'Îți șterge contul și datele de pe acest telefon.',
+      'Îți șterge contul și datele MoonCycle de pe acest telefon.',
   'Confirm it is you to delete your MoonCycle account.':
       'Confirmă că ești tu ca să ștergi contul MoonCycle.',
   'Delete your account?':
-      'Ștergi contul?',
+      'Sigur vrei să-ți ștergi contul?',
   'Your account and partner connection are removed from the server, and your logs and quiz answers are erased from this device. This cannot be undone.':
-      'Contul și conexiunea cu partenerul sunt șterse de pe server, iar ce ai notat și răspunsurile la chestionar sunt șterse de pe acest telefon. Acțiunea nu poate fi anulată.',
+      'Contul și legătura cu partenerul vor fi șterse de pe server, iar înregistrările și răspunsurile la chestionar, de pe acest dispozitiv. Acțiunea nu poate fi anulată.',
   'Next, your phone asks for your fingerprint, face or PIN.':
       'Apoi, telefonul îți cere amprenta, fața sau PIN-ul.',
   'Next, choose your Google account to confirm it is you.':
@@ -679,9 +679,9 @@ const Map<String, String> uiRo = {
   'Cancel':
       'Anulează',
   'I\'m {age} or over, I agree to the Terms of use, and I\'ve read the Privacy policy.':
-      'Am {age} ani sau mai mult, sunt de acord cu Termenii de utilizare și am citit Politica de confidențialitate.',
+      'Am cel puțin {age} ani, accept Termenii de utilizare și am citit Politica de confidențialitate.',
   'I give my explicit consent for MoonCycle to process my health information, such as periods, symptoms and mood, to provide the app. I can withdraw it at any time by deleting my data.':
-      'Îmi dau consimțământul explicit ca MoonCycle să prelucreze informațiile mele despre sănătate, precum menstruația, simptomele și starea, pentru funcționarea aplicației. Îl pot retrage oricând ștergându-mi datele.',
+      'Îmi dau consimțământul explicit pentru prelucrarea datelor mele despre sănătate de către MoonCycle, inclusiv menstruația, simptomele și dispoziția, în scopul funcționării aplicației. Îmi pot retrage consimțământul oricând prin ștergerea datelor.',
   'Your data was saved.':
       'Datele tale au fost salvate.',
   'Could not export your data:':
@@ -689,17 +689,17 @@ const Map<String, String> uiRo = {
   'Your data lives on this phone':
       'Datele tale stau pe acest telefon',
   'What you log is stored only on this phone, not on our servers. That keeps it private, but if you uninstall MoonCycle or lose your phone, your logs cannot be recovered.\n\nYou can save a copy at any time: Settings, then Export my data.':
-      'Ce notezi e păstrat doar pe acest telefon, nu pe serverele noastre. Așa rămâne privat, dar dacă dezinstalezi MoonCycle sau pierzi telefonul, notițele nu mai pot fi recuperate.\n\nPoți salva oricând o copie: Setări, apoi Exportă datele mele.',
+      'Tot ce înregistrezi rămâne pe acest telefon, nu pe serverele noastre. Astfel ai mai mult control asupra datelor, dar, dacă dezinstalezi aplicația sau pierzi telefonul, este posibil să nu le mai poți recupera.\n\nPoți salva oricând o copie: Setări → Exportă datele mele.',
   'Export now':
       'Exportă acum',
   'I understand':
       'Am înțeles',
   'Could not save this day:':
-      'Nu am putut salva ziua:',
+      'Nu am putut salva înregistrarea pentru ziua selectată:',
   'Done':
       'Gata',
   'Everything here is about this day, whether or not you are on your period.':
-      'Tot ce e aici e despre ziua asta, fie că ai menstruație, fie că nu.',
+      'Toate informațiile de aici se referă la această zi, indiferent dacă ești sau nu la menstruație.',
   '1 = drained, 5 = energised':
       '1 = epuizată, 5 = plină de energie',
   'Sleep last night (hours)':
@@ -709,29 +709,29 @@ const Map<String, String> uiRo = {
   'This is the first day of my period':
       'E prima zi a menstruației',
   'Use this if the app grouped your days incorrectly.':
-      'Folosește asta dacă aplicația ți-a grupat greșit zilele.',
+      'Folosește opțiunea dacă aplicația a identificat greșit începutul menstruației.',
   'Flow':
-      'Flux',
+      'Flux menstrual',
   'Energy':
       'Energie',
   'Your usual':
-      'De obicei la tine',
+      'Valorile tale obișnuite',
   'Fluid (fertile phase)':
       'Secreții vaginale (faza fertilă)',
   'Sex and desire':
-      'Sex și dorință',
+      'Viață sexuală și dorință',
   'The fluid you may notice between periods. Around your fertile days it often becomes clear and stretchy, like raw egg white.':
-      'Secrețiile pe care le poți observa între menstruații. În jurul zilelor fertile devin adesea clare și elastice, ca albușul de ou crud.',
+      'Secrețiile vaginale se pot modifica între menstruații. În jurul zilelor fertile pot fi mai transparente și elastice, asemănătoare albușului de ou crud.',
   'Desire on this day, and sex if you had it. Leave desire unticked if you are not sure.':
-      'Dorința din ziua asta și sexul, dacă a fost cazul. Lasă dorința nebifată dacă nu ești sigură.',
+      'Notează dorința sexuală de azi și dacă ai avut contact sexual. Dacă nu ești sigură cum să descrii dorința, poți lăsa opțiunea nebifată.',
   'None':
       'Niciunul',
   'Spotting':
-      'Pătare',
+      'Sângerare ușoară între menstruații',
   'Light':
-      'Slab',
+      'Redus',
   'Medium':
-      'Mediu',
+      'Moderat',
   'Heavy':
       'Abundent',
   'Menstrual':
@@ -751,7 +751,7 @@ const Map<String, String> uiRo = {
   'Backache':
       'Durere de spate',
   'Breast tenderness':
-      'Sâni sensibili',
+      'Sensibilitate la nivelul sânilor',
   'Joint pain':
       'Dureri articulare',
   'Ovulation pain':
@@ -793,57 +793,57 @@ const Map<String, String> uiRo = {
   'Diarrhoea':
       'Diaree',
   'Appetite up':
-      'Apetit crescut',
+      'Poftă de mâncare crescută',
   'Appetite down':
-      'Apetit scăzut',
+      'Poftă de mâncare scăzută',
   'Fluid':
       'Secreții vaginale',
   'Dry':
-      'Uscate',
+      'Fără secreții observabile',
   'Sticky':
-      'Lipicioase',
+      'Lipicioasă',
   'Creamy':
-      'Cremoase',
+      'Cremoasă',
   'Egg white':
-      'Ca albușul de ou',
+      'Asemănătoare albușului de ou',
   'Watery':
-      'Apoase',
+      'Apoasă',
   'Sex':
       'Sex',
   'Low drive':
-      'Dorință scăzută',
+      'Dorință sexuală scăzută',
   'Usual drive':
-      'Dorință obișnuită',
+      'Dorință sexuală obișnuită',
   'High drive':
-      'Dorință crescută',
+      'Dorință sexuală crescută',
   'Protected':
-      'Protejat',
+      'Contact sexual protejat',
   'Unprotected':
-      'Neprotejat',
+      'Contact sexual neprotejat',
   'Straight to the point':
-      'Direct la subiect',
+      'Fără ocolișuri',
   'A little humour':
-      'Puțin umor',
+      'Cu puțin umor',
   'Make me laugh':
       'Fă-mă să râd',
   'No jokes, just what helps':
-      'Fără glume, doar ce ajută',
+      'Direct, fără glume',
   'Mostly practical, with a light touch':
-      'Mai ales practic, cu o notă lejeră',
+      'Sfaturi practice, cu un strop de umor',
   'Funny first, still useful':
-      'Întâi amuzant, dar tot util',
+      'Glume bune, dar sfaturi utile',
   'Tracking my cycle':
-      'Îmi urmăresc ciclul',
+      'Îmi urmăresc ciclul menstrual',
   'Trying to get pregnant':
       'Încerc să rămân însărcinată',
   'Basic tracking':
-      'Urmărire de bază',
+      'Monitorizare de bază',
   'Would you like to share selected updates with your partner?':
-      'Vrei să împarți anumite informații cu partenerul tău?',
+      'Vrei să partajezi anumite informații cu partenerul?',
   'Understand my cycle':
-      'Să-mi înțeleg ciclul',
+      'Să-mi înțeleg mai bine ciclul',
   'Menstrual tracking':
-      'Urmărirea menstruației',
+      'Monitorizarea menstruației',
   'When did your last period start?':
       'Când a început ultima ta menstruație?',
   'I\'m not sure':
@@ -877,15 +877,15 @@ const Map<String, String> uiRo = {
   'What would you like help with?':
       'La ce ai vrea ajutor?',
   'Period predictions':
-      'Estimarea menstruației',
+      'Estimarea datei următoarei menstruații',
   'Cycle phases':
       'Fazele ciclului',
   'Mood and symptoms':
       'Stare și simptome',
   'Fertility awareness':
-      'Cunoașterea fertilității',
+      'Înțelegerea perioadei fertile',
   'General wellbeing':
-      'Starea generală de bine',
+      'Starea mea de bine',
   'Is there anything that affects your periods?':
       'Există ceva care îți influențează menstruația?',
   'Hormonal contraception':
@@ -899,19 +899,19 @@ const Map<String, String> uiRo = {
   'Prefer not to say':
       'Prefer să nu spun',
   'Would you like gentle cycle reminders?':
-      'Vrei mementouri discrete despre ciclu?',
+      'Vrei reamintiri discrete legate de ciclul menstrual?',
   'Upcoming period':
-      'Menstruația care urmează',
+      'Următoarea menstruație',
   'Symptom check-ins':
-      'Întrebări despre simptome',
+      'Întrebări periodice despre simptome',
   'Both':
       'Ambele',
   'No reminders':
-      'Fără mementouri',
+      'Fără reamintiri',
   'Explore my fertility':
-      'Să-mi explorez fertilitatea',
+      'Să-mi cunosc mai bine fertilitatea',
   'Fertility and pregnancy planning':
-      'Fertilitate și planificarea sarcinii',
+      'Fertilitate și planificarea unei sarcini',
   'How long does your period usually last?':
       'Cât durează de obicei menstruația ta?',
   'How long is your usual cycle?':
@@ -943,7 +943,7 @@ const Map<String, String> uiRo = {
   'Over 12 months':
       'Peste 12 luni',
   'Would you like to record ovulation tests or other fertility signs?':
-      'Vrei să notezi testele de ovulație sau alte semne de fertilitate?',
+      'Vrei să înregistrezi testele de ovulație sau alte semne ale fertilității?',
   'Yes':
       'Da',
   'Maybe later':
@@ -951,75 +951,75 @@ const Map<String, String> uiRo = {
   'No':
       'Nu',
   'Any relevant health circumstances?':
-      'Ai vreo situație de sănătate relevantă?',
+      'Există situații medicale pe care ai vrea să le luăm în calcul?',
   'Pregnancy/breastfeeding':
       'Sarcină/alăptare',
   'Fertility treatment':
       'Tratament de fertilitate',
   'Support my partner':
-      'Să-mi susțin partenera',
+      'Să fiu alături de partenera mea',
   'Partner education, cycle awareness and thoughtful support':
-      'Să înțeleg ciclul ei și s-o susțin cu grijă',
+      'Să-i înțeleg mai bine ciclul și să știu cum o pot susține',
   'What would you like to understand better?':
       'Ce ai vrea să înțelegi mai bine?',
   'Her menstrual cycle':
       'Ciclul ei menstrual',
   'Fertility and trying for a baby':
-      'Fertilitatea și încercarea de a avea un copil',
+      'Fertilitate și planificarea unui copil',
   'Perimenopause':
       'Perimenopauza',
   'Everyday emotional support':
-      'Sprijin emoțional de zi cu zi',
+      'Cum să-i fiu alături zi de zi',
   'Would you like to connect your MoonCycle accounts?':
-      'Vreți să vă conectați conturile MoonCycle?',
+      'Vrei să vă conectați conturile MoonCycle?',
   'Send a connection invitation':
-      'Trimite o invitație de conectare',
+      'Trimite o invitație',
   'I have an invitation code':
       'Am un cod de invitație',
   'Continue without connecting':
       'Continuă fără conectare',
   'Would you like cycle updates when your partner chooses to share them?':
-      'Vrei vești despre ciclu când partenera alege să le împartă?',
+      'Vrei să primești informații despre ciclul ei când alege să le partajeze?',
   'Upcoming period reminders':
       'Mementouri înainte de menstruație',
   'Period started updates':
-      'Anunț când începe menstruația',
+      'Notificare când începe menstruația',
   'Cycle phase education':
       'Informații despre fazele ciclului',
   'No cycle notifications':
       'Fără notificări despre ciclu',
   'What kind of support tips would you like to receive?':
-      'Ce fel de sfaturi de sprijin vrei să primești?',
+      'Ce fel de sfaturi ai vrea să primești?',
   'Comfort tips for period pain':
-      'Sfaturi pentru durerile de menstruație',
+      'Gesturi care o pot ajuta când are dureri menstruale',
   'Sweet messages and gestures':
-      'Mesaje și gesturi drăguțe',
+      'Mesaje și gesturi de afecțiune',
   'Mood and emotional support':
       'Stare și sprijin emoțional',
   'Practical help and rest':
       'Ajutor practic și odihnă',
   'Would you like to receive mood updates when she shares them?':
-      'Vrei să afli cum se simte, când alege ea să împartă asta?',
+      'Vrei să primești informații despre dispoziția ei, atunci când alege să le partajeze?',
   'Yes, gentle mood check-ins':
-      'Da, întrebări discrete despre stare',
+      'Da, actualizări discrete despre cum se simte',
   'Only when she sends an update':
-      'Doar când trimite ea ceva',
+      'Doar când îmi trimite ea un mesaj',
   'No mood notifications':
       'Fără notificări despre stare',
   'Would you like to receive pain or discomfort updates when she shares them?':
-      'Vrei să afli despre dureri sau disconfort, când alege ea să împartă asta?',
+      'Vrei să primești informații despre durere sau disconfort, când ea alege să le partajeze?',
   'Yes, when she asks for support':
       'Da, când îmi cere sprijin',
   'Yes, for shared pain check-ins':
-      'Da, pentru durerile pe care le împarte',
+      'Da, când alege să îmi arate cum se simte',
   'No pain notifications':
       'Fără notificări despre durere',
   'Would you like to exchange caring messages?':
-      'Vreți să vă trimiteți mesaje drăguțe?',
+      'Vreți să vă trimiteți mesaje de grijă și afecțiune?',
   'Yes, private messages between us':
       'Da, mesaje private între noi',
   'Yes, with suggested kind messages':
-      'Da, cu mesaje sugerate',
+      'Da, cu sugestii de mesaje drăguțe',
   'No messages for now':
       'Deocamdată fără mesaje',
   'When should MoonCycle send notifications?':
@@ -1033,43 +1033,43 @@ const Map<String, String> uiRo = {
   'No push notifications':
       'Fără notificări',
   'What other support would you appreciate?':
-      'Ce alt sprijin ți-ar prinde bine?',
+      'Ce alte sugestii ți-ar fi utile?',
   'Simple ways to help':
       'Moduri simple de a ajuta',
   'Communication tips':
       'Sfaturi de comunicare',
   'Weekly educational insights':
-      'Informații săptămânale',
+      'Informații utile săptămânale',
   'None for now':
       'Nimic deocamdată',
   'Cycle dates and estimated upcoming periods':
       'Datele ciclului și menstruațiile estimate',
   'Your cycle phase and when your next period is expected.':
-      'Faza ciclului și când e așteptată următoarea menstruație.',
+      'Faza ciclului tău și data estimată a următoarei menstruații.',
   'Mood updates':
-      'Starea ta',
+      'Actualizări despre dispoziție',
   'Pain and discomfort updates':
       'Durere și disconfort',
   'Personal support requests':
-      'Cereri personale de sprijin',
+      'Mesaje prin care poți cere sprijin',
   'Messages you choose to send, such as "A hug would help today."':
-      'Mesaje pe care alegi să le trimiți, de exemplu „Azi mi-ar prinde bine o îmbrățișare."',
+      'Mesaje pe care alegi să le trimiți, de exemplu „Azi mi-ar prinde bine o îmbrățișare”.',
   'What is HRT?':
-      'Ce este TSH?',
+      'Ce este terapia de substituție hormonală?',
   'Hormone Replacement Therapy (HRT) is a treatment that replaces hormones that decline around menopause. It may help with hot flushes, night sweats and vaginal dryness, and may come as tablets, patches, gels or sprays.':
-      'Terapia de substituție hormonală (TSH) înlocuiește hormonii care scad în jurul menopauzei. Poate ajuta la bufeuri, transpirații nocturne și uscăciune vaginală și poate fi sub formă de tablete, plasturi, geluri sau spray-uri.',
+      'Terapia de substituție hormonală (TSH) înlocuiește hormonii al căror nivel scade în preajma menopauzei. Poate ameliora bufeurile, transpirațiile nocturne și uscăciunea vaginală; există sub formă de comprimate, plasturi, geluri sau spray-uri.',
   'What is perimenopause?':
       'Ce este perimenopauza?',
   'The transition towards menopause, when periods and symptoms may change. Experiences vary from person to person.':
-      'Trecerea spre menopauză, când menstruația și simptomele se pot schimba. Fiecare persoană o trăiește diferit.',
+      'Perioada de tranziție către menopauză, când menstruația și unele simptome se pot modifica. Experiența diferă de la o persoană la alta.',
   'What does this mean?':
-      'Ce înseamnă asta?',
+      'Ce înseamnă?',
   'Ovulation is when an ovary releases an egg. A fertile window is an estimate of the days when pregnancy may be more likely; calendar predictions are not reliable contraception.':
-      'Ovulația e momentul în care un ovar eliberează un ovul. Fereastra fertilă e o estimare a zilelor în care o sarcină e mai probabilă; estimările din calendar nu sunt o metodă sigură de contracepție.',
+      'Ovulația este momentul în care un ovar eliberează un ovul. Perioada fertilă este o estimare a zilelor când probabilitatea unei sarcini poate fi mai mare. Estimările din calendar nu sunt o metodă contraceptivă sigură.',
   'A hysterectomy is surgery to remove the uterus (womb). Ovary removal is a different procedure and can affect hormones and bleeding patterns.':
-      'Histerectomia e operația prin care se îndepărtează uterul. Îndepărtarea ovarelor e o altă procedură și poate influența hormonii și sângerările.',
+      'Histerectomia este operația prin care se îndepărtează uterul. Îndepărtarea ovarelor este o procedură diferită și poate influența hormonii și tiparul sângerărilor.',
   'What is cycle length?':
-      'Ce este durata ciclului?',
+      'Cum se calculează durata ciclului?',
   'The number of days from the first day of one period to the first day of the next.':
       'Numărul de zile de la prima zi a unei menstruații până la prima zi a următoarei.',
   'a hysterectomy or ovary removal':
@@ -1079,7 +1079,7 @@ const Map<String, String> uiRo = {
   'pregnancy or breastfeeding':
       'sarcină sau alăptare',
   'HRT':
-      'TSH',
+      'terapie de substituție hormonală',
   'Sign in first.':
       'Conectează-te mai întâi.',
   'Please sign in again.':
@@ -1091,15 +1091,15 @@ const Map<String, String> uiRo = {
   'That code is not valid or has expired. Ask her for a new one.':
       'Codul nu e valid sau a expirat. Cere-i unul nou.',
   'Sign in with Apple did not work. Try again, or use your email and password.':
-      'Conectarea cu Apple nu a mers. Încearcă din nou sau folosește emailul și parola.',
+      'Conectarea cu Apple nu a mers. Încearcă din nou sau folosește e-mailul și parola.',
   'Google sign-in did not work. Try again, or use your email and password.':
-      'Conectarea cu Google nu a mers. Încearcă din nou sau folosește emailul și parola.',
+      'Conectarea cu Google nu a mers. Încearcă din nou sau folosește e-mailul și parola.',
   'AI notes are off.':
-      'Notițele scrise de AI sunt oprite.',
+      'Recomandările redactate cu AI sunt dezactivate.',
   'An account with this email already exists.':
       'Există deja un cont cu acest email.',
   'Apple did not share an email address. Try again and choose to share or hide your email.':
-      'Apple nu a trimis o adresă de email. Încearcă din nou și alege să-ți arăți sau să-ți ascunzi emailul.',
+      'Apple nu a trimis o adresă de email. Încearcă din nou și alege să-ți arăți sau să-ți ascunzi e-mailul.',
   'Confirm with Google or Apple to delete this account.':
       'Confirmă cu Google sau Apple ca să ștergi acest cont.',
   'Connect with a partner first.':
@@ -1119,19 +1119,19 @@ const Map<String, String> uiRo = {
   'Sign in with Apple did not work. Try again.':
       'Conectarea cu Apple nu a mers. Încearcă din nou.',
   'That ask has expired.':
-      'Cererea a expirat.',
+      'Mesajul a expirat.',
   'That is a different Apple account.':
       'Acesta e alt cont Apple.',
   'That is a different Google account.':
       'Acesta e alt cont Google.',
   'That offer has expired.':
-      'Oferta a expirat.',
+      'Propunerea a expirat.',
   'This account uses Continue with Google or Sign in with Apple.':
       'Acest cont folosește Continuă cu Google sau Continuă cu Apple.',
   'This email already has a MoonCycle account. Sign in the way you did before.':
       'Acest email are deja un cont MoonCycle. Conectează-te cum ai făcut și data trecută.',
   'This email already has a MoonCycle account. Sign in with your email and password.':
-      'Acest email are deja un cont MoonCycle. Conectează-te cu emailul și parola.',
+      'Acest email are deja un cont MoonCycle. Conectează-te cu e-mailul și parola.',
   'Too many attempts. Try again later.':
       'Prea multe încercări. Încearcă mai târziu.',
   'Use at least one capital letter and one special character, such as ! # or ?.':

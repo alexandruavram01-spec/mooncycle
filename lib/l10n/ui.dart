@@ -37,3 +37,23 @@ String trCount(int n, String one, String other) {
   }
   return text.replaceAll('{n}', '$n');
 }
+
+/// Romanian number agreement in text already filled in: "1 zi" for
+/// "1 zile", and "de" from 20 on ("21 de zile", "20 de menstruații").
+/// Leaves English, and decimals such as "7.5 ore", untouched.
+String roCounts(String text) => text.replaceAllMapped(
+      RegExp(r'(?<![\d.,])(\d+) (zile|ore|cicluri|menstruații)\b'),
+      (m) {
+        final n = int.parse(m[1]!);
+        const one = {
+          'zile': 'zi',
+          'ore': 'oră',
+          'cicluri': 'ciclu',
+          'menstruații': 'menstruație',
+        };
+        if (n == 1) return '1 ${one[m[2]]}';
+        final rest = n % 100;
+        final de = rest >= 20 || (rest == 0 && n != 0) ? 'de ' : '';
+        return '$n $de${m[2]}';
+      },
+    );

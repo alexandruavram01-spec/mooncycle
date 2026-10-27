@@ -38,4 +38,14 @@ void main() {
     // Not in the dictionary: falls back to the English.
     expect(tr('Something new'), 'Something new');
   });
+
+  test('counts inside filled-in card sentences', () {
+    expect(roCounts('acum 1 zile'), 'acum 1 zi');
+    expect(roCounts('timp de 21 zile consecutive'), 'timp de 21 de zile consecutive');
+    expect(roCounts('Cele 20 menstruații'), 'Cele 20 de menstruații');
+    expect(roCounts('a durat 28 zile'), 'a durat 28 de zile');
+    expect(roCounts('cu 5 zile mai devreme'), 'cu 5 zile mai devreme');
+    expect(roCounts('Ai înregistrat 7.5 ore de somn'), 'Ai înregistrat 7.5 ore de somn');
+    expect(roCounts('In about 21 days'), 'In about 21 days');
+  });
 }

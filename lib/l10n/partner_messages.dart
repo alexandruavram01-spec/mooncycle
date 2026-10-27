@@ -4,6 +4,7 @@ import 'app_language.dart';
 import 'partner_messages_en_gb.dart';
 import 'partner_messages_en_int.dart';
 import 'partner_messages_ro.dart';
+import 'ui.dart';
 
 /// One line of partner copy and its stable code (T01, T49...). The code is
 /// what ratings refer to; the text depends on the reader's language.
@@ -117,11 +118,13 @@ class PartnerMessages {
         AppLanguage.ro => roMessages,
       };
 
-  String days(int n) => n == 1 ? oneDay : manyDays.replaceAll('{n}', '$n');
+  // roCounts adds the Romanian "de" from 20 on; English is left as it is.
+  String days(int n) =>
+      n == 1 ? oneDay : roCounts(manyDays.replaceAll('{n}', '$n'));
 
   /// "Tomorrow" or "In about 3 days".
   String headsUpLead(int n) =>
-      n == 1 ? tomorrow : inAboutDays.replaceAll('{n}', '$n');
+      n == 1 ? tomorrow : roCounts(inAboutDays.replaceAll('{n}', '$n'));
 
   /// Every daily tip with where it is used. A null phase means "any phase".
   Iterable<(CyclePhase?, PartnerTone, Line)> get allTips sync* {
