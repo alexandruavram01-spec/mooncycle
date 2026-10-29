@@ -12,7 +12,7 @@ Future<void> exportMyData(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
   final logs = await ref.read(logsProvider.future);
   final settings =
-      ref.read(settingsProvider).valueOrNull ?? const AppSettings();
+      ref.read(settingsProvider).value ?? const AppSettings();
   try {
     final saved = await DataExport.share(logs, settings);
     if (saved) {

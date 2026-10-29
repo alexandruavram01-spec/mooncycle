@@ -57,7 +57,7 @@ class _ForecastCard extends ConsumerWidget {
     final muted = theme.colorScheme.onSurfaceVariant;
     final messages = ref.watch(partnerMessagesProvider);
     final pulled =
-        ref.watch(pulledTipsProvider).valueOrNull ?? const <String>{};
+        ref.watch(pulledTipsProvider).value ?? const <String>{};
     final phase = snapshot.phase;
     final card = phase == null ? null : messages.cards[phase];
     final nextPhase = snapshot.nextPhase;

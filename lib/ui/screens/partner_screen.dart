@@ -11,7 +11,7 @@ class PartnerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider).valueOrNull;
+    final settings = ref.watch(settingsProvider).value;
 
     if (settings == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));

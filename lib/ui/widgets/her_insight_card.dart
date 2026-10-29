@@ -21,7 +21,7 @@ class HerInsightsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(herInsightsEnabledProvider)) return const SizedBox.shrink();
-    final memory = ref.watch(insightMemoryProvider).valueOrNull;
+    final memory = ref.watch(insightMemoryProvider).value;
     if (memory == null) return const SizedBox.shrink();
 
     final today = DayKey.today();
@@ -41,14 +41,19 @@ class HerInsightsSection extends ConsumerWidget {
 
     // With AI-written notes on, today's note is asked for once; the card
     // shows as it is until it arrives, or if it never does.
-    final aiNotes = ref.watch(aiNotesProvider).valueOrNull ?? false;
+    final aiNotes = ref.watch(aiNotesProvider).value ?? false;
     if (aiNotes && updated == null) {
       final profile = ref.read(profileProvider);
       for (final pick in picks) {
         if (!aiNoteEligible(pick) || memory.pickNotes.containsKey(pick.id)) {
           continue;
         }
-        final request = herNoteRequest(pick, today: today, profile: profile);
+        final request = herNoteRequest(
+          pick,
+          today: today,
+          profile: profile,
+          language: UiText.romanian ? 'ro' : 'en',
+        );
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (context.mounted) notifier.fetchNote(pick, request);
         });
@@ -384,9 +389,7 @@ class _InsightCard extends ConsumerWidget {
             : '${phrase(symptom)} ${texts.ui['and']} ${phrase(also)}',
       );
     }
-    return texts.labels[pick.id] ??
-        texts.labels[candidate.tier.name] ??
-        '';
+    return texts.labels[pick.id] ?? texts.labels[candidate.tier.name] ?? '';
   }
 
   /// The personal line the card opens with, from her own log.
@@ -401,11 +404,10 @@ class _InsightCard extends ConsumerWidget {
     if (template == null) return null;
 
     String format(String key, Object value) => switch (value) {
-          String symptom when key == 'symptom' => (opening.id == 'P02'
-                  ? texts.patternPhrase[symptom]
-                  : null) ??
-              texts.loggedPhrase[symptom] ??
-              symptom.toLowerCase(),
+          String symptom when key == 'symptom' =>
+            (opening.id == 'P02' ? texts.patternPhrase[symptom] : null) ??
+                texts.loggedPhrase[symptom] ??
+                symptom.toLowerCase(),
           CyclePhase phase => texts.windowPhrase[phase]!,
           DayKey day when key == 'friendly_date' =>
             _friendlyDate(day, values['days_from_today'] as int? ?? 7),
@@ -435,7 +437,8 @@ class _InsightCard extends ConsumerWidget {
     );
   }
 
-  String _friendlyDate(DayKey day, int daysFromToday) => switch (daysFromToday) {
+  String _friendlyDate(DayKey day, int daysFromToday) =>
+      switch (daysFromToday) {
         0 => texts.ui['today']!,
         1 => texts.ui['tomorrow']!,
         _ => texts.ui['onDay']!

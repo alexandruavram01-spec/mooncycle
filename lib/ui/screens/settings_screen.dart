@@ -13,6 +13,7 @@ import 'language_screen.dart';
 import 'onboarding_screen.dart';
 import 'tip_library_screen.dart';
 import '../../l10n/ui.dart';
+import '../widgets/text_size.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -20,7 +21,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider).valueOrNull;
+    final settings = ref.watch(settingsProvider).value;
     if (settings == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -41,7 +42,7 @@ class SettingsScreen extends ConsumerWidget {
           Text(tr('Account'), style: theme.textTheme.titleMedium),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(ref.watch(sessionProvider).valueOrNull ?? ''),
+            title: Text(ref.watch(sessionProvider).value ?? ''),
             subtitle: Text(tr('Sign out or delete your account.')),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => showAccountSheet(context),
@@ -50,7 +51,7 @@ class SettingsScreen extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.language),
             title: Text(
-              ref.watch(languageProvider).valueOrNull?.label ?? tr('Language'),
+              ref.watch(languageProvider).value?.label ?? tr('Language'),
             ),
             subtitle: Text(tr('Language of the app and of partner tips.')),
             trailing: const Icon(Icons.chevron_right),
@@ -62,6 +63,16 @@ class SettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.text_fields),
+            title: Text(tr('Text size')),
+            subtitle: Text(tr(
+              (ref.watch(textSizeProvider).value ?? TextSize.normal).label,
+            )),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showTextSizeSheet(context),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.health_and_safety_outlined),
             title: Text(tr('Get help now')),
             subtitle: Text(tr('Emergency and urgent help services.')),
@@ -70,7 +81,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute<void>(builder: (_) => const GetHelpScreen()),
             ),
           ),
-          if (ref.watch(isEditorProvider).valueOrNull == true)
+          if (ref.watch(isEditorProvider).value == true)
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.auto_awesome),
@@ -122,8 +133,8 @@ class SettingsScreen extends ConsumerWidget {
             value: profile.showFertileDays,
             title: Text(tr('Show estimated fertile days')),
             subtitle: Text(tr('For information. It is not contraception.')),
-            onChanged: (v) => notifier
-                .updateProfile(profile.copyWith(showFertileDays: v)),
+            onChanged: (v) =>
+                notifier.updateProfile(profile.copyWith(showFertileDays: v)),
           ),
           if (ref.watch(herInsightsEnabledProvider))
             ..._insightCards(context, ref),
@@ -137,8 +148,8 @@ class SettingsScreen extends ConsumerWidget {
               trCount(reminders.periodReminderDaysBefore, '{n} day before',
                   '{n} days before'),
             ),
-            onChanged: (v) => notifier
-                .updateReminders(reminders.copyWith(periodReminder: v)),
+            onChanged: (v) =>
+                notifier.updateReminders(reminders.copyWith(periodReminder: v)),
           ),
           if (reminders.periodReminder)
             Slider(
@@ -216,11 +227,11 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             tr('Your logs and quiz answers are stored only on this phone, not on '
-            'our servers. If you uninstall MoonCycle or lose your phone, they '
-            'cannot be recovered, so save a copy from time to time with '
-            'Export my data. Your account holds only your email and your '
-            'partner connection. If you turn on partner sharing, only the '
-            'summary you choose is sent to the server.'),
+                'our servers. If you uninstall MoonCycle or lose your phone, they '
+                'cannot be recovered, so save a copy from time to time with '
+                'Export my data. Your account holds only your email and your '
+                'partner connection. If you turn on partner sharing, only the '
+                'summary you choose is sent to the server.'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -232,7 +243,7 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(tr('Export my data')),
             subtitle: Text(
               tr('Save a copy of your logs and quiz answers to Drive, email or '
-              'your files: a spreadsheet and a full copy.'),
+                  'your files: a spreadsheet and a full copy.'),
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => exportMyData(context, ref),
@@ -243,7 +254,7 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(tr('Delete my account and data')),
             subtitle: Text(
               tr('Removes your account from our server and everything MoonCycle '
-              'stored on this device.'),
+                  'stored on this device.'),
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => showAccountSheet(context),
@@ -296,7 +307,7 @@ class SettingsScreen extends ConsumerWidget {
   /// Her insight cards' settings. Nothing here is on until she turns it on.
   List<Widget> _insightCards(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final memory = ref.watch(insightMemoryProvider).valueOrNull;
+    final memory = ref.watch(insightMemoryProvider).value;
     if (memory == null) return const [];
     final notifier = ref.read(insightMemoryProvider.notifier);
     final hidden = memory.notRelevant.length;
@@ -310,7 +321,7 @@ class SettingsScreen extends ConsumerWidget {
         title: Text(tr('Cervical screening reminders')),
         subtitle: Text(
           tr('An occasional card about NHS cervical screening, for people aged '
-          '25 to 64 with a cervix.'),
+              '25 to 64 with a cervix.'),
         ),
         onChanged: notifier.setScreeningReminders,
       ),
@@ -319,7 +330,7 @@ class SettingsScreen extends ConsumerWidget {
         leading: const Icon(Icons.auto_awesome_outlined),
         title: Text(tr('AI-written notes')),
         subtitle: Text(
-          (ref.watch(aiNotesProvider).valueOrNull ?? false)
+          (ref.watch(aiNotesProvider).value ?? false)
               ? tr('On. Your daily card is written around your own log.')
               : tr('Off. Have your daily card written around your own log.'),
         ),
@@ -334,7 +345,7 @@ class SettingsScreen extends ConsumerWidget {
         title: Text(tr('Cards about sex and desire')),
         subtitle: Text(
           tr('For example when you log low desire and low mood on the same '
-          'day. Only you see them.'),
+              'day. Only you see them.'),
         ),
         onChanged: notifier.setSexualWellbeing,
       ),

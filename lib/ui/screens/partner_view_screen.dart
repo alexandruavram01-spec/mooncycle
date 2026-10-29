@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/settings_store.dart';
+import '../../domain/day_key.dart';
 import '../../domain/enums.dart';
 import '../../domain/partner_tips.dart';
 import '../../domain/profile.dart';
@@ -10,8 +11,10 @@ import '../../services/partner_link_service.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
 import '../widgets/account_sheet.dart';
+import '../widgets/partner_invite.dart';
 import '../widgets/partner_preview.dart';
 import '../widgets/partner_stickers.dart';
+import '../widgets/text_size.dart';
 import 'language_screen.dart';
 import 'partner_settings_screen.dart';
 import 'tip_library_screen.dart';
@@ -100,7 +103,7 @@ class PartnerViewScreen extends ConsumerWidget {
               : trf("{name}'s cycle", {'name': name}),
         ),
         actions: [
-          if (joined.valueOrNull == true)
+          if (joined.value == true)
             IconButton(
               tooltip: tr('Refresh'),
               icon: const Icon(Icons.refresh),
@@ -121,6 +124,8 @@ class PartnerViewScreen extends ConsumerWidget {
                       builder: (_) => const LanguageScreen(pushed: true),
                     ),
                   );
+                } else if (value == 'text') {
+                  showTextSizeSheet(context);
                 } else if (value == 'account') {
                   showAccountSheet(context);
                 } else if (value == 'library') {
@@ -131,7 +136,7 @@ class PartnerViewScreen extends ConsumerWidget {
                   );
                 } else {
                   // Back to the first question, as someone tracking a cycle.
-                  final current = ref.read(settingsProvider).valueOrNull ??
+                  final current = ref.read(settingsProvider).value ??
                       const AppSettings();
                   ref.read(settingsProvider.notifier).replaceAll(
                         current.copyWith(
@@ -151,8 +156,9 @@ class PartnerViewScreen extends ConsumerWidget {
                   child: Text(tr('I track my own cycle')),
                 ),
                 PopupMenuItem(value: 'language', child: Text(tr('Language'))),
+                PopupMenuItem(value: 'text', child: Text(tr('Text size'))),
                 PopupMenuItem(value: 'account', child: Text(tr('Account'))),
-                if (ref.read(isEditorProvider).valueOrNull == true)
+                if (ref.read(isEditorProvider).value == true)
                   PopupMenuItem(
                     value: 'library',
                     child: Text(tr('Tip library')),
@@ -166,6 +172,166 @@ class PartnerViewScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (isJoined) => isJoined ? const _SharedView() : const _CodeEntry(),
       ),
+    );
+  }
+}
+
+/// "How do you like your tips?", on his home screen until he confirms a
+/// tone. His tips already use "a little humour" until then; the card shows
+/// that as the current setting and an example in each tone.
+class _ToneCard extends ConsumerWidget {
+  const _ToneCard();
+
+  static const confirmedKey = 'toneChosen';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(profileProvider);
+    if (profile.quizAnswers[confirmedKey] == true) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final messages = ref.watch(partnerMessagesProvider);
+    final pulled = ref.watch(pulledTipsProvider).value ?? const <String>{};
+    final example = PartnerTips.pickMove(
+      messages,
+      null,
+      profile.partnerTone,
+      DayKey.today(),
+      pulled,
+    );
+    final settings = ref.read(settingsProvider.notifier);
+
+    Future<void> save({PartnerTone? tone, bool confirm = false}) =>
+        settings.updateProfile(
+          profile.copyWith(
+            partnerTone: tone,
+            quizAnswers: confirm
+                ? {...profile.quizAnswers, confirmedKey: true}
+                : null,
+          ),
+        );
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tr('How do you like your tips?'),
+                style: theme.textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              tr('Helpful suggestions, with as much humour as you like.'),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 8),
+            RadioGroup<PartnerTone>(
+              groupValue: profile.partnerTone,
+              onChanged: (value) => save(tone: value),
+              child: Column(
+                children: [
+                  for (final tone in PartnerTone.values)
+                    RadioListTile<PartnerTone>(
+                      contentPadding: EdgeInsets.zero,
+                      value: tone,
+                      title: Text(tr(tone.label)),
+                      subtitle: Text(tr(tone.hint)),
+                    ),
+                ],
+              ),
+            ),
+            if (example != null)
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 4, bottom: 12),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(tr('Example tip'),
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: scheme.onSurfaceVariant)),
+                    const SizedBox(height: 4),
+                    Text(example.text, style: theme.textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton(
+                onPressed: () => save(confirm: true),
+                child: Text(tr('Done')),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Before she connects: a general tip for today in his tone, so his first
+/// screen is useful rather than empty. Nothing about her.
+class _WelcomeTip extends ConsumerWidget {
+  const _WelcomeTip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final profile = ref.watch(profileProvider);
+    final messages = ref.watch(partnerMessagesProvider);
+    final pulled = ref.watch(pulledTipsProvider).value ?? const <String>{};
+    final tip = PartnerTips.pickMove(
+      messages,
+      null,
+      profile.partnerTone,
+      DayKey.today(),
+      pulled,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(tr('Welcome to MoonCycle'), style: theme.textTheme.headlineSmall),
+        const SizedBox(height: 4),
+        Text(
+          tr('A little more understanding can go a long way.'),
+          style: theme.textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurfaceVariant),
+        ),
+        if (tip != null)
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(top: 14, bottom: 4),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: scheme.primaryContainer,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.auto_awesome, size: 18, color: scheme.primary),
+                    const SizedBox(width: 8),
+                    Text(tr("Today's tip"),
+                        style: theme.textTheme.titleSmall
+                            ?.copyWith(color: scheme.primary)),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(tip.text, style: theme.textTheme.bodyLarge),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
@@ -211,7 +377,13 @@ class _CodeEntryState extends ConsumerState<_CodeEntry> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        Text(tr('Enter her pairing code'), style: theme.textTheme.titleMedium),
+        const _WelcomeTip(),
+        const SizedBox(height: 18),
+        const _ToneCard(),
+        Text(tr('Connect with your partner'),
+            style: theme.textTheme.titleMedium),
+        const SizedBox(height: 6),
+        Text(tr('Enter her pairing code'), style: theme.textTheme.titleSmall),
         const SizedBox(height: 6),
         Text(
           tr('She creates it under Partner in her app. You will see only the '
@@ -241,6 +413,12 @@ class _CodeEntryState extends ConsumerState<_CodeEntry> {
           onPressed: _busy ? null : _connect,
           child: Text(_busy ? tr('Connecting…') : tr('Connect')),
         ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: sharePartnerInvite,
+          icon: const Icon(Icons.send_outlined, size: 18),
+          label: Text(tr('Send invitation')),
+        ),
       ],
     );
   }
@@ -260,6 +438,7 @@ class _SharedView extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
       children: [
+        const _ToneCard(),
         // The name used to be asked in the quiz; it now lives in the menu
         // (Name and tone), so it is offered here until he sets one.
         if (name.isEmpty)

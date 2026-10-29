@@ -333,82 +333,15 @@ const journeys = <Journey>[
       _consent,
     ],
   ),
+  // Her partner: no questions. He gets two quick screens instead (how he
+  // uses MoonCycle, then connecting with her), see onboarding_screen.dart.
+  // The nine questions he used to answer changed nothing in the app.
   Journey(
     id: 'partner',
-    name: 'Support my partner',
-    category: 'Partner education, cycle awareness and thoughtful support',
+    name: "I'm her partner",
+    category: 'Understand her cycle and discover little ways to be there for her.',
     partner: true,
-    questions: [
-      QuizQuestion('understand', 'What would you like to understand better?',
-          QuizKind.single, [
-        'Her menstrual cycle',
-        'Fertility and trying for a baby',
-        'Perimenopause',
-        'Menopause and beyond',
-        'Everyday emotional support',
-        "I'm not sure",
-      ]),
-      QuizQuestion('connect', 'Would you like to connect your MoonCycle accounts?',
-          QuizKind.single, [
-        'Send a connection invitation',
-        'I have an invitation code',
-        'Continue without connecting',
-      ]),
-      QuizQuestion(
-          'cycleUpdates',
-          'Would you like cycle updates when your partner chooses to share them?',
-          QuizKind.multi, [
-        'Upcoming period reminders',
-        'Period started updates',
-        'Cycle phase education',
-        'No cycle notifications',
-      ]),
-      QuizQuestion('supportTips', 'What kind of support tips would you like to receive?',
-          QuizKind.multi, [
-        'Comfort tips for period pain',
-        'Sweet messages and gestures',
-        'Mood and emotional support',
-        'Practical help and rest',
-        'All of these',
-      ]),
-    ],
-    extras: [
-      QuizQuestion('moodUpdates',
-          'Would you like to receive mood updates when she shares them?',
-          QuizKind.single, [
-        'Yes, gentle mood check-ins',
-        'Only when she sends an update',
-        'No mood notifications',
-      ]),
-      QuizQuestion(
-          'painUpdates',
-          'Would you like to receive pain or discomfort updates when she shares them?',
-          QuizKind.single, [
-        'Yes, when she asks for support',
-        'Yes, for shared pain check-ins',
-        'No pain notifications',
-      ]),
-      QuizQuestion('caringMessages', 'Would you like to exchange caring messages?',
-          QuizKind.single, [
-        'Yes, private messages between us',
-        'Yes, with suggested kind messages',
-        'No messages for now',
-      ]),
-      QuizQuestion('notifyWhen', 'When should MoonCycle send notifications?',
-          QuizKind.single, [
-        'Quiet, discreet notifications',
-        'Daytime only',
-        'Only when I open the app',
-        'No push notifications',
-      ]),
-      QuizQuestion('otherSupport', 'What other support would you appreciate?',
-          QuizKind.multi, [
-        'Simple ways to help',
-        'Communication tips',
-        'Weekly educational insights',
-        'None for now',
-      ]),
-    ],
+    questions: [],
   ),
 ];
 

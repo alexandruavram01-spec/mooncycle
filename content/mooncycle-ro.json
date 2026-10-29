@@ -2544,7 +2544,7 @@
       "id": "I'm not sure",
       "where": "App screens",
       "en": "I'm not sure",
-      "ro": "Nu sunt sigură"
+      "ro": "Nu știu sigur"
     },
     {
       "id": "How many days does your period usually last?",
@@ -3427,6 +3427,276 @@
       "where": "App screens",
       "en": "Your Google account has no confirmed email address.",
       "ro": "Contul tău Google nu are o adresă de email confirmată."
+    },
+    {
+      "id": "Menopause and beyond",
+      "where": "App screens",
+      "en": "Menopause and beyond",
+      "ro": "Menopauza și perioada de după"
+    },
+    {
+      "id": "All of these",
+      "where": "App screens",
+      "en": "All of these",
+      "ro": "Toate acestea"
+    },
+    {
+      "id": "How will you use MoonCycle?",
+      "where": "App screens",
+      "en": "How will you use MoonCycle?",
+      "ro": "Cum vrei să folosești MoonCycle?"
+    },
+    {
+      "id": "Track my cycle",
+      "where": "App screens",
+      "en": "Track my cycle",
+      "ro": "Îmi urmăresc ciclul"
+    },
+    {
+      "id": "Periods, symptoms and fertility, all in one place.",
+      "where": "App screens",
+      "en": "Periods, symptoms and fertility, all in one place.",
+      "ro": "Menstruație, simptome și fertilitate, toate într-un singur loc."
+    },
+    {
+      "id": "I'm her partner",
+      "where": "App screens",
+      "en": "I'm her partner",
+      "ro": "Sunt partenerul ei"
+    },
+    {
+      "id": "Understand her cycle and discover little ways to be there for her.",
+      "where": "App screens",
+      "en": "Understand her cycle and discover little ways to be there for her.",
+      "ro": "Înțelege-i mai bine ciclul și descoperă cum poți fi alături de ea."
+    },
+    {
+      "id": "What would you like MoonCycle to help with?",
+      "where": "App screens",
+      "en": "What would you like MoonCycle to help with?",
+      "ro": "Cu ce vrei să te ajute MoonCycle?"
+    },
+    {
+      "id": "{n} of {total}",
+      "where": "App screens",
+      "en": "{n} of {total}",
+      "ro": "{n} din {total}"
+    },
+    {
+      "id": "Support starts with understanding",
+      "where": "App screens",
+      "en": "Support starts with understanding",
+      "ro": "Sprijinul începe cu înțelegerea"
+    },
+    {
+      "id": "Two quick questions to make MoonCycle yours.",
+      "where": "App screens",
+      "en": "Two quick questions to make MoonCycle yours.",
+      "ro": "Două întrebări rapide, ca MoonCycle să ți se potrivească."
+    },
+    {
+      "id": "Choose one",
+      "where": "App screens",
+      "en": "Choose one",
+      "ro": "Alege una"
+    },
+    {
+      "id": "When her period is coming",
+      "where": "App screens",
+      "en": "When her period is coming",
+      "ro": "Când urmează menstruația ei"
+    },
+    {
+      "id": "How she's feeling",
+      "where": "App screens",
+      "en": "How she's feeling",
+      "ro": "Cum se simte"
+    },
+    {
+      "id": "How to support her day to day",
+      "where": "App screens",
+      "en": "How to support her day to day",
+      "ro": "Cum s-o susții zi de zi"
+    },
+    {
+      "id": "A bit of everything",
+      "where": "App screens",
+      "en": "A bit of everything",
+      "ro": "Câte puțin din toate"
+    },
+    {
+      "id": "What would help you most?",
+      "where": "App screens",
+      "en": "What would help you most?",
+      "ro": "Ce te-ar ajuta cel mai mult?"
+    },
+    {
+      "id": "Updates she chooses to share",
+      "where": "App screens",
+      "en": "Updates she chooses to share",
+      "ro": "Informațiile pe care alege să le partajeze"
+    },
+    {
+      "id": "Practical tips to support her",
+      "where": "App screens",
+      "en": "Practical tips to support her",
+      "ro": "Sfaturi practice ca s-o susții"
+    },
+    {
+      "id": "Tips for better communication",
+      "where": "App screens",
+      "en": "Tips for better communication",
+      "ro": "Sfaturi pentru o comunicare mai bună"
+    },
+    {
+      "id": "All of the above",
+      "where": "App screens",
+      "en": "All of the above",
+      "ro": "Toate variantele"
+    },
+    {
+      "id": "Connect with your partner",
+      "where": "App screens",
+      "en": "Connect with your partner",
+      "ro": "Conectează-te cu partenera ta"
+    },
+    {
+      "id": "Choose how you'd like to connect.",
+      "where": "App screens",
+      "en": "Choose how you'd like to connect.",
+      "ro": "Alege cum vrei să vă conectați."
+    },
+    {
+      "id": "Have an invitation code?",
+      "where": "App screens",
+      "en": "Have an invitation code?",
+      "ro": "Ai un cod de invitație?"
+    },
+    {
+      "id": "Enter her code",
+      "where": "App screens",
+      "en": "Enter her code",
+      "ro": "Introdu codul ei"
+    },
+    {
+      "id": "or",
+      "where": "App screens",
+      "en": "or",
+      "ro": "sau"
+    },
+    {
+      "id": "Invite her",
+      "where": "App screens",
+      "en": "Invite her",
+      "ro": "Invit-o"
+    },
+    {
+      "id": "Send her a message from your phone. She creates a code on her Partner tab and sends it back to you.",
+      "where": "App screens",
+      "en": "Send her a message from your phone. She creates a code on her Partner tab and sends it back to you.",
+      "ro": "Trimite-i un mesaj de pe telefon. Ea creează un cod în secțiunea Partener și ți-l trimite."
+    },
+    {
+      "id": "Send invitation",
+      "where": "App screens",
+      "en": "Send invitation",
+      "ro": "Trimite invitația"
+    },
+    {
+      "id": "You'll only see what she chooses to share. She can stop sharing at any time.",
+      "where": "App screens",
+      "en": "You'll only see what she chooses to share. She can stop sharing at any time.",
+      "ro": "Vei vedea doar ce alege ea să partajeze. Poate opri partajarea oricând."
+    },
+    {
+      "id": "Hi! ❤️ I've started using MoonCycle too. If you'd like, we can connect our accounts so I can understand better how to support you. You can send me a code from the Partner tab. You choose what I can see. 😊 https://mooncycle.fit",
+      "where": "App screens",
+      "en": "Hi! ❤️ I've started using MoonCycle too. If you'd like, we can connect our accounts so I can understand better how to support you. You can send me a code from the Partner tab. You choose what I can see. 😊 https://mooncycle.fit",
+      "ro": "Hei! ❤️ Am început să folosesc și eu MoonCycle. Dacă vrei, ne putem conecta conturile, ca să înțeleg mai bine cum te pot susține. Îmi poți trimite un cod din secțiunea Partener. Tu alegi ce informații îmi arăți. 😊 https://mooncycle.fit"
+    },
+    {
+      "id": "How do you like your tips?",
+      "where": "App screens",
+      "en": "How do you like your tips?",
+      "ro": "Cum preferi să primești sfaturile?"
+    },
+    {
+      "id": "Helpful suggestions, with as much humour as you like.",
+      "where": "App screens",
+      "en": "Helpful suggestions, with as much humour as you like.",
+      "ro": "Sugestii utile, cu cât umor vrei tu."
+    },
+    {
+      "id": "Example tip",
+      "where": "App screens",
+      "en": "Example tip",
+      "ro": "Exemplu de sfat"
+    },
+    {
+      "id": "Welcome to MoonCycle",
+      "where": "App screens",
+      "en": "Welcome to MoonCycle",
+      "ro": "Bine ai venit în MoonCycle"
+    },
+    {
+      "id": "A little more understanding can go a long way.",
+      "where": "App screens",
+      "en": "A little more understanding can go a long way.",
+      "ro": "Puțină înțelegere în plus contează mult."
+    },
+    {
+      "id": "Today's tip",
+      "where": "App screens",
+      "en": "Today's tip",
+      "ro": "Sfatul zilei"
+    },
+    {
+      "id": "Text size",
+      "where": "App screens",
+      "en": "Text size",
+      "ro": "Mărimea textului"
+    },
+    {
+      "id": "Normal",
+      "where": "App screens",
+      "en": "Normal",
+      "ro": "Normal"
+    },
+    {
+      "id": "Large",
+      "where": "App screens",
+      "en": "Large",
+      "ro": "Mare"
+    },
+    {
+      "id": "Larger",
+      "where": "App screens",
+      "en": "Larger",
+      "ro": "Mai mare"
+    },
+    {
+      "id": "Largest",
+      "where": "App screens",
+      "en": "Largest",
+      "ro": "Foarte mare"
+    },
+    {
+      "id": "Makes all text in MoonCycle bigger. Your phone's own text size setting still applies too.",
+      "where": "App screens",
+      "en": "Makes all text in MoonCycle bigger. Your phone's own text size setting still applies too.",
+      "ro": "Mărește tot textul din MoonCycle. Setarea de mărime a textului din telefon se aplică în continuare."
+    },
+    {
+      "id": "Choose any",
+      "where": "App screens",
+      "en": "Choose any",
+      "ro": "Alege oricâte vrei"
+    },
+    {
+      "id": "Three quick questions to make MoonCycle yours.",
+      "where": "App screens",
+      "en": "Three quick questions to make MoonCycle yours.",
+      "ro": "Trei întrebări rapide, ca MoonCycle să ți se potrivească."
     }
   ],
   "partner": [
@@ -6724,7 +6994,7 @@
       "id": "help.3.body",
       "where": "Get help now · option 4 · body",
       "en": "Call 116 123 to talk to someone, about anything, at any time.",
-      "ro": "Dacă treci printr-o criză emoțională sau te gândești să-ți faci rău, poți solicita sprijin la TelVerde Antisuicid, 0800 801 200. Programul acestei linii nu este permanent; verifică orele disponibile. Dacă viața cuiva este în pericol, sună la 112."
+      "ro": "Dacă treci printr-o criză emoțională sau te gândești să-ți faci rău, poți suna gratuit la TelVerde Antisuicid, 0800 801 200, de vineri până duminică, între 19:00 și 07:00. Linia este pentru adulți. În afara acestui program sau dacă viața cuiva este în pericol, sună la 112."
     },
     {
       "id": "help.3.callLabel",

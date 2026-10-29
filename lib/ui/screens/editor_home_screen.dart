@@ -38,7 +38,7 @@ class EditorHomeScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final muted = theme.textTheme.bodySmall
         ?.copyWith(color: theme.colorScheme.onSurfaceVariant);
-    final email = ref.watch(sessionProvider).valueOrNull ?? '';
+    final email = ref.watch(sessionProvider).value ?? '';
     final counts = ref.watch(_countsProvider);
     final total = ref.watch(partnerMessagesProvider).allTips.length;
 
@@ -131,9 +131,9 @@ class EditorHomeScreen extends ConsumerWidget {
                 crossAxisSpacing: 12,
                 childAspectRatio: 1.25,
                 children: [
-                  tile('pulled', counts.valueOrNull?.$1, 'Pulled',
+                  tile('pulled', counts.value?.$1, 'Pulled',
                       'Flagged as not okay', Icons.flag_outlined),
-                  tile('rated', counts.valueOrNull?.$2, 'Rated',
+                  tile('rated', counts.value?.$2, 'Rated',
                       'Tips with feedback', Icons.thumbs_up_down_outlined),
                   tile('all', total, 'Daily tips', 'In this language',
                       Icons.format_list_bulleted),

@@ -36,12 +36,13 @@ CycleEngine _engineFor(UserProfile profile) => CycleEngine(
       defaultPeriodLength: profile.periodLength ?? 5,
     );
 final insightsEngineProvider = Provider((_) => const InsightsEngine());
+
 /// The signed-in account's name for storage on this phone, once data stored
 /// before accounts were kept apart has been handed over. Null while nobody is
 /// signed in. Logs, settings and card memory all follow it, so signing in as
 /// someone else never shows the previous person's data.
 final accountStorageProvider = FutureProvider<String?>((ref) async {
-  final email = ref.watch(sessionProvider.select((s) => s.valueOrNull));
+  final email = ref.watch(sessionProvider.select((s) => s.value));
   if (email == null) return null;
   final id = AccountStorage.idFor(email);
   await AccountStorage.claimLegacy(id);
@@ -131,10 +132,10 @@ class LogsNotifier extends AsyncNotifier<List<DayLog>> {
   }
 
   Future<void> _rescheduleReminders() async {
-    final logs = state.valueOrNull;
+    final logs = state.value;
     if (logs == null) return;
     final status = ref.read(cycleEngineProvider).status(logs);
-    final settings = ref.read(settingsProvider).valueOrNull;
+    final settings = ref.read(settingsProvider).value;
     if (settings == null) return;
     await _remindersSafely(
       () => ref
@@ -161,13 +162,13 @@ final logsProvider =
 
 /// Current cycle position and predictions. Recomputed whenever logs change.
 final cycleStatusProvider = Provider<CycleStatus?>((ref) {
-  final logs = ref.watch(logsProvider).valueOrNull;
+  final logs = ref.watch(logsProvider).value;
   if (logs == null) return null;
   return ref.watch(cycleEngineProvider).status(logs);
 });
 
 final logByDayProvider = Provider.family<DayLog?, DayKey>((ref, day) {
-  final logs = ref.watch(logsProvider).valueOrNull;
+  final logs = ref.watch(logsProvider).value;
   if (logs == null) return null;
   for (final l in logs) {
     if (l.date == day) return l;
@@ -177,21 +178,17 @@ final logByDayProvider = Provider.family<DayLog?, DayKey>((ref, day) {
 
 /// Worded on the Patterns screen, in her language.
 final patternsProvider = Provider<List<PhasePattern>>((ref) {
-  final logs = ref.watch(logsProvider).valueOrNull ?? const <DayLog>[];
-  return ref
-      .watch(insightsEngineProvider)
-      .phasePatterns(logs)
-      .take(8)
-      .toList();
+  final logs = ref.watch(logsProvider).value ?? const <DayLog>[];
+  return ref.watch(insightsEngineProvider).phasePatterns(logs).take(8).toList();
 });
 
 final phaseAveragesProvider = Provider<List<PhaseAverages>>((ref) {
-  final logs = ref.watch(logsProvider).valueOrNull ?? const <DayLog>[];
+  final logs = ref.watch(logsProvider).value ?? const <DayLog>[];
   return ref.watch(insightsEngineProvider).byPhase(logs);
 });
 
 final cycleLengthHistoryProvider = Provider<List<int>>((ref) {
-  final logs = ref.watch(logsProvider).valueOrNull ?? const <DayLog>[];
+  final logs = ref.watch(logsProvider).value ?? const <DayLog>[];
   return ref.watch(insightsEngineProvider).cycleLengthHistory(logs);
 });
 
@@ -206,7 +203,7 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     await (await ref.read(settingsStoreProvider.future)).save(next);
     state = AsyncData(next);
 
-    final logs = ref.read(logsProvider).valueOrNull;
+    final logs = ref.read(logsProvider).value;
     if (logs != null) {
       // Built directly rather than read from cycleEngineProvider, which now
       // depends on these settings — reading it from here would be circular.
@@ -220,17 +217,29 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 
   Future<void> updateSharing(SharingPreferences sharing) async {
-    final current = state.valueOrNull ?? const AppSettings();
+    final current = state.value ?? const AppSettings();
     await replaceAll(current.copyWith(sharing: sharing));
   }
 
   Future<void> updateReminders(ReminderSettings reminders) async {
-    final current = state.valueOrNull ?? const AppSettings();
+    final current = state.value ?? const AppSettings();
+    final before = current.reminders;
     await replaceAll(current.copyWith(reminders: reminders));
+    // Turning a reminder on asks the phone for permission, or it would stay
+    // silent on newer Android phones and on every iPhone. The phone shows
+    // its question only once.
+    final turnedOn = (reminders.periodReminder && !before.periodReminder) ||
+        (reminders.fertileWindowReminder && !before.fertileWindowReminder) ||
+        (reminders.dailyLogReminder && !before.dailyLogReminder);
+    if (turnedOn) {
+      try {
+        await ref.read(notificationServiceProvider).requestPermissions();
+      } catch (_) {}
+    }
   }
 
   Future<void> updateProfile(UserProfile profile) async {
-    final current = state.valueOrNull ?? const AppSettings();
+    final current = state.value ?? const AppSettings();
     await replaceAll(current.copyWith(profile: profile));
   }
 }
@@ -240,7 +249,7 @@ final settingsProvider =
 
 final profileProvider = Provider<UserProfile>(
   (ref) =>
-      ref.watch(settingsProvider).valueOrNull?.profile ?? const UserProfile(),
+      ref.watch(settingsProvider).value?.profile ?? const UserProfile(),
 );
 
 /// Fertile days and ovulation are hidden everywhere unless this is on.
@@ -250,7 +259,7 @@ final showFertileDaysProvider = Provider<bool>(
 
 final partnerSnapshotProvider = Provider<PartnerSnapshot?>((ref) {
   final status = ref.watch(cycleStatusProvider);
-  final settings = ref.watch(settingsProvider).valueOrNull;
+  final settings = ref.watch(settingsProvider).value;
   if (status == null || settings == null || !status.hasData) return null;
   final todayLog = ref.watch(logByDayProvider(status.today));
   return buildPartnerSnapshot(
@@ -386,7 +395,7 @@ class LegalConsentNotifier extends AsyncNotifier<bool> {
 
   @override
   Future<bool> build() async {
-    final account = ref.watch(sessionProvider).valueOrNull;
+    final account = ref.watch(sessionProvider).value;
     if (account == null) return false;
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getString(_key(account)) == Legal.version) return true;
@@ -402,7 +411,7 @@ class LegalConsentNotifier extends AsyncNotifier<bool> {
   }
 
   Future<void> accept() async {
-    final account = ref.read(sessionProvider).valueOrNull;
+    final account = ref.read(sessionProvider).value;
     if (account == null) return;
     await ref.read(accountServiceProvider).recordConsent(Legal.version);
     final prefs = await SharedPreferences.getInstance();
@@ -419,7 +428,7 @@ final legalConsentProvider =
 /// a no-op in the browser.
 final partnerTipReminderProvider = Provider<void>((ref) {
   final sharing = ref.watch(
-    settingsProvider.select((s) => s.valueOrNull?.sharing),
+    settingsProvider.select((s) => s.value?.sharing),
   );
   final role = ref.watch(profileProvider.select((p) => p.role));
 
@@ -430,7 +439,7 @@ final partnerTipReminderProvider = Provider<void>((ref) {
       sharing.sharePhase) {
     // Only watched while sharing is on, so it never triggers a pairing
     // request for someone who does not share.
-    on = ref.watch(pairingProvider).valueOrNull?.linked ?? false;
+    on = ref.watch(pairingProvider).value?.linked ?? false;
   }
   ref
       .read(notificationServiceProvider)
@@ -444,7 +453,7 @@ final tipLibraryServiceProvider =
 /// Codes of the daily tips someone flagged "not okay", which nobody gets
 /// until an editor puts them back. Empty when signed out or offline.
 final pulledTipsProvider = FutureProvider<Set<String>>((ref) async {
-  if (ref.watch(sessionProvider).valueOrNull == null) return const <String>{};
+  if (ref.watch(sessionProvider).value == null) return const <String>{};
   try {
     return await ref.watch(tipLibraryServiceProvider).pulled();
   } on ApiException {
@@ -479,13 +488,13 @@ final languageProvider =
 /// seen.
 final partnerMessagesProvider = Provider<PartnerMessages>(
   (ref) => PartnerMessages.of(
-    ref.watch(languageProvider).valueOrNull ?? AppLanguage.enInt,
+    ref.watch(languageProvider).value ?? AppLanguage.enInt,
   ),
 );
 
 /// Whether the signed-in account may draft and approve tips.
 final isEditorProvider = FutureProvider<bool>((ref) async {
-  if (ref.watch(sessionProvider).valueOrNull == null) return false;
+  if (ref.watch(sessionProvider).value == null) return false;
   try {
     return await ref.watch(tipLibraryServiceProvider).isEditor();
   } on ApiException {
@@ -522,7 +531,7 @@ final partnerSyncProvider = Provider<void>((ref) {
   }
 
   ref.listen<PartnerSnapshot?>(partnerSnapshotProvider, (_, snapshot) {
-    final sharing = ref.read(settingsProvider).valueOrNull?.sharing;
+    final sharing = ref.read(settingsProvider).value?.sharing;
     if (snapshot == null || sharing == null || !sharing.enabled) return;
     quietly(() => service.publishSnapshot(snapshot));
   }, fireImmediately: true);
@@ -535,9 +544,9 @@ final partnerSyncProvider = Provider<void>((ref) {
   }, fireImmediately: true);
 
   ref.listen<AsyncValue<AppSettings>>(settingsProvider, (previous, next) {
-    final enabled = next.valueOrNull?.sharing.enabled;
+    final enabled = next.value?.sharing.enabled;
     if (enabled == null) return;
-    final wasEnabled = previous?.valueOrNull?.sharing.enabled;
+    final wasEnabled = previous?.value?.sharing.enabled;
     if (wasEnabled == true && !enabled) {
       quietly(service.revoke);
     } else if (wasEnabled == null && !enabled) {
@@ -570,7 +579,7 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
     await _store.save(memory);
   }
 
-  InsightMemory get _current => state.valueOrNull ?? const InsightMemory();
+  InsightMemory get _current => state.value ?? const InsightMemory();
 
   /// Closed with the cross: gone for today, back after its cooldown.
   Future<void> dismiss(String id) => save(
@@ -598,9 +607,6 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
   /// Asks for the AI-written note for [pick] once, and keeps it with today's
   /// choice. Nothing is kept if there is no note: the card shows as it is.
   Future<void> fetchNote(InsightPick pick, Map<String, Object?> request) async {
-    // The notes are written in English only for now; in Romanian the card
-    // keeps its standard Romanian wording.
-    if (ref.read(languageProvider).valueOrNull == AppLanguage.ro) return;
     final day = _current.pickDay;
     final key = '${day?.iso}:${pick.id}:${pick.wording}';
     if (day == null || !_asked.add(key)) return;
@@ -617,9 +623,8 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
   Future<bool> reportNote(String cardId) async {
     final note = _current.pickNotes[cardId];
     if (note == null || note.isEmpty) return false;
-    final sent = await ref
-        .read(herNoteServiceProvider)
-        .report(card: cardId, note: note);
+    final sent =
+        await ref.read(herNoteServiceProvider).report(card: cardId, note: note);
     if (sent) {
       final now = _current;
       await save(now.copyWith(pickNotes: {...now.pickNotes, cardId: ''}));
@@ -647,7 +652,7 @@ final herNoteServiceProvider =
 class AiNotesNotifier extends AsyncNotifier<bool> {
   @override
   Future<bool> build() async {
-    final account = ref.watch(sessionProvider).valueOrNull;
+    final account = ref.watch(sessionProvider).value;
     if (account == null || !ref.watch(herInsightsEnabledProvider)) return false;
     try {
       final version = await ref.read(accountServiceProvider).aiNotesVersion();
@@ -671,11 +676,12 @@ final aiNotesProvider =
 
 /// Every card that applies today. Worked out on her phone from her logs.
 final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {
-  final logs = ref.watch(logsProvider).valueOrNull;
+  final logs = ref.watch(logsProvider).value;
   final status = ref.watch(cycleStatusProvider);
   final (screening, sexualWellbeing) = ref.watch(
     insightMemoryProvider.select(
-      (m) => (m.valueOrNull?.screeningReminders, m.valueOrNull?.sexualWellbeing),
+      (m) =>
+          (m.value?.screeningReminders, m.value?.sexualWellbeing),
     ),
   );
   if (logs == null ||
@@ -700,6 +706,6 @@ final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {
 /// Her cards and the "Get help now" page, in her language.
 final herInsightTextsProvider = Provider<HerInsightTexts>(
   (ref) => HerInsightTexts.of(
-    ref.watch(languageProvider).valueOrNull ?? AppLanguage.enGB,
+    ref.watch(languageProvider).value ?? AppLanguage.enGB,
   ),
 );

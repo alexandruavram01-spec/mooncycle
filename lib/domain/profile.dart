@@ -123,11 +123,12 @@ class UserProfile {
     bool? showFertileDays,
     String? partnerNickname,
     PartnerTone? partnerTone,
+    Map<String, Object?>? quizAnswers,
   }) =>
       UserProfile(
         role: role,
         journey: journey,
-        quizAnswers: quizAnswers,
+        quizAnswers: quizAnswers ?? this.quizAnswers,
         quizResumeAt: quizResumeAt,
         partnerNickname: partnerNickname ?? this.partnerNickname,
         partnerTone: partnerTone ?? this.partnerTone,

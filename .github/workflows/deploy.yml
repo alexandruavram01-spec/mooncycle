@@ -19,7 +19,7 @@ permissions:
 
 env:
   # Keep in step with the PC (flutter --version).
-  FLUTTER_VERSION: '3.47.7'
+  FLUTTER_VERSION: '3.47.8'
 
 jobs:
   deploy:
@@ -124,8 +124,11 @@ jobs:
         run: |
           # The reviewed card texts the AI notes are written from.
           cp content/her-insights-en-GB-combined.json server/her-cards.json
+          # The same cards in Romanian (tool/export_ro_cards.py).
+          cp content/her-insights-ro.json server/her-cards-ro.json
           rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy -o BatchMode=yes" \
-            server/server.js server/her-notes.js server/her-cards.json \
+            server/server.js server/her-notes.js server/sample-notes.js \
+            server/her-cards.json server/her-cards-ro.json \
             "deploy@$HOST:/opt/mooncycle-api/"
           ssh -i ~/.ssh/deploy -o BatchMode=yes "deploy@$HOST" \
             'sudo systemctl restart mooncycle-api && sleep 2 && systemctl is-active mooncycle-api'

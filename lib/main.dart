@@ -16,6 +16,7 @@ import 'ui/screens/onboarding_screen.dart';
 import 'ui/screens/partner_view_screen.dart';
 import 'ui/shell.dart';
 import 'ui/theme.dart';
+import 'ui/widgets/text_size.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,9 @@ Future<void> main() async {
 
   // Own the container explicitly so notification channels can be created
   // before the first frame.
-  final container = ProviderContainer();
+  // Riverpod 3 retries failing providers on its own; MoonCycle shows the
+  // error instead (and the screens offer their own retry), as before.
+  final container = ProviderContainer(retry: (retryCount, error) => null);
 
   // Anything that fails here must not stop the app from rendering — a crash
   // before runApp produces a blank window with no on-screen clue why.
@@ -77,7 +80,8 @@ class MoonCycleApp extends ConsumerWidget {
 
     // Every text on screen follows the language chosen on this phone. The
     // key rebuilds the whole app when it changes in Settings.
-    final language = ref.watch(languageProvider).valueOrNull;
+    final language = ref.watch(languageProvider).value;
+    final textSize = ref.watch(textSizeProvider).value ?? TextSize.normal;
     final romanian = language == AppLanguage.ro;
     UiText.language = language ?? AppLanguage.enGB;
     Intl.defaultLocale = romanian ? 'ro' : 'en_GB';
@@ -110,6 +114,9 @@ class MoonCycleApp extends ConsumerWidget {
                     viewInsets: media.viewInsets.copyWith(
                       bottom: keyboard > 0 ? keyboard : 0,
                     ),
+                    // A little bigger than Flutter's default for everyone,
+                    // times Settings → Text size, times the phone's setting.
+                    textScaler: appTextScaler(media.textScaler, textSize),
                   ),
               child: Center(
                 child: ConstrainedBox(
@@ -142,24 +149,24 @@ class _Gate extends ConsumerWidget {
     if (language.isLoading || session.isLoading || settings.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    if (language.valueOrNull == null) return const LanguageScreen();
+    if (language.value == null) return const LanguageScreen();
     // Everyone signs in first; the quiz and the app come after.
-    if (session.valueOrNull == null) return const AccountScreen();
+    if (session.value == null) return const AccountScreen();
     // Then agreement to the current terms and consent for health data, once.
     final consent = ref.watch(legalConsentProvider);
     if (consent.isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    if (consent.valueOrNull != true) return const LegalConsentScreen();
+    if (consent.value != true) return const LegalConsentScreen();
 
-    final current = settings.valueOrNull;
+    final current = settings.value;
     // Unreadable settings must not lock her out of her own data.
     if (current == null) return const AppShell();
     // An editor account always gets the editor panel. Before the quiz the
     // app waits for the answer so an editor never sees the quiz; after it,
     // it doesn't wait, so everyone else's app opens straight away.
     final editor = ref.watch(isEditorProvider);
-    if (editor.valueOrNull == true) return const EditorHomeScreen();
+    if (editor.value == true) return const EditorHomeScreen();
     if (!current.onboardingComplete) {
       if (editor.isLoading) {
         return const Scaffold(

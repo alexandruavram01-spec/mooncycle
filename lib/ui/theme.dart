@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../domain/enums.dart';
 
@@ -97,6 +98,35 @@ final ThemeData nightTheme = _build(
 ThemeData buildTheme(Brightness brightness) =>
     brightness == Brightness.dark ? nightTheme : dawnTheme;
 
+/// The app's type: Nunito, round and easy to read, for all text; Fredoka,
+/// rounder and more playful, for headings and titles. Chosen 29 Oct 2026.
+/// The MoonCycle wordmark keeps Gelasio (lib/ui/widgets/wordmark.dart).
+TextTheme _type(Brightness brightness) {
+  final base = GoogleFonts.nunitoTextTheme(
+    ThemeData(brightness: brightness, useMaterial3: true).textTheme,
+  );
+  TextStyle? heading(TextStyle? style) =>
+      style == null ? null : GoogleFonts.fredoka(textStyle: style);
+  return base.copyWith(
+    displayLarge: heading(base.displayLarge),
+    displayMedium: heading(base.displayMedium),
+    displaySmall: heading(base.displaySmall),
+    headlineLarge: heading(base.headlineLarge),
+    headlineMedium: heading(base.headlineMedium),
+    headlineSmall: heading(base.headlineSmall),
+    titleLarge: heading(base.titleLarge),
+  );
+}
+
+/// The heading font for places that set their own size, such as the quiz.
+TextStyle headingFont({double? fontSize, double? height, Color? color}) =>
+    GoogleFonts.fredoka(
+      fontSize: fontSize,
+      height: height,
+      color: color,
+      fontWeight: FontWeight.w500,
+    );
+
 ThemeData _build(
   ColorScheme scheme, {
   required Color card,
@@ -105,6 +135,7 @@ ThemeData _build(
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
+    textTheme: _type(scheme.brightness),
     scaffoldBackgroundColor: scheme.surface,
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,

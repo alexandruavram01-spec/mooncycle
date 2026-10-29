@@ -73,12 +73,12 @@ class _TipLibraryScreenState extends ConsumerState<TipLibraryScreen> {
     final muted = theme.textTheme.bodySmall
         ?.copyWith(color: theme.colorScheme.onSurfaceVariant);
     final messages = ref.watch(partnerMessagesProvider);
-    final language = ref.watch(languageProvider).valueOrNull;
+    final language = ref.watch(languageProvider).value;
     final ratings = ref.watch(_ratingsProvider);
     final tips = messages.allTips.toList();
 
     int count(String filter) {
-      final byCode = ratings.valueOrNull ?? const {};
+      final byCode = ratings.value ?? const {};
       return tips.where((t) => _matches(filter, byCode[t.$3.id])).length;
     }
 

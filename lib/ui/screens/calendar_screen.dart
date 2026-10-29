@@ -54,7 +54,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final logs = ref.watch(logsProvider).valueOrNull ?? const <DayLog>[];
+    final logs = ref.watch(logsProvider).value ?? const <DayLog>[];
     final status = ref.watch(cycleStatusProvider);
     final engine = ref.watch(cycleEngineProvider);
     final showFertile = ref.watch(showFertileDaysProvider);

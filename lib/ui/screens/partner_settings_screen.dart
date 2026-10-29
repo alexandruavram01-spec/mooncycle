@@ -31,7 +31,7 @@ class _PartnerSettingsScreenState extends ConsumerState<PartnerSettingsScreen> {
   Future<void> _save() async {
     setState(() => _saving = true);
     final current =
-        ref.read(settingsProvider).valueOrNull ?? const AppSettings();
+        ref.read(settingsProvider).value ?? const AppSettings();
     try {
       await ref.read(settingsProvider.notifier).replaceAll(
             current.copyWith(

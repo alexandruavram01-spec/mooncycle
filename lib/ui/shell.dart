@@ -32,7 +32,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   @override
   Widget build(BuildContext context) {
     // Once per account, after the quiz: her logs live only on this phone.
-    if (ref.watch(dataNoticeProvider).valueOrNull == false && !_noticeShown) {
+    if (ref.watch(dataNoticeProvider).value == false && !_noticeShown) {
       _noticeShown = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) showDataNotice(context, ref);

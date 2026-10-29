@@ -340,11 +340,11 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final sharing = ref.watch(settingsProvider).valueOrNull?.sharing;
+    final sharing = ref.watch(settingsProvider).value?.sharing;
     if (!_loaded || sharing == null || !sharing.enabled) {
       return const SizedBox.shrink();
     }
-    final pairing = ref.watch(pairingProvider).valueOrNull;
+    final pairing = ref.watch(pairingProvider).value;
     final snapshot = ref.watch(partnerSnapshotProvider);
     if (pairing == null || !pairing.linked || snapshot == null) {
       return const SizedBox.shrink();
@@ -353,7 +353,7 @@ class _PartnerTipBannerState extends ConsumerState<PartnerTipBanner> {
     // The same choice his app makes, so she sees the tip he gets today. It
     // is in her language; his may differ, but the code is the same.
     final pulled =
-        ref.watch(pulledTipsProvider).valueOrNull ?? const <String>{};
+        ref.watch(pulledTipsProvider).value ?? const <String>{};
     final tone = snapshot.jokes
         ? (pairing.partnerTone ?? PartnerTone.light)
         : PartnerTone.straight;
@@ -454,7 +454,7 @@ class PartnerNudgeCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final messages = ref.watch(partnerMessagesProvider);
-    final pairing = ref.watch(pairingProvider).valueOrNull;
+    final pairing = ref.watch(pairingProvider).value;
     if (pairing == null) return const SizedBox.shrink();
     final linked = pairing.linked;
     final ask = pairing.ask;
@@ -548,7 +548,7 @@ class PartnerOfferCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final messages = ref.watch(partnerMessagesProvider);
-    final pairing = ref.watch(pairingProvider).valueOrNull;
+    final pairing = ref.watch(pairingProvider).value;
     final offer = pairing?.offer;
     final label = messages.offers[offer];
     if (pairing == null || !pairing.linked || offer == null || label == null) {

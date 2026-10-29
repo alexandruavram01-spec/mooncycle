@@ -847,7 +847,7 @@ const Map<String, String> uiRo = {
   'When did your last period start?':
       'Când a început ultima ta menstruație?',
   'I\'m not sure':
-      'Nu sunt sigură',
+      'Nu știu sigur',
   'How many days does your period usually last?':
       'Câte zile durează de obicei menstruația ta?',
   'Not sure':
@@ -1142,4 +1142,94 @@ const Map<String, String> uiRo = {
       'Parolă greșită.',
   'Your Google account has no confirmed email address.':
       'Contul tău Google nu are o adresă de email confirmată.',
+  'Menopause and beyond':
+      'Menopauza și perioada de după',
+  'All of these':
+      'Toate acestea',
+  'How will you use MoonCycle?':
+      'Cum vrei să folosești MoonCycle?',
+  'Track my cycle':
+      'Îmi urmăresc ciclul',
+  'Periods, symptoms and fertility, all in one place.':
+      'Menstruație, simptome și fertilitate, toate într-un singur loc.',
+  'I\'m her partner':
+      'Sunt partenerul ei',
+  'Understand her cycle and discover little ways to be there for her.':
+      'Înțelege-i mai bine ciclul și descoperă cum poți fi alături de ea.',
+  'What would you like MoonCycle to help with?':
+      'Cu ce vrei să te ajute MoonCycle?',
+  '{n} of {total}':
+      '{n} din {total}',
+  'Support starts with understanding':
+      'Sprijinul începe cu înțelegerea',
+  'Two quick questions to make MoonCycle yours.':
+      'Două întrebări rapide, ca MoonCycle să ți se potrivească.',
+  'Choose one':
+      'Alege una',
+  'When her period is coming':
+      'Când urmează menstruația ei',
+  'How she\'s feeling':
+      'Cum se simte',
+  'How to support her day to day':
+      'Cum s-o susții zi de zi',
+  'A bit of everything':
+      'Câte puțin din toate',
+  'What would help you most?':
+      'Ce te-ar ajuta cel mai mult?',
+  'Updates she chooses to share':
+      'Informațiile pe care alege să le partajeze',
+  'Practical tips to support her':
+      'Sfaturi practice ca s-o susții',
+  'Tips for better communication':
+      'Sfaturi pentru o comunicare mai bună',
+  'All of the above':
+      'Toate variantele',
+  'Connect with your partner':
+      'Conectează-te cu partenera ta',
+  'Choose how you\'d like to connect.':
+      'Alege cum vrei să vă conectați.',
+  'Have an invitation code?':
+      'Ai un cod de invitație?',
+  'Enter her code':
+      'Introdu codul ei',
+  'or':
+      'sau',
+  'Invite her':
+      'Invit-o',
+  'Send her a message from your phone. She creates a code on her Partner tab and sends it back to you.':
+      'Trimite-i un mesaj de pe telefon. Ea creează un cod în secțiunea Partener și ți-l trimite.',
+  'Send invitation':
+      'Trimite invitația',
+  'You\'ll only see what she chooses to share. She can stop sharing at any time.':
+      'Vei vedea doar ce alege ea să partajeze. Poate opri partajarea oricând.',
+  'Hi! ❤️ I\'ve started using MoonCycle too. If you\'d like, we can connect our accounts so I can understand better how to support you. You can send me a code from the Partner tab. You choose what I can see. 😊 https://mooncycle.fit':
+      'Hei! ❤️ Am început să folosesc și eu MoonCycle. Dacă vrei, ne putem conecta conturile, ca să înțeleg mai bine cum te pot susține. Îmi poți trimite un cod din secțiunea Partener. Tu alegi ce informații îmi arăți. 😊 https://mooncycle.fit',
+  'How do you like your tips?':
+      'Cum preferi să primești sfaturile?',
+  'Helpful suggestions, with as much humour as you like.':
+      'Sugestii utile, cu cât umor vrei tu.',
+  'Example tip':
+      'Exemplu de sfat',
+  'Welcome to MoonCycle':
+      'Bine ai venit în MoonCycle',
+  'A little more understanding can go a long way.':
+      'Puțină înțelegere în plus contează mult.',
+  'Today\'s tip':
+      'Sfatul zilei',
+  'Text size':
+      'Mărimea textului',
+  'Normal':
+      'Normal',
+  'Large':
+      'Mare',
+  'Larger':
+      'Mai mare',
+  'Largest':
+      'Foarte mare',
+  'Makes all text in MoonCycle bigger. Your phone\'s own text size setting still applies too.':
+      'Mărește tot textul din MoonCycle. Setarea de mărime a textului din telefon se aplică în continuare.',
+  'Choose any':
+      'Alege oricâte vrei',
+  'Three quick questions to make MoonCycle yours.':
+      'Trei întrebări rapide, ca MoonCycle să ți se potrivească.',
 };

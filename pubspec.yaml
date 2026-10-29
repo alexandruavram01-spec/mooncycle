@@ -1,10 +1,13 @@
 name: mooncycle
 description: MoonCycle - period, symptom and hormone tracking with partner sharing.
 publish_to: "none"
-version: 1.0.0+8
+version: 1.0.0+9
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
+  # Radio groups, text size and the packages below need a recent Flutter;
+  # the lock file already requires 3.47. Codemagic builds on latest stable.
+  flutter: ">=3.47.0"
 
 dependencies:
   flutter:
@@ -12,25 +15,29 @@ dependencies:
   # Romanian buttons, date pickers and dialogs from Flutter itself.
   flutter_localizations:
     sdk: flutter
-  flutter_riverpod: ^2.5.1
-  sqflite: ^2.3.3
+  flutter_riverpod: ^3.4.3
+  sqflite: ^2.4.5
   # Desktop-only SQLite backend. Android uses the platform implementation;
   # this exists so the app can be run on Windows for fast UI iteration.
-  sqflite_common_ffi: ^2.3.3
-  # Bundles the native sqlite3 library. Without it the FFI backend has nothing
-  # to load on Windows and fails at startup.
-  sqlite3_flutter_libs: ^0.5.24
+  # Brings its own SQLite library (package:sqlite3 3.x); the old
+  # sqlite3_flutter_libs is no longer needed.
+  sqflite_common_ffi: ^2.4.5
   path: ^1.9.0
   # flutter_localizations needs 0.20.
   intl: ^0.20.3
   shared_preferences: ^2.2.3
   http: ^1.2.0
-  # Gelasio, a free serif with Georgia's proportions, for the wordmark and
-  # the quiz headings.
-  google_fonts: ^6.2.1
-  fl_chart: ^0.68.0
-  flutter_local_notifications: ^17.2.1
-  timezone: ^0.9.4
+  # Fredoka for headings, Nunito for all other text (lib/ui/theme.dart), and
+  # Gelasio for the MoonCycle wordmark. Kept on 8.x: 9.0 brings its own copy
+  # of Flutter's Material library (material_ui), whose TextTheme does not fit
+  # the app's ThemeData.
+  google_fonts: ^8.2.0
+  fl_chart: ^1.3.0
+  flutter_local_notifications: ^22.3.3
+  timezone: ^0.11.2
+  # The phone's time zone, so reminders fire at 9:00 local time rather than
+  # 9:00 UTC (lib/services/notification_service.dart).
+  flutter_timezone: ^5.1.1
   # Opens the NHS source links on her insight cards, and the phone's dialler
   # from "Get help now".
   url_launcher: ^6.3.1
@@ -43,13 +50,14 @@ dependencies:
   # Sign in with Apple on iPhone (lib/services/apple_account.dart). Needs the
   # capability on the App ID and ios/Runner/Runner.entitlements.
   sign_in_with_apple: ^8.2.0
-  # "Export my data": hands her files to the phone's share sheet.
+  # The phone's share menu: "Export my data", and his invitation to her
+  # ("Send invitation", lib/ui/widgets/partner_invite.dart).
   share_plus: ^13.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   # Makes every app icon size from assets/icon/: run
   # `dart run flutter_launcher_icons` after changing those images.
   flutter_launcher_icons: ^0.14.1

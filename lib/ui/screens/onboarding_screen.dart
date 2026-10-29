@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/settings_store.dart';
@@ -13,6 +12,7 @@ import '../../domain/profile.dart';
 import '../../domain/quiz.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
+import '../widgets/partner_invite.dart';
 import '../widgets/wordmark.dart';
 import '../../l10n/ui.dart';
 
@@ -45,15 +45,19 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  static const _inviteMessage =
-      "I'd like to support you better. Could you turn on partner sharing in "
-      'MoonCycle (Partner tab) and send me the code? https://mooncycle.fit';
+  static const _inviteMessage = partnerInviteMessage;
 
   /// Her journeys offer "finish the rest later" from this question on: the
   /// first three are the ones predictions need.
   static const _finishLaterFrom = 3;
 
   Journey? _journey;
+
+  /// She chose "Track my cycle" and is picking one of her journeys.
+  bool _tracking = false;
+
+  /// Her partner's two screens: 0 the questions, 1 connecting.
+  int _partnerStep = 0;
   int _step = 0;
   bool _extrasAdded = false;
   final Map<String, Object> _answers = {};
@@ -107,6 +111,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _begin(Journey journey) => setState(() {
         _journey = journey;
+        _partnerStep = 0;
         _step = 0;
         _extrasAdded = false;
         _resumeAt = null;
@@ -152,15 +157,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     });
   }
 
+  /// One step back, from anywhere in the quiz. On the very first screen it
+  /// closes the quiz when it was opened from Settings.
   void _back() {
     _commitDays();
     if (_journey == null) {
-      if (_retaking) Navigator.of(context).pop();
+      if (_tracking) {
+        setState(() => _tracking = false);
+      } else if (_retaking) {
+        Navigator.of(context).pop();
+      }
       return;
     }
     setState(() {
       _error = null;
-      if (_step == 0) {
+      if (_journey!.partner && _partnerStep == 1) {
+        _partnerStep = 0;
+      } else if (_step == 0) {
         _journey = null;
       } else {
         _step--;
@@ -447,8 +460,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       }
     }
 
+    // She chose reminders in the quiz: ask the phone to allow them now,
+    // before saving, because saving closes this screen.
+    if (plan.periodReminder == true || plan.dailyReminder == true) {
+      try {
+        await ref.read(notificationServiceProvider).requestPermissions();
+      } catch (_) {}
+    }
+
     final current =
-        ref.read(settingsProvider).valueOrNull ?? const AppSettings();
+        ref.read(settingsProvider).value ?? const AppSettings();
     // Saved last: on first run, completing onboarding replaces this screen.
     await ref.read(settingsProvider.notifier).replaceAll(
           current.copyWith(
@@ -490,21 +511,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _finishPartner() async {
     final current =
-        ref.read(settingsProvider).valueOrNull ?? const AppSettings();
+        ref.read(settingsProvider).value ?? const AppSettings();
     final previous = current.profile;
     // On first run this replaces the quiz with his home screen. His name for
     // her and his tone are set from his menu; until then, "a little humour".
+    final toneAnswer = _answers['tone'];
+    final answers = <String, Object?>{
+      ...Map.of(_answers),
+      // The home screen asks "How do you like your tips?" only if he skipped.
+      if (toneAnswer is String) 'toneChosen': true,
+    };
     await ref.read(settingsProvider.notifier).replaceAll(
           current.copyWith(
             onboardingComplete: true,
             profile: UserProfile(
               role: AppRole.partner,
               journey: _journey!.id,
-              quizAnswers: Map.of(_answers),
+              quizAnswers: answers,
               partnerNickname: previous.partnerNickname,
-              partnerTone: previous.role == AppRole.partner
-                  ? previous.partnerTone
-                  : PartnerTone.light,
+              partnerTone: toneAnswer is String
+                  ? PartnerTone.fromName(toneAnswer)
+                  : previous.role == AppRole.partner
+                      ? previous.partnerTone
+                      : PartnerTone.light,
             ),
           ),
         );
@@ -546,6 +575,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         children: [
                           Row(
                             children: [
+                              // Back from every step, so a wrong tap is
+                              // easy to undo. Not on the first screen.
+                              if (_journey != null || _tracking) ...[
+                                _RewindButton(onPressed: _saving ? null : _back),
+                                const SizedBox(width: 10),
+                              ],
                               const Wordmark(size: 27),
                               const Spacer(),
                               if (_retaking)
@@ -557,10 +592,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             ],
                           ),
                           ...(_journey == null
-                              ? _choose(context)
-                              : _current == null
-                                  ? _summary(context)
-                                  : _questionView(context, _current!)),
+                              ? (_tracking
+                                  ? _chooseJourney(context)
+                                  : _choose(context))
+                              : _journey!.partner
+                                  ? (_partnerStep == 0
+                                      ? _partnerQuestions(context)
+                                      : _partnerConnect(context))
+                                  : _current == null
+                                      ? _summary(context)
+                                      : _questionView(context, _current!)),
                         ],
                       ),
                     ),
@@ -574,7 +615,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  TextStyle _headline(ThemeData theme) => GoogleFonts.gelasio(
+  TextStyle _headline(ThemeData theme) => headingFont(
         fontSize: 27,
         height: 1.2,
         color: theme.colorScheme.onSurface,
@@ -585,26 +626,334 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         height: 1.5,
       );
 
+  /// Screen 1: two clear choices. Nothing is chosen for them.
   List<Widget> _choose(BuildContext context) {
     final theme = Theme.of(context);
+    final partner = journeys.firstWhere((journey) => journey.partner);
     return [
       const SizedBox(height: 25),
-      Text(tr("Let's make MoonCycle yours"), style: _headline(theme)),
-      const SizedBox(height: 8),
-      Text(
-        tr('Every journey is unique. Are you here for yourself or to support '
-        'your partner?'),
-        style: _muted(theme),
+      Text(tr('How will you use MoonCycle?'), style: _headline(theme)),
+      const SizedBox(height: 14),
+      _Option(
+        title: 'Track my cycle',
+        subtitle: 'Periods, symptoms and fertility, all in one place.',
+        icon: Icons.calendar_month_outlined,
+        trailing: Icons.female,
+        trailingColor: _femalePink,
+        selected: false,
+        onTap: () => setState(() => _tracking = true),
       ),
-      const SizedBox(height: 8),
+      _PartnerChoice(onTap: () => _begin(partner)),
+    ];
+  }
+
+  /// After "Track my cycle": which of her journeys.
+  List<Widget> _chooseJourney(BuildContext context) {
+    final theme = Theme.of(context);
+    return [
+      const SizedBox(height: 20),
+      Text(tr('What would you like MoonCycle to help with?'),
+          style: _headline(theme)),
+      const SizedBox(height: 14),
       for (final journey in journeys)
-        if (!journey.hidden)
+        if (!journey.hidden && !journey.partner)
           _Option(
             title: journey.name,
             subtitle: journey.category,
             selected: false,
             onTap: () => _begin(journey),
           ),
+      const SizedBox(height: 18),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: _Button(label: tr('Back'), secondary: true, onPressed: _back),
+      ),
+    ];
+  }
+
+  // ---- Her partner: two screens, in his Night colours ----------------------
+
+  // Pick any; "All of the above" is added under the list.
+  static const _partnerUnderstand = [
+    'When her period is coming',
+    "How she's feeling",
+    'How to support her day to day',
+  ];
+
+  Widget _partnerHeader(ThemeData theme, int step, String title, String lead) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          _Progress(count: 2, current: step),
+          const SizedBox(height: 10),
+          Text(
+            trf('{n} of {total}', {'n': step + 1, 'total': 2}),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+          const SizedBox(height: 14),
+          Text(tr(title), style: _headline(theme)),
+          const SizedBox(height: 6),
+          Text(tr(lead), style: _muted(theme)),
+        ],
+      );
+
+  Widget _partnerQuestion(ThemeData theme, String number, String id,
+      String text, List<String> options) {
+    final value = _answers[id];
+    final chosen = value is List ? value.whereType<String>().toSet() : <String>{};
+    final all = options.every(chosen.contains);
+    // Saved in the order shown; nothing saved when nothing is ticked.
+    void save(Set<String> next) => setState(() {
+          if (next.isEmpty) {
+            _answers.remove(id);
+          } else {
+            _answers[id] = [for (final o in options) if (next.contains(o)) o];
+          }
+        });
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Text('$number. ${tr(text)}', style: theme.textTheme.titleMedium),
+        const SizedBox(height: 2),
+        Text(tr('Choose any'), style: _muted(theme)),
+        const SizedBox(height: 6),
+        for (final option in options)
+          _Option(
+            title: option,
+            multi: true,
+            selected: chosen.contains(option),
+            onTap: () => save(
+              chosen.contains(option)
+                  ? ({...chosen}..remove(option))
+                  : {...chosen, option},
+            ),
+          ),
+        _Option(
+          title: 'All of the above',
+          multi: true,
+          selected: all,
+          onTap: () => save(all ? <String>{} : options.toSet()),
+        ),
+      ],
+    );
+  }
+
+  /// Question 2: how funny his tips are. One choice; skipping it keeps "a
+  /// little humour" and his home screen asks again.
+  Widget _partnerToneQuestion(ThemeData theme) {
+    final chosen = _answers['tone'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Text('2. ${tr('How do you like your tips?')}',
+            style: theme.textTheme.titleMedium),
+        const SizedBox(height: 2),
+        Text(tr('Choose one'), style: _muted(theme)),
+        const SizedBox(height: 6),
+        for (final tone in PartnerTone.values)
+          _Option(
+            title: tone.label,
+            subtitle: tone.hint,
+            radio: true,
+            selected: chosen == tone.name,
+            onTap: () => setState(() {
+              if (chosen == tone.name) {
+                _answers.remove('tone');
+              } else {
+                _answers['tone'] = tone.name;
+              }
+            }),
+          ),
+      ],
+    );
+  }
+
+  /// 1 of 2: two quick questions, both optional, nothing chosen for him.
+  List<Widget> _partnerQuestions(BuildContext context) {
+    final theme = Theme.of(context);
+    return [
+      _partnerHeader(theme, 0, 'Support starts with understanding',
+          'Two quick questions to make MoonCycle yours.'),
+      _partnerQuestion(theme, '1', 'understand',
+          'What would you like to understand better?', _partnerUnderstand),
+      _partnerToneQuestion(theme),
+      const SizedBox(height: 22),
+      Row(
+        children: [
+          _Button(label: tr('Back'), secondary: true, onPressed: _back),
+          const SizedBox(width: 9),
+          Expanded(
+            child: _Button(
+              label: tr('Continue →'),
+              onPressed: () => setState(() {
+                _partnerStep = 1;
+                _error = null;
+              }),
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  /// 2 of 2: connect with her code, or send her an invitation from his own
+  /// phone (WhatsApp, SMS, email...). MoonCycle sends nothing itself.
+  List<Widget> _partnerConnect(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final radius = BorderRadius.circular(18);
+    BoxDecoration card() => BoxDecoration(
+          color: scheme.surfaceContainerHighest.withValues(alpha: 0.35),
+          border: Border.all(color: scheme.outlineVariant),
+          borderRadius: radius,
+        );
+    return [
+      _partnerHeader(theme, 1, 'Connect with your partner',
+          "Choose how you'd like to connect."),
+      const SizedBox(height: 18),
+      Container(
+        padding: const EdgeInsets.all(18),
+        decoration: card(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(tr('Have an invitation code?'),
+                style: _headline(theme).copyWith(fontSize: 21)),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _code,
+              enabled: !_saving && !_connected,
+              autocorrect: false,
+              textCapitalization: TextCapitalization.characters,
+              maxLength: 8,
+              style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 4),
+              decoration: InputDecoration(
+                hintText: tr('Enter her code'),
+                hintStyle: theme.textTheme.bodyLarge?.copyWith(
+                  letterSpacing: 0,
+                  color: scheme.onSurfaceVariant,
+                ),
+                counterText: '',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onSubmitted: (_) => _joinPartner(),
+            ),
+            const SizedBox(height: 12),
+            if (_connected)
+              Row(
+                children: [
+                  Icon(Icons.check_circle, color: scheme.primary),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(tr('Connected with her.'))),
+                ],
+              )
+            else
+              _Button(
+                label: _saving ? tr('Connecting…') : tr('Connect'),
+                onPressed: _saving ? null : _joinPartner,
+              ),
+          ],
+        ),
+      ),
+      if (_error case final error?)
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Text(error, style: TextStyle(color: scheme.error)),
+        ),
+      if (!_connected) ...[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          child: Row(
+            children: [
+              const Expanded(child: Divider()),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(tr('or'), style: _muted(theme)),
+              ),
+              const Expanded(child: Divider()),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: card(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(tr('Invite her'),
+                  style: _headline(theme).copyWith(fontSize: 21)),
+              const SizedBox(height: 6),
+              Text(
+                tr('Send her a message from your phone. She creates a code on '
+                    'her Partner tab and sends it back to you.'),
+                style: _muted(theme),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  side: BorderSide(color: scheme.primary),
+                  foregroundColor: scheme.primary,
+                  textStyle: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                onPressed: sharePartnerInvite,
+                icon: const Icon(Icons.send_outlined, size: 18),
+                label: Text(tr('Send invitation')),
+              ),
+            ],
+          ),
+        ),
+      ],
+      const SizedBox(height: 14),
+      Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: scheme.primaryContainer.withValues(alpha: 0.6),
+          borderRadius: radius,
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.lock_outline, color: scheme.primary),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                tr("You'll only see what she chooses to share. She can stop "
+                    'sharing at any time.'),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: scheme.onSurface),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 14),
+      if (_connected)
+        _Button(
+          label: tr('Start using MoonCycle'),
+          onPressed: _saving ? null : _finish,
+        )
+      else
+        Center(
+          child: TextButton(
+            onPressed: _saving ? null : _finish,
+            child: Text(
+              tr('Skip for now'),
+              style: TextStyle(
+                color: scheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
     ];
   }
 
@@ -1060,7 +1409,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         defaultCycleLength: plan.cycleLength ?? 28,
         defaultPeriodLength: plan.periodLength ?? 5,
       ).status([
-        ...?ref.read(logsProvider).valueOrNull,
+        ...?ref.read(logsProvider).value,
         if (lastPeriod != null)
           DayLog(
             date: lastPeriod,
@@ -1141,7 +1490,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
 
     final sharingNow =
-        ref.read(settingsProvider).valueOrNull?.sharing.enabled ?? false;
+        ref.read(settingsProvider).value?.sharing.enabled ?? false;
     if (plan.inviting) {
       final names = [
         for (final (key, title, _) in sharingCategories)
@@ -1292,6 +1641,8 @@ class _Option extends StatelessWidget {
     this.multi = false,
     this.radio = false,
     this.icon,
+    this.trailing,
+    this.trailingColor,
   });
 
   final String title;
@@ -1301,6 +1652,10 @@ class _Option extends StatelessWidget {
   final bool multi;
   final bool radio;
   final IconData? icon;
+
+  /// A symbol on the right, such as ♀ on "Track my cycle".
+  final IconData? trailing;
+  final Color? trailingColor;
 
   @override
   Widget build(BuildContext context) {
@@ -1363,8 +1718,105 @@ class _Option extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (trailing != null) ...[
+                  const SizedBox(width: 10),
+                  Icon(trailing, size: 30, color: trailingColor ?? scheme.primary),
+                ],
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// The symbols on the first screen: soft pink for her, light blue for him.
+const _femalePink = Color(0xFFE5809A);
+const _maleBlue = Color(0xFF8CC4FF);
+
+/// "I'm her partner" on the first screen, in the partner's Night colours so
+/// it reads at once as a different side of the app.
+class _PartnerChoice extends StatelessWidget {
+  const _PartnerChoice({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final radius = BorderRadius.circular(15);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.5),
+      child: Material(
+        color: MoonColors.nightCard,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: const BorderSide(color: MoonColors.nightLine),
+        ),
+        child: InkWell(
+          borderRadius: radius,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.favorite_border,
+                    size: 20, color: MoonColors.moonGold),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr("I'm her partner"),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: MoonColors.nightInk,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        tr('Understand her cycle and discover little ways to '
+                            'be there for her.'),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: MoonColors.nightMuted),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Icon(Icons.male, size: 30, color: _maleBlue),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Back, as a small round rewind button in the top-left corner.
+class _RewindButton extends StatelessWidget {
+  const _RewindButton({required this.onPressed});
+
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tr('Back'),
+      child: Material(
+        color: scheme.primaryContainer,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.all(7),
+            child: Icon(Icons.fast_rewind_rounded, size: 20, color: scheme.primary),
           ),
         ),
       ),

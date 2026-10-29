@@ -33,6 +33,18 @@ const CARDS = new Map(
 );
 const OPENINGS = new Map(pack.stage1_openings.map((o) => [o.id, o.body]));
 
+// The same cards in Romanian, deployed beside this file from
+// content/her-insights-ro.json (made by tool/export_ro_cards.py). Without
+// it, Romanian requests get no note and her phone shows the card.
+const RO = (() => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(__dirname, 'her-cards-ro.json'), 'utf8'));
+  } catch {
+    return null;
+  }
+})();
+const LANGUAGES = ['en', 'ro'];
+
 // Cards that always show as reviewed, never rewritten: warning signs, late
 // or long bleeding, pregnancy and fertility timing, contraception, low mood,
 // medicines and the drafts from her own log.
@@ -167,6 +179,14 @@ function readRequest(body) {
   const wording = CARDS.get(wordingId);
   if (!wording || (wordingId !== cardId && wording.variant_of !== cardId)) refuse('bad wording');
 
+  const language = oneOf(body.language ?? 'en', LANGUAGES);
+  let shown = { title: wording.title, body: wording.body };
+  if (language === 'ro') {
+    const ro = RO?.cards?.[wordingId];
+    if (!ro) refuse('no Romanian card');
+    shown = { title: ro.title, body: ro.body };
+  }
+
   const today = day(body.today);
   const goal = oneOf(body.goal, ['track', 'conceive']);
   const fertility = body.fertility === true;
@@ -177,7 +197,8 @@ function readRequest(body) {
   if (facts.length > 8) refuse('bad facts');
   return {
     cardId,
-    card: { id: cardId, title: wording.title, body: wording.body },
+    language,
+    card: { id: cardId, ...shown },
     today,
     goal,
     fertility,
@@ -223,7 +244,72 @@ function factSentence({ id, values }, today) {
   return plural(text);
 }
 
+// ---- The same in Romanian, from the Romanian pack ---------------------------
+
+// "1 zi" for "1 zile", and "de" from 20 on ("21 de zile"), as in the app.
+function roCounts(text) {
+  const one = { zile: 'zi', ore: 'oră', cicluri: 'ciclu', 'menstruații': 'menstruație' };
+  return text.replace(/(?<![\d.,])(\d+) (zile|ore|cicluri|menstruații)(?![\p{L}])/gu, (_, digits, noun) => {
+    const n = Number(digits);
+    if (n === 1) return `1 ${one[noun]}`;
+    const rest = n % 100;
+    return `${n} ${rest >= 20 || (rest === 0 && n !== 0) ? 'de ' : ''}${noun}`;
+  });
+}
+
+const RO_FLOWS = {
+  'spotting flow': 'pătare', 'light flow': 'flux slab',
+  'medium flow': 'flux mediu', 'heavy flow': 'flux abundent',
+};
+// JavaScript's getUTCDay() counts from Sunday; the pack lists Monday first.
+const roWeekday = (d) => RO.weekdaysMondayFirst[(d.getUTCDay() + 6) % 7];
+const roLongDate = (d) => `${d.getUTCDate()} ${RO.months[d.getUTCMonth()]}`;
+const roPhrase = (map, value) => RO[map][value] ?? value.toLowerCase();
+
+function roFriendly(date, today) {
+  const ahead = daysBetween(today, date);
+  if (ahead === 0) return RO.ui.today;
+  if (ahead === 1) return RO.ui.tomorrow;
+  return `${RO.ui.onDay.replace('{day}', roWeekday(date))}, ${roLongDate(date)}`;
+}
+
+function roRelative(days) {
+  if (days === 0) return RO.ui.onEstimate;
+  return RO.ui[days < 0 ? 'earlierThanEstimate' : 'laterThanEstimate'].replace('{n}', String(Math.abs(days)));
+}
+
+function roFactSentence({ id, values }, today) {
+  let template = RO.openings[id];
+  if (id === 'P05' && values.min_days === values.max_days) template = RO.openings.P05_same ?? template;
+  let text = template;
+  for (const [key, value] of Object.entries(values)) {
+    let shown;
+    if (key === 'symptom') shown = roPhrase(id === 'P02' ? 'patternPhrase' : 'loggedPhrase', value);
+    else if (key === 'cycle_window') shown = RO.windowPhrase[value];
+    else if (key === 'friendly_date') shown = roFriendly(value, today);
+    else if (value instanceof Date) shown = roLongDate(value);
+    else if (key === 'relative_to_estimate') shown = roRelative(value);
+    else shown = formatNumber(value).replace('.', ',');
+    text = text.replaceAll(`{${key}}`, shown);
+  }
+  return roCounts(text);
+}
+
+function roSummaryText(request) {
+  const lines = [
+    request.goal === 'conceive' ? 'Încearcă să rămână însărcinată.' : 'Își urmărește ciclul menstrual.',
+  ];
+  if (request.fertility) lines.push('Are informațiile despre fertilitate pornite.');
+  if (request.logged.length > 0) {
+    const items = request.logged.map((item) => RO_FLOWS[item] ?? roPhrase('loggedPhrase', item));
+    lines.push(`Azi a înregistrat: ${items.join(', ')}.`);
+  }
+  for (const fact of request.facts) lines.push(roFactSentence(fact, request.today));
+  return lines.map((line) => `- ${line}`).join('\n');
+}
+
 function summaryText(request) {
+  if (request.language === 'ro') return roSummaryText(request);
   const lines = [
     request.goal === 'conceive' ? 'She is trying to conceive.' : 'She is tracking her cycle.',
   ];
@@ -263,6 +349,11 @@ What the note must leave out:
 Style: UK English. Warm, plain and calm, like a knowledgeable friend rather than a doctor or a cheerleader. Two or three short sentences, at most 55 words. Speak to her as "you". No greeting, no emoji, no exclamation marks, and no questions for her to answer.
 
 Return the note.`;
+
+// Added to both instructions when her phone is set to Romanian.
+const ROMANIAN = `
+
+Language: the card and the facts are in Romanian, and the note must be in Romanian too. Address her informally as "tu", with correct diacritics (ș and ț with a comma below). Keep the card's own Romanian terms. These instructions were written for the UK: read "GP" as "medicul de familie"; in Romania the emergency number is 112, and it still stays out of the note. Ignore "UK English" in the style rule; everything else applies as written, including at most 55 words.`;
 
 const NOTE_SCHEMA = {
   type: 'object',
@@ -390,6 +481,67 @@ function failedChecks(message, sources, conceiving, cardText = sources) {
   return failed;
 }
 
+// The same rules for a Romanian note. Word starts are matched with Unicode
+// letters, since \b does not see ș, ț, ă, â or î as letters.
+const DIAGNOSIS_RO = [
+  'diagnost', 'tulburar', 'tulburăr', 'sindrom', 'afecțiun', 'boal', 'pmdd',
+  'spm', 'endometrioz', 'sop', 'polichist', 'fibrom', 'anemi', 'fierul', 'de fier', 'deficit',
+  'carenț', 'infecți', 'depresi', 'migren', 'menopauz', 'perimenopauz', 'hormon',
+];
+const FERTILITY_RO = ['sarcin', 'însărcinat', 'gravid', 'concep', 'ovulați', 'ovulat', 'fertil', 'contracep', 'anticoncep'];
+const MEDICINE_RO = [
+  'ibuprofen', 'paracetamol', 'aspirin', 'naproxen', 'codein', 'tablet',
+  'pastil', 'comprimat', 'analgezic', 'calmant', 'antiinflamato', 'doz',
+  'medicament',
+];
+const SERVICES_RO = ['medic', 'doctor', 'asistent', 'farmac', 'clinic', 'cabinet', 'spital', 'nhs', 'urgenț'];
+const OVERSTATEMENT_RO = [
+  'a durat', 'durează', 'continu', 'persist', 'se adun', 'se acumul',
+  'te vei simți', 'te va face', 'să te simți mai', 'te simți mai bine',
+  'puternic', 'sever', 'intens', 'recuper',
+];
+
+const hasStemRo = (text, stem) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(stem)}`, 'iu').test(text);
+
+function failedChecksRo(message, sources, conceiving, cardText = sources) {
+  const lower = message.toLowerCase();
+  const failed = [];
+  const fresh = (stems, allowedIn = sources) =>
+    stems.filter((s) => hasStemRo(lower, s) && !hasStemRo(allowedIn, s));
+  const words = message.trim().split(/\s+/).filter(Boolean).length;
+
+  // Romanian takes a few more words than English for the same note.
+  if (words === 0 || words > 70) failed.push('length');
+  if (/(?<![\p{L}\p{N}])(112|999|111|ambulanț\p{L}*|urgenț\p{L}*)/iu.test(message)) failed.push('urgent care');
+  for (const [name, stems] of [
+    ['services', SERVICES_RO],
+    ['diagnosis', DIAGNOSIS_RO],
+    ['fertility', FERTILITY_RO],
+    ['medicine', MEDICINE_RO],
+  ]) {
+    if (fresh(stems).length > 0) failed.push(name);
+  }
+  if (fresh(OVERSTATEMENT_RO, cardText).length > 0) failed.push('overstatement');
+  const numbers = (message.match(/\d+(?:[.,]\d+)?/g) ?? []).filter((n) => !hasNumber(sources, n));
+  if (numbers.length > 0) failed.push('numbers');
+  if (/(?<![\p{L}])(cu siguranță|garant\p{L}*|mereu|întotdeauna|niciodată|va începe|va veni|va apărea|va fi)(?![\p{L}])/iu.test(message)) {
+    failed.push('certainty');
+  }
+  if (conceiving && /nu (luna|ciclul) (asta|acesta)|din păcate|îmi pare rău|dezamăg\p{L}*|data viitoare|mai mult noroc/iu.test(message)) {
+    failed.push('disappointment');
+  }
+  if (/(?<![\p{L}])(partener\p{L}*|iubit\p{L}*|soț\p{L}*|soți\p{L}*|prieten\p{L}*)(?![\p{L}])/iu.test(message)) failed.push('people');
+  if (/\p{Extended_Pictographic}/u.test(message) || /[!?]/.test(message)) failed.push('style');
+  const opener = message.split(/(?<=[.!?])\s/)[0];
+  if (
+    /^\s*(ai notat|ai înregistrat|ești în ziua|e ziua|este ziua|azi e ziua|astăzi este ziua|în ziua)(?![\p{L}])/iu.test(opener) &&
+    !/(din ultimele|cicluri înregistrate|cicluri)/iu.test(opener)
+  ) {
+    failed.push('recap opening');
+  }
+  return failed;
+}
+
 // ---- The whole thing -------------------------------------------------------
 
 /// The note for her card today, or null: her phone then shows the card.
@@ -405,18 +557,20 @@ async function writeNote(body) {
   const cardText = `[${request.card.id}] ${request.card.title}\n${request.card.body}`;
   const user = `Facts about her day:\n${summary}\n\nThe reviewed card chosen for her today:\n${cardText}`;
 
-  const written = await ask(NOTE_SYSTEM, user, NOTE_SCHEMA);
+  const romanian = request.language === 'ro';
+  const written = await ask(romanian ? NOTE_SYSTEM + ROMANIAN : NOTE_SYSTEM, user, NOTE_SCHEMA);
   const message = typeof written?.message === 'string' ? written.message.trim() : '';
   if (!message) return { note: null, reason: 'no note' };
 
   const card = `${request.card.title}\n${request.card.body}`.toLowerCase();
   const sources = `${card}\n${summary.toLowerCase()}`;
-  const failed = failedChecks(message, sources, request.goal === 'conceive', card);
+  const check = romanian ? failedChecksRo : failedChecks;
+  const failed = check(message, sources, request.goal === 'conceive', card);
   if (failed.length > 0) return { note: null, reason: `checks: ${failed.join(', ')}` };
 
   if (SECOND_READING) {
     const review = await ask(
-      REVIEW_SYSTEM,
+      romanian ? REVIEW_SYSTEM + ROMANIAN : REVIEW_SYSTEM,
       `Sources.\n\nFacts about her day:\n${summary}\n\nReviewed card:\n${cardText}\n\nThe note to check:\n${message}`,
       REVIEW_SCHEMA,
     );
@@ -432,4 +586,5 @@ module.exports = {
   readRequest,
   summaryText,
   failedChecks,
+  failedChecksRo,
 };

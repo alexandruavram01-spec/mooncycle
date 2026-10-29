@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -29,6 +30,13 @@ class NotificationService {
   static const int _fertileId = 101;
   static const int _dailyId = 102;
   static const int _partnerTipId = 103;
+
+  /// How reminders look on an iPhone: a banner with sound, like Android.
+  static const DarwinNotificationDetails _ios = DarwinNotificationDetails(
+    presentAlert: true,
+    presentBanner: true,
+    presentSound: true,
+  );
 
   static const AndroidNotificationDetails _partnerChannel =
       AndroidNotificationDetails(
@@ -71,20 +79,39 @@ class NotificationService {
       return;
     }
     tzdata.initializeTimeZones();
+    // Reminders are set for 9:00 on the phone's own clock. Without this the
+    // time zone library assumes UTC, an hour or more off in the UK in summer
+    // and in Romania. If the phone's zone can't be read, UTC stays.
+    try {
+      final zone = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(zone.identifier));
+    } catch (_) {}
     await _plugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        // The iPhone asks for permission when she turns a reminder on (see
+        // requestPermissions), not the moment the app opens.
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        ),
       ),
     );
     _ready = true;
   }
 
+  /// Asks the phone to allow MoonCycle's reminders. The phone shows its
+  /// question only the first time; after that this just reports the answer.
   Future<bool> requestPermissions() async {
     await init();
     if (!_supported) return false;
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
-    final granted = await android?.requestNotificationsPermission();
+    final ios = _plugin.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>();
+    final granted = await android?.requestNotificationsPermission() ??
+        await ios?.requestPermissions(alert: true, badge: true, sound: true);
     return granted ?? false;
   }
 
@@ -102,9 +129,9 @@ class NotificationService {
   }) async {
     await init();
     if (!_supported) return;
-    await _plugin.cancel(_periodId);
-    await _plugin.cancel(_fertileId);
-    await _plugin.cancel(_dailyId);
+    await _plugin.cancel(id: _periodId);
+    await _plugin.cancel(id: _fertileId);
+    await _plugin.cancel(id: _dailyId);
 
     final nextStart = status.predictedNextStart;
 
@@ -152,7 +179,7 @@ class NotificationService {
   Future<void> setPartnerTipReminder({required bool on}) async {
     await init();
     if (!_supported) return;
-    await _plugin.cancel(_partnerTipId);
+    await _plugin.cancel(id: _partnerTipId);
     if (!on) return;
     await _scheduleDaily(
       id: _partnerTipId,
@@ -175,14 +202,12 @@ class NotificationService {
     final when = tz.TZDateTime.local(day.year, day.month, day.day, hour);
     if (when.isBefore(tz.TZDateTime.now(tz.local))) return;
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      when,
-      NotificationDetails(android: details),
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: when,
+      notificationDetails: NotificationDetails(android: details, iOS: _ios),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
@@ -200,17 +225,13 @@ class NotificationService {
     if (!when.isAfter(now)) when = when.add(const Duration(days: 1));
 
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      when,
-      NotificationDetails(android: details),
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: when,
+      notificationDetails: NotificationDetails(android: details, iOS: _ios),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      // The reminder should fire at 20:00 wall-clock time wherever the user
-      // is, so the scheduled time is interpreted absolutely rather than
-      // shifted when they travel.
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+      // Every day at the same time on the phone's clock.
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }

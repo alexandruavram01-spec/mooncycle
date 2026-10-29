@@ -65,7 +65,7 @@ class _HomeBody extends ConsumerWidget {
     final todayLog = ref.watch(logByDayProvider(today));
     final phaseColor = MoonColors.forPhase(status.phase);
     final showFertile = ref.watch(showFertileDaysProvider);
-    final sharing = ref.watch(settingsProvider).valueOrNull?.sharing;
+    final sharing = ref.watch(settingsProvider).value?.sharing;
     final sharingOn = sharing?.enabled ?? false;
     final requestsOn = sharing?.allowRequests ?? false;
     final conceiving = ref.watch(profileProvider).goal == TrackingGoal.conceive;

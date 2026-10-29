@@ -36,7 +36,13 @@ class CycleWheel extends StatelessWidget {
           markerColor: scheme.onSurface,
           surfaceColor: scheme.surface,
         ),
-        child: Center(child: child),
+        // The ring has a fixed size, so its centre text grows only so far.
+        child: Center(
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.25,
+            child: child ?? const SizedBox.shrink(),
+          ),
+        ),
       ),
     );
   }

@@ -31,17 +31,65 @@ enum InsightTier {
 /// Days before a card may come back. The 30 reviewed cards and H01–H03 from
 /// the first pack, the rest from the stage 1 review (21 October 2026).
 const insightCooldownDays = <String, int>{
-  'I01': 21, 'I02': 60, 'I03': 100, 'I05': 40, 'I06': 70, 'I07': 120,
-  'I08': 365, 'I09': 35, 'I10': 40, 'I11': 60, 'I12': 40, 'I13': 35,
-  'I14': 75, 'I16': 30, 'I17': 30, 'I18': 35, 'I19': 35, 'I20': 21,
-  'I21': 21, 'I22': 30, 'I23': 28, 'I24': 60, 'I25': 90, 'I26': 120,
-  'I27': 80, 'I28': 100, 'I29': 120, 'I30': 28, 'NEW01': 120, 'NEW02': 120,
-  'H01': 21, 'H02': 60, 'H03': 45,
-  'L01': 21, 'L02': 21, 'L03': 21, 'L04': 21, 'L05': 21, 'L06': 35,
-  'L07': 30, 'L08': 60, 'L09': 21, 'L10': 21, 'L11': 21, 'L12': 21,
-  'L13': 35, 'L14': 21, 'L15': 21, 'L16': 35, 'L17': 60, 'L18': 60,
-  'L19': 45, 'L21': 14,
-  'C01': 21, 'C03': 21, 'C04': 35, 'C05': 21, 'C06': 21, 'C08': 60,
+  'I01': 21,
+  'I02': 60,
+  'I03': 100,
+  'I05': 40,
+  'I06': 70,
+  'I07': 120,
+  'I08': 365,
+  'I09': 35,
+  'I10': 40,
+  'I11': 60,
+  'I12': 40,
+  'I13': 35,
+  'I14': 75,
+  'I16': 30,
+  'I17': 30,
+  'I18': 35,
+  'I19': 35,
+  'I20': 21,
+  'I21': 21,
+  'I22': 30,
+  'I23': 28,
+  'I24': 60,
+  'I25': 90,
+  'I26': 120,
+  'I27': 80,
+  'I28': 100,
+  'I29': 120,
+  'I30': 28,
+  'NEW01': 120,
+  'NEW02': 120,
+  'H01': 21,
+  'H02': 60,
+  'H03': 45,
+  'L01': 21,
+  'L02': 21,
+  'L03': 21,
+  'L04': 21,
+  'L05': 21,
+  'L06': 35,
+  'L07': 30,
+  'L08': 60,
+  'L09': 21,
+  'L10': 21,
+  'L11': 21,
+  'L12': 21,
+  'L13': 35,
+  'L14': 21,
+  'L15': 21,
+  'L16': 35,
+  'L17': 60,
+  'L18': 60,
+  'L19': 45,
+  'L21': 14,
+  'C01': 21,
+  'C03': 21,
+  'C04': 35,
+  'C05': 21,
+  'C06': 21,
+  'C08': 60,
 };
 
 /// Cards tied to a moment in her cycle: each shows at most once a cycle.
@@ -67,8 +115,18 @@ Iterable<String> get allInsightCards => {
 
 /// Every opening line code (P13 is a plain label, not used on cards).
 const insightOpeningIds = [
-  'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10',
-  'P11', 'P12',
+  'P01',
+  'P02',
+  'P03',
+  'P04',
+  'P05',
+  'P06',
+  'P07',
+  'P08',
+  'P09',
+  'P10',
+  'P11',
+  'P12',
 ];
 
 /// The same opening line, about the same thing, rests this long.
@@ -79,9 +137,34 @@ const openingCooldownDays = 21;
 /// low mood, medicines and the drafts from her own log. The same list is in
 /// server/her-notes.js, which refuses them too.
 const aiNoteFixedOnly = {
-  'I03', 'I05', 'I08', 'I09', 'I11', 'I21', 'I22', 'I23', 'I24', 'I25',
-  'I26', 'I27', 'I28', 'I29', 'I30', 'NEW02', 'L07', 'L08', 'L12', 'L18',
-  'L20', 'C02', 'C07', 'M03', 'M04', 'H01', 'H02', 'H03',
+  'I03',
+  'I05',
+  'I08',
+  'I09',
+  'I11',
+  'I21',
+  'I22',
+  'I23',
+  'I24',
+  'I25',
+  'I26',
+  'I27',
+  'I28',
+  'I29',
+  'I30',
+  'NEW02',
+  'L07',
+  'L08',
+  'L12',
+  'L18',
+  'L20',
+  'C02',
+  'C07',
+  'M03',
+  'M04',
+  'H01',
+  'H02',
+  'H03',
 };
 
 bool aiNoteEligible(InsightPick pick) =>
@@ -90,10 +173,12 @@ bool aiNoteEligible(InsightPick pick) =>
 /// What her phone sends to have the note for [pick] written: the card, and
 /// the facts its opening lines would use. Only what the card is about from
 /// her log, never the rest of it, her notes or anything about her account.
+/// [language] is 'en' or 'ro': the language the note is written in.
 Map<String, Object?> herNoteRequest(
   InsightPick pick, {
   required DayKey today,
   required UserProfile profile,
+  String language = 'en',
 }) {
   final candidate = pick.candidate;
   Object wire(Object value) => switch (value) {
@@ -105,6 +190,7 @@ Map<String, Object?> herNoteRequest(
     'card': pick.id,
     'wording': pick.wording,
     'today': today.iso,
+    'language': language,
     'goal': profile.goal == TrackingGoal.conceive ? 'conceive' : 'track',
     'fertility': profile.journey == 'fertility' || profile.showFertileDays,
     'logged': [
@@ -407,7 +493,11 @@ class HerInsightPicker {
   static const _moodSymptoms = ['Sad', 'Anxious', 'Irritable', 'Sensitive'];
   static const _goodDay = ['Happy', 'Calm', 'Confident'];
   static const _discharge = ['Dry', 'Sticky', 'Creamy', 'Watery'];
-  static const _premenstrual = ['Bloating', 'Food cravings', 'Breast tenderness'];
+  static const _premenstrual = [
+    'Bloating',
+    'Food cravings',
+    'Breast tenderness'
+  ];
 
   /// Every card that applies today, in each tier's preferred order. A card
   /// can appear in more than one tier; [choose] keeps its most important.
@@ -474,8 +564,8 @@ class HerInsightPicker {
           ? estimateUntil >= 1 && estimateUntil <= 7
           : phase == CyclePhase.luteal;
       final heavyThisCycle = c.logs.any(
-        (l) => !l.date.isBefore(f.current.start) &&
-            l.flow == FlowIntensity.heavy,
+        (l) =>
+            !l.date.isBefore(f.current.start) && l.flow == FlowIntensity.heavy,
       );
       String? firstOf(List<String> names) {
         for (final name in names) {
@@ -487,24 +577,32 @@ class HerInsightPicker {
       // Two things logged together, before either on its own.
       if (heavy && s.contains('Cramps')) {
         add('C01', logged,
-            rank: 0, symptom: 'Cramps', also: heavyFlow,
+            rank: 0,
+            symptom: 'Cramps',
+            also: heavyFlow,
             openings: [f.periodHistory()]);
       }
       if (s.contains('Headache') && s.contains('Nausea')) {
         add('C03', logged,
-            rank: 0, symptom: 'Headache', also: 'Nausea',
+            rank: 0,
+            symptom: 'Headache',
+            also: 'Nausea',
             openings: [f.periodHistory(), f.upcomingPeriod()]);
       }
       final premenstrual = _premenstrual.where(s.contains).toList();
       if (beforePeriod && premenstrual.length >= 2) {
         add('C04', logged,
-            rank: 0, symptom: premenstrual[0], also: premenstrual[1],
+            rank: 0,
+            symptom: premenstrual[0],
+            also: premenstrual[1],
             openings: [f.upcomingPeriod()]);
       }
       final moody = firstOf(['Sad', 'Anxious', 'Irritable']);
       if (short && moody != null) {
         add('C05', logged,
-            rank: 0, symptom: moody, also: shortSleep,
+            rank: 0,
+            symptom: moody,
+            also: shortSleep,
             openings: [f.sleep(recent)]);
       }
       if (short && (s.contains('Fatigue') || drained)) {
@@ -522,7 +620,8 @@ class HerInsightPicker {
       // One thing logged. Opens with what she has logged before, if
       // anything; a card with a personal pattern comes first.
       void single(String id, String symptom, {bool private = false}) {
-        final personal = private ? const <InsightOpening>[] : f.about(symptom, recent);
+        final personal =
+            private ? const <InsightOpening>[] : f.about(symptom, recent);
         add(id, logged,
             rank: personal.isEmpty ? 2 : 1,
             symptom: symptom,
@@ -544,7 +643,8 @@ class HerInsightPicker {
         single('I19', lowEnergy);
       }
       if (s.contains('Ovulation pain')) single('I10', 'Ovulation pain');
-      if (s.contains('Headache')) single(nearPeriod ? 'L05' : 'I16', 'Headache');
+      if (s.contains('Headache'))
+        single(nearPeriod ? 'L05' : 'I16', 'Headache');
       if (s.contains('Bloating')) single('I17', 'Bloating');
       if (s.contains('Breast tenderness')) {
         single('I18', 'Breast tenderness');
@@ -565,7 +665,8 @@ class HerInsightPicker {
         );
       }
       if (firstOf(_discharge) case final fluid?) single('L17', fluid);
-      if (s.contains('Backache')) single(nearPeriod ? 'L02' : 'L03', 'Backache');
+      if (s.contains('Backache'))
+        single(nearPeriod ? 'L02' : 'L03', 'Backache');
       if (s.contains('Joint pain')) single('L04', 'Joint pain');
       if (s.contains('Acne')) single('L09', 'Acne');
       if (s.contains('Nausea')) single('L10', 'Nausea');
@@ -599,8 +700,7 @@ class HerInsightPicker {
         (c.status.confidence == PredictionConfidence.medium ||
             c.status.confidence == PredictionConfidence.high)) {
       // Neither card ever says she is pregnant.
-      add(c.conceiving ? 'I23' : 'I22', history,
-          openings: [f.afterEstimate()]);
+      add(c.conceiving ? 'I23' : 'I22', history, openings: [f.afterEstimate()]);
     }
 
     final run = _bleedingRun(f.current, f.byDay);
@@ -675,10 +775,10 @@ class HerInsightPicker {
     final bleedingToday = todayLog?.flow.isBleeding ?? false;
 
     if (periodDay >= 0 && periodDay <= 1) {
-      add('M01', edu,
-          rank: 0,
-          cycleStart: start,
-          openings: [if (!c.conceiving) f.startVersusEstimate(), f.cycleLengths()]);
+      add('M01', edu, rank: 0, cycleStart: start, openings: [
+        if (!c.conceiving) f.startVersusEstimate(),
+        f.cycleLengths()
+      ]);
     }
     if (periodDay >= 2 &&
         bleedingToday &&
@@ -905,7 +1005,8 @@ class HerInsightPicker {
     return wordings[(index + 1) % wordings.length];
   }
 
-  static InsightOpening? _openingByKey(InsightCandidate candidate, String? key) {
+  static InsightOpening? _openingByKey(
+      InsightCandidate candidate, String? key) {
     if (key == null) return null;
     for (final opening in candidate.openings) {
       if (opening.key == key) return opening;
@@ -1033,7 +1134,9 @@ class _Facts {
 
     // P01: on consecutive days up to that day.
     var streak = 0;
-    for (var d = day; byDay[d] != null && matches(byDay[d]!); d = d.addDays(-1)) {
+    for (var d = day;
+        byDay[d] != null && matches(byDay[d]!);
+        d = d.addDays(-1)) {
       streak++;
     }
     if (streak >= 2) {
@@ -1112,8 +1215,7 @@ class _Facts {
       for (final log in c.logs)
         if (log.date.isBefore(current.start)) log,
     ];
-    final earlier =
-        c.engine.status(before, today: current.start.addDays(-1));
+    final earlier = c.engine.status(before, today: current.start.addDays(-1));
     final estimate = earlier.predictedNextStart;
     if (estimate == null) return null;
     return InsightOpening('P08', {

@@ -25,7 +25,7 @@ class LanguageScreen extends ConsumerStatefulWidget {
 class _LanguageScreenState extends ConsumerState<LanguageScreen> {
   /// Nothing is picked for them: empty until they choose, or the language
   /// they chose before when opened from Settings.
-  late AppLanguage? _selected = ref.read(languageProvider).valueOrNull;
+  late AppLanguage? _selected = ref.read(languageProvider).value;
   bool _saving = false;
 
   Future<void> _save(AppLanguage language) async {

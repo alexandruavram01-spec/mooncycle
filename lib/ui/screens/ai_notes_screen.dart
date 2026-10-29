@@ -46,7 +46,7 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final on = ref.watch(aiNotesProvider).valueOrNull ?? false;
+    final on = ref.watch(aiNotesProvider).value ?? false;
     Widget heading(String text) => Padding(
           padding: const EdgeInsets.only(top: 18, bottom: 6),
           child: Text(tr(text), style: theme.textTheme.titleSmall),

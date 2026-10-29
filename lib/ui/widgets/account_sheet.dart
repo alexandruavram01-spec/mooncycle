@@ -23,7 +23,7 @@ class _AccountSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final email = ref.watch(sessionProvider).valueOrNull ?? '';
+    final email = ref.watch(sessionProvider).value ?? '';
 
     return SafeArea(
       child: Padding(

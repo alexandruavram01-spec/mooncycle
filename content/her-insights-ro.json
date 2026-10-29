@@ -1,0 +1,419 @@
+{
+  "language": "ro",
+  "cards": {
+    "I01": {
+      "title": "Ce te poate ajuta când ai dureri menstruale",
+      "body": "O baie caldă sau o pernă cu apă caldă, învelită într-un prosop, poate calma crampele. Dacă te simți în stare, și mișcarea ușoară poate ajuta. Un farmacist îți poate spune ce opțiuni de calmare a durerii sunt potrivite pentru tine."
+    },
+    "I02": {
+      "title": "Menstruația ta este mai abundentă decât de obicei?",
+      "body": "Dacă trebuie să schimbi absorbantul sau tamponul la fiecare 1–2 ore, să folosești două produse simultan, dacă elimini cheaguri mari sau sângerezi mai mult de 7 zile, menstruația poate fi abundentă. Există opțiuni de tratament."
+    },
+    "I03": {
+      "title": "Un memento despre tampoane și cupele menstruale",
+      "body": "Respectă instrucțiunile produsului privind schimbarea tamponului sau golirea și curățarea cupei menstruale. Spală-te pe mâini înainte și după. Sindromul de șoc toxic este rar, dar poate fi grav."
+    },
+    "I05": {
+      "title": "Te simți mai obosită decât de obicei?",
+      "body": "Menstruațiile abundente pot duce uneori la deficit de fier. Printre semne se numără oboseala persistentă, dificultățile de respirație, durerile de cap sau palpitațiile. Fasolea, lintea, legumele cu frunze verzi și cerealele fortificate sunt surse de fier."
+    },
+    "I06": {
+      "title": "Tiparul tău contează",
+      "body": "Notează când începe menstruația, cât de abundentă este și ce simptome observi. În timp, poți identifica tipare. Aceste înregistrări pot fi utile și dacă ajungi să discuți cu un medic."
+    },
+    "I07": {
+      "title": "Cum se calculează ciclul menstrual?",
+      "body": "Ciclul menstrual începe în prima zi a unei menstruații și se încheie cu o zi înaintea următoarei. Media este în jur de 28 de zile, iar la adulți sunt frecvente cicluri de 21–35 de zile. Menstruația durează de obicei 2–7 zile, dar contează și ritmul tău obișnuit."
+    },
+    "I08": {
+      "title": "Screeningul de col uterin: când e recomandat?",
+      "body": "Screeningul de col uterin poate ajuta la prevenirea cancerului de col uterin. Recomandările diferă în funcție de vârstă, istoricul medical și țara în care locuiești. În România, întreabă medicul de familie sau ginecologul ce teste și intervale sunt potrivite pentru tine."
+    },
+    "I09": {
+      "title": "În jurul ovulației",
+      "body": "Ovulația apare adesea cu aproximativ 10–16 zile înaintea următoarei menstruații, dar data poate varia. Unele persoane observă atunci secreții mai clare, alunecoase și elastice; altele nu observă nicio schimbare."
+    },
+    "I10": {
+      "title": "Ai simțit o înțepătură într-o parte?",
+      "body": "Unele persoane simt o durere ușoară pe o parte a abdomenului în jurul ovulației. Poate dura câteva minute sau chiar una-două zile. Căldura poate ajuta, dar durerea nu confirmă, singură, ovulația."
+    },
+    "I11": {
+      "title": "Zilele fertile sunt doar estimări",
+      "body": "Momentul ovulației poate varia, iar spermatozoizii pot supraviețui mai multe zile în corp. O sarcină poate apărea și înaintea zilei estimate de ovulație. Calendarul nu este o metodă contraceptivă sigură."
+    },
+    "I12": {
+      "title": "Schimbări înainte de menstruație",
+      "body": "Unele persoane observă balonare, sâni sensibili, dureri de cap, oboseală, pofte sau schimbări de dispoziție înainte de menstruație. Altele observă puțin sau nimic, iar simptomele pot varia de la o lună la alta."
+    },
+    "I13": {
+      "title": "Lucruri mici care ar putea ajuta",
+      "body": "Dacă simptomele premenstruale te deranjează, încearcă lucrurile pe care le poți face fără efort prea mare: somn suficient, puțină mișcare, mese echilibrate și timp de relaxare. În zilele dificile, nu e nevoie să te forțezi."
+    },
+    "I14": {
+      "title": "Înregistrările tale pot scoate la iveală tipare",
+      "body": "Dacă îți urmărești simptomele cel puțin două cicluri, poți vedea dacă apar frecvent înainte de menstruație. Dacă îți afectează activitățile zilnice, înregistrările te pot ajuta să explici unui medic ce observi."
+    },
+    "I16": {
+      "title": "Te doare capul azi?",
+      "body": "Durerea de cap poate avea multe cauze. Dacă observi dureri de cap cam în același moment al ciclului, notând când apar poți recunoaște un tipar. Cere sfatul unui medic pentru durerile de cap care te îngrijorează."
+    },
+    "I17": {
+      "title": "Balonarea poate fi neplăcută",
+      "body": "Dacă te simți balonată, mesele mai mici pot fi mai ușor de dus decât cele mari. Poți nota și când se întâmplă, ca să vezi dacă tinde să revină în jurul menstruației."
+    },
+    "I18": {
+      "title": "Sâni sensibili?",
+      "body": "Dacă te simți balonată, mesele mai mici și mai dese pot ajuta uneori. Dar balonarea poate avea cauze diferite și nu este neapărat legată de ciclul menstrual."
+    },
+    "I19": {
+      "title": "Puțină energie azi?",
+      "body": "Oboseala poate avea multe cauze. Dacă poți, fă-ți loc de odihnă. Dacă te simți des epuizată, mai ales când ai și menstruații abundente, medicul de familie poate verifica de ce, de exemplu dacă ai fierul scăzut."
+    },
+    "I20": {
+      "title": "O zi grea merită grijă",
+      "body": "Merită să recunoști când te simți tristă, anxioasă sau iritată, oricare ar fi cauza. Te-ar ajuta azi puțină odihnă, mișcare, companie sau liniște? Dacă se tot întâmplă în jurul menstruației, notițele tale te pot ajuta să vorbești despre asta cu medicul de familie."
+    },
+    "I21": {
+      "title": "Sângerare în afara menstruației",
+      "body": "Sângerarea între menstruații sau după sex poate avea mai multe cauze. Adesea nu e ceva grav, dar ar trebui verificată de medicul de familie sau de un medic ginecolog."
+    },
+    "I22": {
+      "title": "Încă nu a venit menstruația?",
+      "body": "Menstruația este mai târziu decât estimarea?"
+    },
+    "I23": {
+      "title": "Te gândești să faci un test de sarcină?",
+      "body": "Majoritatea testelor de acasă sunt cele mai sigure din prima zi în care menstruația lipsește. Dacă testul e negativ, dar tot crezi că ai putea fi însărcinată, așteaptă câteva zile și refă-l."
+    },
+    "I24": {
+      "title": "Sângerezi mai mult decât de obicei?",
+      "body": "Menstruația durează adesea 2–7 zile. Dacă sângerezi de mai mult de 7 zile, merită să notezi asta, mai ales dacă e diferit de tiparul tău obișnuit."
+    },
+    "I25": {
+      "title": "Ciclurile tale arată diferit",
+      "body": "Ciclurile pot varia, iar stresul, contracepția și schimbările din viață le pot influența momentul. Dacă menstruațiile vin des la mai puțin de 21 sau la mai mult de 35 de zile distanță — sau s-au schimbat mult față de cum erau la tine — poate merita să vorbești cu medicul de familie."
+    },
+    "I26": {
+      "title": "Acidul folic înainte și în timpul sarcinii",
+      "body": "Dacă încerci să rămâi însărcinată, recomandarea uzuală e 400 de micrograme de acid folic pe zi, ideal începând dinainte de sarcină și până în săptămâna 12. Unele persoane au nevoie de altă doză, așa că întreabă medicul de familie dacă ai afecțiuni sau iei medicamente care ar putea conta."
+    },
+    "I27": {
+      "title": "Momentul potrivit, fără să devină un orar",
+      "body": "Dacă încercați să aveți un copil, recomandarea uzuală e sex la fiecare 2–3 zile, fără contracepție. Nu trebuie să vă bazați pe o singură zi estimată a ovulației; încercați să păstrați totul ușor de dus pentru amândoi."
+    },
+    "I28": {
+      "title": "Când să ceri un sfat despre fertilitate",
+      "body": "Poate dura până rămâi însărcinată. Recomandarea uzuală e să vorbești cu medicul de familie după un an de încercări, sau mai devreme dacă ai 36 de ani sau mai mult ori știi deja de o posibilă problemă de fertilitate."
+    },
+    "I29": {
+      "title": "Ai grijă de sănătatea ta cât timp încerci",
+      "body": "Dacă încerci să rămâi însărcinată, e recomandat să renunți la fumat și să eviți alcoolul. Medicul de familie sau farmacistul te pot ajuta să găsești sprijin, dacă vrei."
+    },
+    "I30": {
+      "title": "Ai observat secreții elastice?",
+      "body": "Secrețiile clare, alunecoase și elastice pot apărea în jurul ovulației. Pot fi un indiciu util, dar singure nu pot confirma ziua în care ai ovulat."
+    },
+    "NEW01": {
+      "title": "Estimările sunt repere, nu garanții",
+      "body": "Estimările sunt orientative, nu garanții. Ciclurile pot varia chiar dacă, de obicei, sunt regulate. Înregistrările tale completează ceea ce poate prezice calendarul."
+    },
+    "NEW02": {
+      "title": "Contracepția îți poate schimba tiparul",
+      "body": "Unele metode contraceptive fac sângerarea mai slabă, mai abundentă, neregulată sau o opresc. Dacă folosești contracepție hormonală, estimările obișnuite ale unei aplicații despre ovulație sau fazele ciclului s-ar putea să nu descrie ce se întâmplă în corpul tău."
+    },
+    "H01": {
+      "title": "Un posibil tipar în înregistrările tale",
+      "body": "Ai înregistrat {thing} {when} în {hits} dintre ultimele {cycles} cicluri. Aceste informații te pot ajuta să te pregătești sau să explici mai ușor unui medic ce ai observat."
+    },
+    "H02": {
+      "title": "Cum au fost ultimele tale cicluri",
+      "body": "Ultimele tale trei cicluri au avut {lengths} zile. Dacă durata lor e asemănătoare, estimările pot fi mai utile, dar rămân orientative."
+    },
+    "H03": {
+      "title": "Cum ți-a variat energia de-a lungul ciclului",
+      "body": "Din ce ai înregistrat, energia ta a fost, în general, mai ridicată {high} și mai scăzută {low}. Fiecare persoană are propriul ritm."
+    },
+    "L01": {
+      "title": "Ai crampe și în afara menstruației?",
+      "body": "Crampele pelviene pot avea cauze diferite, pe care o aplicație nu le poate identifica. Poate fi util să notezi când apar și ce alte simptome observi."
+    },
+    "L02": {
+      "title": "Te doare spatele în apropierea menstruației?",
+      "body": "Durerea menstruală se poate resimți și în zona lombară ori în coapse. O pernă cu apă caldă învelită într-un prosop, o baie caldă, mișcarea ușoară sau un masaj lombar pot ajuta."
+    },
+    "L03": {
+      "title": "Te doare spatele azi?",
+      "body": "Durerea de spate se ameliorează adesea cu timpul. Mișcarea ușoară poate ajuta; o compresă caldă sau rece, învelită, poate calma disconfortul."
+    },
+    "L04": {
+      "title": "Te dor articulațiile?",
+      "body": "Durerile articulare sau musculare pot avea mai multe cauze. Dacă reapar, notează când se întâmplă, cât de intense sunt și ce alte simptome observi. Aceste detalii pot fi utile într-o discuție cu medicul."
+    },
+    "L05": {
+      "title": "Te doare capul în preajma menstruației?",
+      "body": "Durerile de cap apar uneori în apropierea menstruației, dar pot avea și alte cauze. Hidratarea, mesele regulate și odihna pot ajuta; farmacistul îți poate recomanda opțiuni de calmare a durerii."
+    },
+    "L06": {
+      "title": "Și zilele bune contează",
+      "body": "Contează să notezi și o zi bună. Cu timpul, notițele tale pot arăta ce funcționează bine pentru tine — fără să presupui că fiecare ciclu va fi la fel."
+    },
+    "L07": {
+      "title": "Dacă stările de tristețe revin",
+      "body": "Ai înregistrat de câteva ori în ultima perioadă stări de tristețe sau anxietate. Poate fi dificil. Dacă simți nevoia, poți vorbi cu cineva de încredere, poți încerca să îți îmbunătățești somnul ori poți cere sprijin."
+    },
+    "L08": {
+      "title": "Ai observat un tipar al dispoziției înainte de menstruație?",
+      "body": "Ai notat schimbări asemănătoare ale dispoziției înaintea mai multor menstruații. Dacă acestea îți afectează viața de zi cu zi, înregistrările te pot ajuta să discuți cu medicul. Există sprijin și opțiuni de tratament pentru simptomele premenstruale dificile."
+    },
+    "L09": {
+      "title": "Au apărut mai multe coșuri?",
+      "body": "Modificările hormonale pot contribui la apariția coșurilor, dar pot exista și alte cauze. Poți încerca un produs de curățare delicat, cosmetice non-comedogenice și să eviți stoarcerea coșurilor. Întreabă farmacistul despre opțiuni potrivite."
+    },
+    "L10": {
+      "title": "Ți-e greață azi?",
+      "body": "Greața poate avea mai multe cauze. Aerul curat, înghițiturile mici de apă sau băuturile reci și mesele mici pot ajuta. Nu trebuie să afli singură cauza."
+    },
+    "L11": {
+      "title": "Ai amețeli?",
+      "body": "Stai jos sau întinde-te până trece amețeala. Ridică-te încet, bea apă și nu conduce cât timp durează. Cauzele pot fi diferite."
+    },
+    "L12": {
+      "title": "Bufeuri azi?",
+      "body": "O senzație bruscă de căldură poate fi neplăcută. Hainele subțiri în straturi, un ventilator și o băutură rece pot ajuta. Bufeurile pot avea diferite cauze; schimbările din perimenopauză sunt doar una dintre ele."
+    },
+    "L13": {
+      "title": "Ai pofte alimentare azi?",
+      "body": "Schimbările de apetit și poftele pot apărea înainte de menstruație, dar nu la toată lumea. Dacă ajută, încearcă mese mai mici și regulate și notează în continuare ce funcționează pentru tine."
+    },
+    "L14": {
+      "title": "Constipată?",
+      "body": "Fibrele adăugate treptat, apa suficientă și mișcarea pot ajuta. Încearcă să nu ignori nevoia de a merge la toaletă. Un farmacist îți poate sugera ceva pe termen scurt, dacă e nevoie."
+    },
+    "L15": {
+      "title": "Stomac deranjat?",
+      "body": "Dacă ai diaree, odihnește-te și bea lichide în continuare, cu înghițituri mici dacă ți-e greață. Un farmacist te poate sfătui despre rehidratare."
+    },
+    "L16": {
+      "title": "Ți s-a schimbat pofta de mâncare?",
+      "body": "Ai notat o schimbare a apetitului. Poate avea multe cauze; dacă se tot întâmplă, notițele tale te pot ajuta să vezi când apare."
+    },
+    "L17": {
+      "title": "Cum se schimbă secrețiile de-a lungul ciclului",
+      "body": "Secrețiile vaginale pot fi groase sau lipicioase, ori mai umede și mai alunecoase. Schimbările sunt adesea normale și contează ce e obișnuit pentru tine."
+    },
+    "L18": {
+      "title": "Ai observat secreții elastice?",
+      "body": "Secrețiile clare și elastice pot apărea în jurul ovulației, dar nu îți pot spune ziua exactă. Dacă vrei să afli mai multe despre fertilitate, poți porni informațiile despre fertilitate."
+    },
+    "L19": {
+      "title": "Ai observat o scădere a dorinței sexuale?",
+      "body": "Dorința sexuală diferă de la persoană la persoană și poate varia în timp. Stresul, somnul, dispoziția, medicamentele și alți factori o pot influența. Nu există o cantitate „corectă” de dorință."
+    },
+    "L21": {
+      "title": "Ai dormit mai puțin în ultima vreme?",
+      "body": "Ai înregistrat câteva nopți cu somn mai scurt. Mulți adulți au nevoie de aproximativ 7–9 ore de somn. Un program regulat de trezire, o rutină relaxantă seara și o cameră întunecată pot ajuta."
+    },
+    "C01": {
+      "title": "O menstruație abundentă și dureroasă",
+      "body": "Crampele puternice împreună cu sângerarea abundentă pot face viața de zi cu zi mai grea. Căldura, odihna când ai nevoie și sfatul unui farmacist pot ajuta; există tratamente dacă se tot repetă."
+    },
+    "C03": {
+      "title": "Durere de cap cu greață?",
+      "body": "Durerea de cap cu greață poate apărea uneori la migrenă, deși există și alte cauze. Odihna într-o cameră liniștită și întunecată poate ajuta. Notează dacă se tot repetă."
+    },
+    "C04": {
+      "title": "Câteva schimbări înainte de menstruație",
+      "body": "Balonarea, poftele sau sânii sensibili pot apărea în zilele dinaintea menstruației. Nu toată lumea le are, iar ce contează e tiparul tău."
+    },
+    "C05": {
+      "title": "O dispoziție dificilă și nopți cu puțin somn",
+      "body": "Când te simți apăsată și dormi puțin, zilele pot deveni mai dificile. Dacă îți prinde bine, vorbește cu cineva de încredere și încearcă să-ți faci timp de relaxare înainte de culcare."
+    },
+    "C06": {
+      "title": "Te simți obosită după câteva nopți scurte?",
+      "body": "Ai înregistrat oboseală și somn insuficient. Dacă îți permite programul, o rutină liniștită înainte de culcare te-ar putea ajuta în această seară."
+    },
+    "C08": {
+      "title": "Stare dificilă și dorință sexuală mai scăzută",
+      "body": "Schimbările dorinței sexuale pot apărea și atunci când treci printr-o perioadă dificilă emoțional, fără ca una să fie neapărat cauza celeilalte. Ia lucrurile în ritmul tău."
+    },
+    "M01": {
+      "title": "A început menstruația",
+      "body": "A început menstruația. Sângerarea e adesea mai abundentă în primele două zile, dar la tine poate fi altfel."
+    },
+    "M02": {
+      "title": "Cum evoluează menstruația",
+      "body": "După primele zile, fluxul menstrual devine adesea mai redus, dar fiecare persoană are propriul ritm. Continuă să notezi ceea ce observi."
+    },
+    "M04": {
+      "title": "Perioada fertilă estimată",
+      "body": "Perioada fertilă estimată de aplicație începe în jurul acestei date. Ovulația poate avea loc mai devreme sau mai târziu. Nu folosi estimarea din calendar ca metodă de contracepție."
+    },
+    "M05": {
+      "title": "Menstruația ar putea începe curând",
+      "body": "Următoarea menstruație este estimată pentru zilele următoare. Dacă îți este util, poți pune în geantă produsele menstruale pe care le preferi."
+    },
+    "I01b": {
+      "title": "Crampe azi?",
+      "body": "Un duș cald, mișcarea ușoară sau un mic masaj pe spatele de jos pot ajuta dacă ai crampe. Întreabă un farmacist ce analgezic ți se potrivește."
+    },
+    "I12b": {
+      "title": "Înainte de menstruație",
+      "body": "Unele persoane observă schimbări înainte de menstruație — poate balonare, sâni sensibili sau o durere de cap. Altele observă foarte puțin. Ambele situații sunt normale."
+    },
+    "I16b": {
+      "title": "Te doare capul azi?",
+      "body": "Durerile de cap au multe cauze posibile. Odihna, mesele regulate și apa pot ajuta, iar notițele te pot ajuta să vezi când revin."
+    },
+    "I17b": {
+      "title": "Te simți balonată?",
+      "body": "Balonarea poate avea diferite cauze. Mesele mai mici și mișcarea ușoară pot ajuta; dacă nu trece sau te simți plină neobișnuit de repede, vorbește cu medicul de familie."
+    },
+    "I19b": {
+      "title": "Te simți fără energie azi?",
+      "body": "Dacă te simți obosită, odihnește-te dacă poți și ia lucrurile în ritmul tău. Dacă epuizarea tot revine, medicul de familie te poate ajuta să afli de ce."
+    },
+    "I20b": {
+      "title": "Și o zi dificilă merită puțină grijă",
+      "body": "Dacă te simți supărată, anxioasă sau iritată, nu ai nevoie de o explicație legată de ciclu. O plimbare, puțin timp pentru tine ori o discuție cu cineva de încredere ți-ar putea face bine."
+    }
+  },
+  "openings": {
+    "P01": "Ai înregistrat {symptom} timp de {consecutive_logged_days} zile consecutive.",
+    "P02": "Ai înregistrat {symptom} în preajma {cycle_window}, în {matching_cycles} din ultimele {eligible_cycles} cicluri înregistrate.",
+    "P03": "Ai înregistrat {symptom} și în perioada corespunzătoare a ciclului anterior.",
+    "P04": "Este prima dată când înregistrezi {symptom} în MoonCycle.",
+    "P05": "Ziua {period_day} de menstruație. Cele {completed_period_count} menstruații înregistrate au durat între {min_days} și {max_days} zile.",
+    "P06": "Următoarea menstruație este estimată să înceapă {friendly_date}.",
+    "P07": "Nu ai înregistrat încă începutul menstruației. Data estimată a fost acum {days_past_estimate} zile.",
+    "P08": "Menstruația a început {relative_to_estimate}.",
+    "P09": "Ultimul ciclu înregistrat a durat {last_cycle_days} zile. Pentru cele {completed_cycles} cicluri complete, valoarea mediană a fost de {median_cycle_days} zile.",
+    "P10": "Ai înregistrat {sleep_hours} ore de somn noaptea trecută.",
+    "P11": "Astăzi ți-ai evaluat energia la {energy_rating} din 5.",
+    "P12": "Perioada fertilă estimată este între {start_date} și {end_date}. Aceste date nu reprezintă o metodă contraceptivă sigură.",
+    "P05_same": "Ziua {period_day} de menstruație. Cele {completed_period_count} menstruații înregistrate au durat fiecare {min_days} zile."
+  },
+  "loggedPhrase": {
+    "Cramps": "crampe",
+    "Headache": "durere de cap",
+    "Bloating": "balonare",
+    "Breast tenderness": "sensibilitate la nivelul sânilor",
+    "Fatigue": "oboseală",
+    "Ovulation pain": "durere la ovulație",
+    "Sad": "tristețe",
+    "Anxious": "anxietate",
+    "Irritable": "iritare",
+    "Sensitive": "sensibilitate",
+    "Egg white": "secreții asemănătoare albușului de ou",
+    "heavy flow": "sângerare abundentă",
+    "Backache": "durere de spate",
+    "Joint pain": "dureri articulare",
+    "Happy": "bună dispoziție",
+    "Calm": "calm",
+    "Confident": "încredere în tine",
+    "Acne": "coșuri",
+    "Nausea": "greață",
+    "Dizziness": "amețeli",
+    "Hot flush": "un bufeu",
+    "Food cravings": "pofte",
+    "Constipation": "constipație",
+    "Diarrhoea": "diaree",
+    "Appetite up": "poftă de mâncare crescută",
+    "Appetite down": "poftă de mâncare scăzută",
+    "Dry": "uscăciune",
+    "Sticky": "secreții lipicioase",
+    "Creamy": "secreții cremoase",
+    "Watery": "secreții apoase",
+    "Low drive": "dorință sexuală scăzută",
+    "short sleep": "somn puțin",
+    "low energy": "energie scăzută"
+  },
+  "patternPhrase": {
+    "Cramps": "crampe",
+    "Headache": "dureri de cap",
+    "Backache": "dureri de spate",
+    "Breast tenderness": "sensibilitate la nivelul sânilor",
+    "Joint pain": "dureri articulare",
+    "Ovulation pain": "durere la ovulație",
+    "Happy": "bună dispoziție",
+    "Calm": "calm",
+    "Irritable": "iritare",
+    "Anxious": "anxietate",
+    "Sad": "tristețe",
+    "Sensitive": "sensibilitate",
+    "Confident": "încredere în tine",
+    "Bloating": "balonare",
+    "Acne": "coșuri",
+    "Nausea": "greață",
+    "Fatigue": "oboseală",
+    "Dizziness": "amețeli",
+    "Hot flush": "bufeuri",
+    "Food cravings": "pofte",
+    "Constipation": "constipație",
+    "Diarrhoea": "diaree",
+    "Appetite up": "apetit crescut",
+    "Appetite down": "apetit scăzut",
+    "Dry": "uscăciune",
+    "Sticky": "secreții lipicioase",
+    "Creamy": "secreții cremoase",
+    "Watery": "secreții apoase",
+    "Egg white": "secreții ca albușul de ou",
+    "heavy flow": "sângerare abundentă",
+    "low energy": "energie scăzută"
+  },
+  "windowPhrase": {
+    "menstrual": "menstruației",
+    "follicular": "zilelor de după menstruație",
+    "ovulatory": "mijlocului ciclului",
+    "luteal": "zilelor dinaintea menstruației"
+  },
+  "weekdaysMondayFirst": [
+    "luni",
+    "marți",
+    "miercuri",
+    "joi",
+    "vineri",
+    "sâmbătă",
+    "duminică"
+  ],
+  "months": [
+    "ianuarie",
+    "februarie",
+    "martie",
+    "aprilie",
+    "mai",
+    "iunie",
+    "iulie",
+    "august",
+    "septembrie",
+    "octombrie",
+    "noiembrie",
+    "decembrie"
+  ],
+  "ui": {
+    "helpNow": "Când să ceri ajutor medical",
+    "notRelevant": "Nu mi se potrivește",
+    "hide": "Ascunde pentru azi",
+    "source": "Sursă",
+    "ownLog": "Pe baza înregistrărilor tale în MoonCycle",
+    "openHelp": "Ajutor acum",
+    "linkFailed": "Nu am putut deschide linkul.",
+    "notRelevantDone": "Nu îți vom mai afișa această recomandare. O poți reactiva din Setări.",
+    "and": "și",
+    "today": "azi",
+    "tomorrow": "mâine",
+    "onDay": "{day}",
+    "onEstimate": "în ziua estimată",
+    "signpost": "Nu te simți bine? Sună la 112 în caz de urgență sau la medicul de familie pentru un sfat.",
+    "aiNote": "Mesaj personalizat cu AI pe baza acestei recomandări, care folosește informații NHS",
+    "reportNote": "Raportează mesajul",
+    "reportNoteTitle": "Vrei să raportezi acest mesaj?",
+    "reportNoteBody": "Mesajul raportat este trimis către MoonCycle fără numele sau identificatorul contului tău, pentru a ne ajuta să îmbunătățim funcția. În locul lui vei vedea recomandarea standard.",
+    "reportNoteDone": "Mulțumim! Am primit sesizarea.",
+    "reportNoteFailed": "Nu am reușit să trimitem sesizarea. Încearcă din nou mai târziu.",
+    "report": "Raportează",
+    "cancel": "Anulează",
+    "earlierThanEstimate": "cu {n} zile mai devreme decât estimarea",
+    "laterThanEstimate": "cu {n} zile mai târziu decât estimarea"
+  }
+}

@@ -325,7 +325,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             ),
                     icon: const Icon(Icons.language, size: 18),
                     label: Text(
-                      ref.watch(languageProvider).valueOrNull?.label ??
+                      ref.watch(languageProvider).value?.label ??
                           tr('Language'),
                     ),
                   ),
