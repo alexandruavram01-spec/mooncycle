@@ -9,6 +9,7 @@ import '../../domain/models.dart';
 import '../../domain/profile.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
+import '../widgets/chat_head.dart';
 import '../widgets/cycle_wheel.dart';
 import '../widgets/her_insight_card.dart';
 import '../widgets/log_sheet.dart';
@@ -39,15 +40,23 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: logsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => _ErrorView(message: '$e'),
-        data: (_) {
-          if (status == null || !status.hasData) {
-            return const _EmptyState();
-          }
-          return _HomeBody(status: status);
-        },
+      // The AI chat bubble floats over Today while the chat is on.
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: logsAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => _ErrorView(message: '$e'),
+              data: (_) {
+                if (status == null || !status.hasData) {
+                  return const _EmptyState();
+                }
+                return _HomeBody(status: status);
+              },
+            ),
+          ),
+          const Positioned.fill(child: ChatHead()),
+        ],
       ),
     );
   }
@@ -99,16 +108,17 @@ class _HomeBody extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         _WheelLegend(showFertile: showFertile),
-        // Today's insight card: test accounts only until our NHS check is done.
-        const HerInsightsSection(),
+        // The order testers asked for (30 Oct 2026): her phase first, then
+        // when her period is due, then today's card.
         const SizedBox(height: 24),
+        _PhaseExplainerCard(status: status, showFertile: showFertile),
+        const SizedBox(height: 12),
         _NextPeriodCard(status: status),
         if (showFertile && conceiving) ...[
           const SizedBox(height: 12),
           _FertileDaysCard(status: status),
         ],
-        const SizedBox(height: 12),
-        _PhaseExplainerCard(status: status, showFertile: showFertile),
+        const HerInsightsSection(),
         const SizedBox(height: 12),
         _QuickFlowCard(today: today, current: todayLog?.flow),
         const SizedBox(height: 12),

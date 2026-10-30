@@ -13,10 +13,11 @@ class Legal {
   /// whenever either changes materially: everyone is then asked again.
   static const version = '2026-10-26';
 
-  /// The version of the AI-written notes explanation she agrees to when she
-  /// turns them on. Change it when that explanation changes materially:
-  /// the notes then stay off until she agrees again.
-  static const aiNotesVersion = '2026-10-21';
+  /// The version of the AI chat explanation she agrees to when she turns it
+  /// on. Change it when that explanation changes materially: the chat then
+  /// stays off until she agrees again. (2026-10-21 was the AI-written notes,
+  /// replaced by the chat on 30 October 2026.)
+  static const aiNotesVersion = '2026-10-30';
 
   /// An alias of contact@ioncodex.org, named in every legal page.
   static const contactEmail = 'mooncycle_contact@ioncodex.org';

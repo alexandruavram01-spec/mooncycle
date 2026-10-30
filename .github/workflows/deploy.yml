@@ -45,12 +45,17 @@ jobs:
 
       # The widget tests predate sign-in and are not run until updated.
       - name: Unit tests
-        run: flutter test test/cycle_engine_test.dart test/partner_test.dart test/her_insights_test.dart
+        run: flutter test test/cycle_engine_test.dart test/partner_test.dart test/her_insights_test.dart test/her_insights_ro_json_test.dart test/her_chat_test.dart
 
       - name: Check the API code
         run: |
           node --check server/server.js
           node --check server/her-notes.js
+          node --check server/her-chat.js
+          # Loads the chat with the card texts, as on the server.
+          cp content/her-insights-en-GB-combined.json server/her-cards.json
+          cp content/her-insights-ro.json server/her-cards-ro.json
+          node -e "const chat = require('./server/her-chat.js'); if (!chat.REFERENCE.ro) throw new Error('no Romanian cards')"
           node -e "JSON.parse(require('fs').readFileSync('content/her-insights-en-GB-combined.json', 'utf8'))"
 
       - name: Build the website
@@ -122,12 +127,12 @@ jobs:
       # The API first: the new website may rely on what it adds.
       - name: Deploy the API
         run: |
-          # The reviewed card texts the AI notes are written from.
+          # The reviewed card texts the AI notes and chat are written from.
           cp content/her-insights-en-GB-combined.json server/her-cards.json
           # The same cards in Romanian (tool/export_ro_cards.py).
           cp content/her-insights-ro.json server/her-cards-ro.json
           rsync -rlz --chmod=D755,F644 -e "ssh -i $HOME/.ssh/deploy -o BatchMode=yes" \
-            server/server.js server/her-notes.js server/sample-notes.js \
+            server/server.js server/her-notes.js server/her-chat.js server/sample-notes.js server/sample-chat.js \
             server/her-cards.json server/her-cards-ro.json \
             "deploy@$HOST:/opt/mooncycle-api/"
           ssh -i ~/.ssh/deploy -o BatchMode=yes "deploy@$HOST" \

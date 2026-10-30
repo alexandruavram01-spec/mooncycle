@@ -37,11 +37,13 @@ class HerInsightsSection extends ConsumerWidget {
         if (context.mounted) notifier.save(updated);
       });
     }
-    if (picks.isEmpty) return const SizedBox.shrink();
-
-    // With AI-written notes on, today's note is asked for once; the card
-    // shows as it is until it arrives, or if it never does.
+    // With the AI chat on, today's AI-written note is asked for once, to
+    // open her chat with; the card itself always shows as reviewed.
     final aiNotes = ref.watch(aiNotesProvider).value ?? false;
+    // No card today: only the button, while the chat is off.
+    if (picks.isEmpty) {
+      return aiNotes ? const SizedBox.shrink() : const _AiNotesButton();
+    }
     if (aiNotes && updated == null) {
       final profile = ref.read(profileProvider);
       for (final pick in picks) {
@@ -70,33 +72,34 @@ class HerInsightsSection extends ConsumerWidget {
               key: ValueKey(pick.id),
               pick: pick,
               texts: texts,
-              // An empty note marks one she reported: the card shows instead.
-              note: aiNotes && (memory.pickNotes[pick.id]?.isNotEmpty ?? false)
-                  ? memory.pickNotes[pick.id]
-                  : null,
             ),
           ),
-        // Offered where the notes appear, not only in Settings. Opens the
-        // same explanation and consent screen; nothing is ticked for her.
-        if (!aiNotes && picks.any(aiNoteEligible))
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: FilledButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const AiNotesScreen(),
-                ),
-              ),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              icon: const Icon(Icons.auto_awesome_outlined, size: 20),
-              label: Text(tr('Turn on AI-written notes')),
-            ),
-          ),
+        // Offered every day while the chat is off.
+        if (!aiNotes) const _AiNotesButton(),
       ],
     );
   }
+}
+
+/// Opens the AI chat explanation and consent screen. Nothing is ticked for
+/// her there.
+class _AiNotesButton extends StatelessWidget {
+  const _AiNotesButton();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: FilledButton.icon(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const AiNotesScreen()),
+          ),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(50),
+          ),
+          icon: const Icon(Icons.auto_awesome_outlined, size: 20),
+          label: Text(tr('Enable AI chat')),
+        ),
+      );
 }
 
 class _InsightCard extends ConsumerWidget {
@@ -104,16 +107,10 @@ class _InsightCard extends ConsumerWidget {
     super.key,
     required this.pick,
     required this.texts,
-    this.note,
   });
 
   final InsightPick pick;
   final HerInsightTexts texts;
-
-  /// Her AI-written note, shown in place of the opening line and the card's
-  /// words. The GP line, the urgent-help line and the sources stay as
-  /// reviewed.
-  final String? note;
 
   /// Cards about desire, where "Not feeling well?" would read oddly.
   static const _noSignpost = {'L19', 'C08'};
@@ -183,50 +180,18 @@ class _InsightCard extends ConsumerWidget {
                     style: theme.textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  if (note case final written?) ...[
+                  if (opening != null) ...[
                     const SizedBox(height: 6),
-                    Text(written, style: theme.textTheme.bodyMedium),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.auto_awesome_outlined,
-                          size: 14,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(texts.ui['aiNote']!, style: muted),
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton.icon(
-                        style: TextButton.styleFrom(
-                          foregroundColor: scheme.onSurfaceVariant,
-                          padding: EdgeInsets.zero,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        onPressed: () => _report(context, memory),
-                        icon: const Icon(Icons.flag_outlined, size: 16),
-                        label: Text(texts.ui['reportNote']!),
+                    Text(
+                      opening,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.primary,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ] else ...[
-                    if (opening != null) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        opening,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: scheme.primary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 6),
-                    Text(_fill(text.body), style: theme.textTheme.bodyMedium),
                   ],
+                  const SizedBox(height: 6),
+                  Text(_fill(text.body), style: theme.textTheme.bodyMedium),
                   if (seeGp != null) ...[
                     const SizedBox(height: 10),
                     Row(
@@ -336,40 +301,6 @@ class _InsightCard extends ConsumerWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  /// Reports this AI-written note from inside the app, after asking.
-  Future<void> _report(
-    BuildContext context,
-    InsightMemoryNotifier memory,
-  ) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(texts.ui['reportNoteTitle']!),
-        content: Text(texts.ui['reportNoteBody']!),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(texts.ui['cancel']!),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(texts.ui['report']!),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    final sent = await memory.reportNote(pick.id);
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          texts.ui[sent ? 'reportNoteDone' : 'reportNoteFailed']!,
         ),
       ),
     );

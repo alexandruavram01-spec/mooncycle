@@ -394,7 +394,9 @@ async function anthropic() {
 }
 
 /// One request with a fixed answer shape. Null when declined or cut off.
-async function ask(system, user, schema) {
+/// [system] is the instructions, or a list of text blocks (the chat marks
+/// which of its blocks to cache); [user] is one message or a conversation.
+async function ask(system, user, schema, { effort = EFFORT } = {}) {
   const api = await anthropic();
   const response = await api.beta.messages.create({
     model: MODEL,
@@ -404,9 +406,11 @@ async function ask(system, user, schema) {
     // fallback model answers it instead.
     betas: ['server-side-fallback-2026-07-01'],
     fallbacks: 'default',
-    system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
-    messages: [{ role: 'user', content: user }],
-    output_config: { effort: EFFORT, format: { type: 'json_schema', schema } },
+    system: Array.isArray(system)
+      ? system
+      : [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+    messages: Array.isArray(user) ? user : [{ role: 'user', content: user }],
+    output_config: { effort, format: { type: 'json_schema', schema } },
   });
   if (response.stop_reason !== 'end_turn') return null;
   const text = response.content
@@ -582,6 +586,15 @@ async function writeNote(body) {
 module.exports = {
   writeNote,
   FIXED_ONLY,
+  // Shared with the AI chat (her-chat.js).
+  CARDS,
+  RO,
+  SYMPTOMS,
+  FLOWS,
+  LOGGED,
+  ask,
+  NoteRefused,
+  checks: { day, int, oneOf, escapeRegex },
   // For tests: no model involved.
   readRequest,
   summaryText,

@@ -7,8 +7,9 @@ import '../../state/providers.dart';
 import '../widgets/links.dart';
 import '../../l10n/ui.dart';
 
-/// AI-written notes: what they are, what is sent and to whom, and her
-/// explicit consent before anything is. Off unless she turns them on here.
+/// The AI chat: what it is, what is sent and to whom, and her explicit
+/// consent before anything is. Off unless she turns it on here; nothing is
+/// ticked for her.
 class AiNotesScreen extends ConsumerStatefulWidget {
   const AiNotesScreen({super.key});
 
@@ -31,8 +32,8 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
         SnackBar(
           content: Text(
             on
-                ? tr('AI-written notes are on.')
-                : tr('AI-written notes are off. Nothing more will be sent.'),
+                ? tr('AI chat is on. Tap the chat bubble on Today.')
+                : tr('AI chat is off. Nothing more will be sent.'),
           ),
         ),
       );
@@ -55,38 +56,42 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
         Text(tr(text), style: theme.textTheme.bodyMedium);
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr('AI-written notes'))),
+      appBar: AppBar(title: Text(tr('AI chat'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
           para(
-            'Instead of the standard wording, MoonCycle can write your daily '
-            'card as a short note around your own log, using AI. What it says '
-            'still comes from the same card, which is based on NHS '
-            'information. The "See a GP" line and where to get help stay '
-            'exactly as they are.',
+            'Ask questions about your cycle and what you have logged, in a '
+            'chat on your Today screen. Each day it starts with a short '
+            'message about today\'s card. The answers come from the same '
+            'cards, which are based on NHS information, and from your own '
+            'log, written by AI. The "See a GP" lines and Get help now stay '
+            'exactly as they are. Up to 20 messages a day.',
           ),
           heading('What is sent'),
           para(
-            'The card chosen for you that day, and a short summary worked out '
-            'on your phone: the symptom the card is about, patterns in your '
-            'recorded cycles and estimated dates. Never your name, email, '
-            'notes or the rest of what you logged.',
+            'What you write in the chat, and a short summary worked out on '
+            'your phone: the day and phase of your cycle, your estimated '
+            'dates and usual lengths, today\'s card, and which symptoms you '
+            'logged in the last 14 days and on how many days. Never your '
+            'name, email, notes, temperature or weight.',
           ),
           heading('Who it goes to'),
           para(
             'Anthropic, the company that makes the Claude AI, in the United '
-            'States. It writes the note for us and deletes what we sent '
+            'States. It writes the answers for us and deletes what we sent '
             'within 30 days (longer only if its safety systems flag misuse). '
-            'It does not use it to train its AI. MoonCycle keeps neither the '
-            'summary nor the note on its server.',
+            'It does not use it to train its AI. MoonCycle keeps neither your '
+            'messages nor the answers on its server. Your chat history is '
+            'kept only on this phone, and you can delete it from the chat.',
           ),
           heading('Good to know'),
           para(
-            'The notes are general information, not medical advice, and AI '
-            'can make mistakes. If you don\'t feel well, use Get help now. '
-            'You can turn the notes off here at any time, and nothing more '
-            'is sent from then on.',
+            'The chat gives general information, not medical advice, and AI '
+            'can make mistakes. It cannot diagnose anything or tell whether '
+            'you are pregnant. If you don\'t feel well, use Get help now. You '
+            'can turn the chat off here at any time, and nothing more is sent '
+            'from then on.',
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -104,7 +109,7 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
           if (on)
             OutlinedButton(
               onPressed: _saving ? null : () => _set(false),
-              child: Text(tr('Turn AI-written notes off')),
+              child: Text(tr('Turn AI chat off')),
             )
           else ...[
             CheckboxListTile(
@@ -113,8 +118,8 @@ class _AiNotesScreenState extends ConsumerState<AiNotesScreen> {
               value: _agreed,
               onChanged: (v) => setState(() => _agreed = v ?? false),
               title: Text(
-                tr('I agree to MoonCycle sending this summary about my health to '
-                'Anthropic to write my notes.'),
+                tr('I agree to MoonCycle sending my messages and this summary '
+                    'about my health to Anthropic to answer me.'),
               ),
             ),
             const SizedBox(height: 8),

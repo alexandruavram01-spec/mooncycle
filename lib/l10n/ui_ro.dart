@@ -1232,4 +1232,93 @@ const Map<String, String> uiRo = {
       'Alege oricâte vrei',
   'Three quick questions to make MoonCycle yours.':
       'Trei întrebări rapide, ca MoonCycle să ți se potrivească.',
+  // ---- AI chat (build 10) ----
+  'AI chat':
+      'Chat AI',
+  'Enable AI chat':
+      'Activează chatul AI',
+  'Turn AI chat off':
+      'Oprește chatul AI',
+  'AI chat is on. Tap the chat bubble on Today.':
+      'Chatul AI este pornit. Atinge bula de chat din Azi.',
+  'AI chat is off. Nothing more will be sent.':
+      'Chatul AI este oprit. Nu se mai trimite nimic.',
+  'AI chat is off.':
+      'Chatul AI este oprit.',
+  'On. Tap the chat bubble on Today.':
+      'Pornit. Atinge bula de chat din Azi.',
+  'Off. Ask questions about your cycle and your log.':
+      'Oprit. Pune întrebări despre ciclul tău și ce ai notat.',
+  'Ask questions about your cycle and what you have logged, in a chat on your Today screen. Each day it starts with a short message about today\'s card. The answers come from the same cards, which are based on NHS information, and from your own log, written by AI. The "See a GP" lines and Get help now stay exactly as they are. Up to 20 messages a day.':
+      'Pune întrebări despre ciclul tău și despre ce ai notat, într-un chat din ecranul Azi. În fiecare zi începe cu un mesaj scurt despre cardul zilei. Răspunsurile sunt scrise de AI pe baza acelorași carduri, bazate pe surse NHS, și a propriilor tale notări. Recomandările despre medicul de familie și „Ajutor acum” rămân exact cum sunt. Până la 20 de mesaje pe zi.',
+  'What you write in the chat, and a short summary worked out on your phone: the day and phase of your cycle, your estimated dates and usual lengths, today\'s card, and which symptoms you logged in the last 14 days and on how many days. Never your name, email, notes, temperature or weight.':
+      'Ce scrii în chat și un scurt rezumat calculat pe telefonul tău: ziua și faza ciclului, datele estimate și duratele obișnuite, cardul zilei și ce simptome ai notat în ultimele 14 zile și în câte zile. Niciodată numele, adresa de e-mail, notițele, temperatura sau greutatea ta.',
+  'Anthropic, the company that makes the Claude AI, in the United States. It writes the answers for us and deletes what we sent within 30 days (longer only if its safety systems flag misuse). It does not use it to train its AI. MoonCycle keeps neither your messages nor the answers on its server. Your chat history is kept only on this phone, and you can delete it from the chat.':
+      'Anthropic, compania care creează AI-ul Claude, în Statele Unite. Scrie răspunsurile pentru noi și șterge ce i-am trimis în cel mult 30 de zile (mai mult doar dacă sistemele sale de siguranță semnalează o utilizare abuzivă). Nu folosește aceste date pentru a-și antrena AI-ul. MoonCycle nu păstrează pe server nici mesajele tale, nici răspunsurile. Istoricul chatului rămâne doar pe acest telefon și îl poți șterge din chat.',
+  'The chat gives general information, not medical advice, and AI can make mistakes. It cannot diagnose anything or tell whether you are pregnant. If you don\'t feel well, use Get help now. You can turn the chat off here at any time, and nothing more is sent from then on.':
+      'Chatul oferă informații generale, nu sfaturi medicale, iar AI-ul poate greși. Nu poate pune diagnostice și nu îți poate spune dacă ești însărcinată. Dacă nu te simți bine, folosește „Ajutor acum”. Poți opri chatul de aici oricând și, din acel moment, nu se mai trimite nimic.',
+  'I agree to MoonCycle sending my messages and this summary about my health to Anthropic to answer me.':
+      'Sunt de acord ca MoonCycle să trimită mesajele mele și acest rezumat despre sănătatea mea către Anthropic, pentru a-mi răspunde.',
+  'MoonCycle chat':
+      'Chat MoonCycle',
+  'AI · general information, not medical advice':
+      'AI · informații generale, nu sfaturi medicale',
+  'Answers are written by AI from MoonCycle\'s reviewed cards and your log. They are general information, not medical advice. Your chat is kept only on this phone.':
+      'Răspunsurile sunt scrise de AI pe baza cardurilor verificate MoonCycle și a notărilor tale. Sunt informații generale, nu sfaturi medicale. Chatul tău rămâne doar pe acest telefon.',
+  'Want to know more about it?':
+      'Vrei să afli mai multe?',
+  'Yes, tell me more':
+      'Da, spune-mi mai multe',
+  'Today\'s card is "{title}". Want to know more about it?':
+      'Cardul de azi este „{title}”. Vrei să afli mai multe?',
+  'You\'re on day {n} of your cycle, in the {phase} phase. Want to know more about what that can mean?':
+      'Ești în ziua {n} a ciclului, în faza {phase}. Vrei să afli mai multe despre ce poate însemna asta?',
+  'Hi. You can ask me about your cycle or anything you have logged. What would you like to know?':
+      'Bună. Mă poți întreba despre ciclul tău sau despre orice ai notat. Ce ai vrea să afli?',
+  'Ask about your cycle…':
+      'Întreabă despre ciclul tău…',
+  'Send':
+      'Trimite',
+  '{n} message left today':
+      '{n} mesaj rămas azi',
+  '{n} messages left today':
+      '{n} mesaje rămase azi',
+  'Sorry, I could not answer just now. Check your connection and try again.':
+      'Îmi pare rău, nu am putut răspunde acum. Verifică-ți conexiunea și încearcă din nou.',
+  'That was today\'s last message. The chat is back tomorrow.':
+      'Acesta a fost ultimul mesaj de azi. Chatul revine mâine.',
+  'Written by AI':
+      'Scris de AI',
+  'Reported':
+      'Raportat',
+  'Report this answer':
+      'Raportează răspunsul',
+  'Report this answer?':
+      'Raportezi acest răspuns?',
+  'It is sent to MoonCycle without your name or your messages, so we can check it.':
+      'Este trimis către MoonCycle fără numele tău și fără mesajele tale, ca să-l putem verifica.',
+  'Report':
+      'Raportează',
+  'Thank you. We will check this answer.':
+      'Mulțumim. Vom verifica acest răspuns.',
+  'Could not send the report. Try again later.':
+      'Nu am putut trimite raportul. Încearcă din nou mai târziu.',
+  'Delete chat history':
+      'Șterge istoricul chatului',
+  'Delete your chat history?':
+      'Ștergi istoricul chatului?',
+  'Every message is removed from this phone. This cannot be undone.':
+      'Toate mesajele sunt șterse de pe acest telefon. Acțiunea nu poate fi anulată.',
+  'Delete':
+      'Șterge',
+  'AI chat settings':
+      'Setări chat AI',
+  'Yesterday':
+      'Ieri',
+  'Writing an answer':
+      'Se scrie un răspuns',
+  'Open the AI chat':
+      'Deschide chatul AI',
+  'Open the AI chat. A new message is waiting.':
+      'Deschide chatul AI. Te așteaptă un mesaj nou.',
 };

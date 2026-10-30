@@ -17,6 +17,8 @@ void main() {
     roHerInsights.cards.forEach((id, text) {
       expect(cards[id]['title'], text.title, reason: id);
       expect(cards[id]['body'], text.body, reason: id);
+      expect(cards[id]['seeGp'], text.seeGp, reason: id);
+      expect(cards[id]['helpNow'], text.helpNow, reason: id);
     });
     expect(
       Map<String, String>.from(json['openings'] as Map),

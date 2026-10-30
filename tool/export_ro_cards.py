@@ -1,9 +1,10 @@
 """Exports the Romanian card texts for the AI-notes server.
 
 Reads lib/l10n/her_insights_ro.dart and writes content/her-insights-ro.json:
-the cards (title and body), the opening lines and the words that fill them
-in. The server writes Romanian notes from this file
-(server/her-notes.js); test/her_insights_ro_json_test.dart checks it still
+the cards (title, body and, where a card has them, the GP and urgent-help
+lines), the opening lines and the words that fill them in. The server
+writes Romanian notes (server/her-notes.js) and chat answers
+(server/her-chat.js) from this file; test/her_insights_ro_json_test.dart checks it still
 matches the app.
 
 Run after changing her_insights_ro.dart:
@@ -49,9 +50,12 @@ def main():
     cards = {}
     for m in re.finditer(r"'(\w+)': InsightText\((.*?)\n    \),", section(src, 'cards'), re.S):
         fields = {}
-        for field in ('title', 'body'):
+        for field in ('title', 'body', 'seeGp', 'helpNow'):
             f = re.search(rf'\b{field}: ({STR})', m.group(2))
-            fields[field] = unq(f.group(1))
+            # The GP and urgent-help lines are only on some cards. The AI
+            # chat reads them; the notes never do.
+            if f:
+                fields[field] = unq(f.group(1))
         cards[m.group(1)] = fields
 
     def word_list(name):

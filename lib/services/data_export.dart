@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../data/settings_store.dart';
 import '../domain/day_key.dart';
+import '../domain/her_chat.dart';
 import '../domain/models.dart';
 
 /// "Export my data": her logs and quiz answers as two files she keeps
@@ -43,8 +44,13 @@ class DataExport {
     return rows.map((row) => row.map(_cell).join(',')).join('\r\n');
   }
 
-  /// Everything, in a form another app could read back.
-  static String json(List<DayLog> logs, AppSettings settings) =>
+  /// Everything, in a form another app could read back, with her AI chat
+  /// when she has one (it is kept only on this phone too).
+  static String json(
+    List<DayLog> logs,
+    AppSettings settings, {
+    ChatHistory chat = const ChatHistory(),
+  }) =>
       const JsonEncoder.withIndent('  ').convert({
         'app': 'MoonCycle',
         'exported': DateTime.now().toUtc().toIso8601String(),
@@ -52,11 +58,25 @@ class DataExport {
         'profile': settings.profile.toJson(),
         'reminders': settings.reminders.toJson(),
         'partnerSharing': settings.sharing.toJson(),
+        if (chat.messages.isNotEmpty)
+          'aiChat': [
+            for (final m in chat.messages)
+              if (m.notice == null)
+                {
+                  'at': m.at.toIso8601String(),
+                  'from': m.fromHer ? 'me' : 'MoonCycle',
+                  'text': m.text,
+                },
+          ],
       });
 
   /// Opens the share sheet with both files. True if she shared or saved
   /// them, false if she closed the sheet.
-  static Future<bool> share(List<DayLog> logs, AppSettings settings) async {
+  static Future<bool> share(
+    List<DayLog> logs,
+    AppSettings settings, {
+    ChatHistory chat = const ChatHistory(),
+  }) async {
     final day = DayKey.today().iso;
     final result = await SharePlus.instance.share(
       ShareParams(
@@ -64,7 +84,7 @@ class DataExport {
         files: [
           XFile.fromData(utf8.encode(csv(logs)), mimeType: 'text/csv'),
           XFile.fromData(
-            utf8.encode(json(logs, settings)),
+            utf8.encode(json(logs, settings, chat: chat)),
             mimeType: 'application/json',
           ),
         ],

@@ -167,7 +167,7 @@ class _MonthView extends StatelessWidget {
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 6),
-                        child: Text(d, style: TextStyle(fontSize: 12)),
+                        child: Text(d, style: const TextStyle(fontSize: 12)),
                       ),
                     ),
                   ),

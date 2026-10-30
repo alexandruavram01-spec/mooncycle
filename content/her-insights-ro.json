@@ -3,19 +3,24 @@
   "cards": {
     "I01": {
       "title": "Ce te poate ajuta când ai dureri menstruale",
-      "body": "O baie caldă sau o pernă cu apă caldă, învelită într-un prosop, poate calma crampele. Dacă te simți în stare, și mișcarea ușoară poate ajuta. Un farmacist îți poate spune ce opțiuni de calmare a durerii sunt potrivite pentru tine."
+      "body": "O baie caldă sau o pernă cu apă caldă, învelită într-un prosop, poate calma crampele. Dacă te simți în stare, și mișcarea ușoară poate ajuta. Un farmacist îți poate spune ce opțiuni de calmare a durerii sunt potrivite pentru tine.",
+      "seeGp": "Discută cu medicul de familie dacă durerile menstruale îți afectează activitățile zilnice, se agravează sau apar și în timpul contactului sexual, la urinare ori la scaun.",
+      "helpNow": "Solicită sfatul medicului fără întârziere dacă durerea pelvină sau menstruală este severă ori mai intensă decât de obicei și calmantele nu au ajutat."
     },
     "I02": {
       "title": "Menstruația ta este mai abundentă decât de obicei?",
-      "body": "Dacă trebuie să schimbi absorbantul sau tamponul la fiecare 1–2 ore, să folosești două produse simultan, dacă elimini cheaguri mari sau sângerezi mai mult de 7 zile, menstruația poate fi abundentă. Există opțiuni de tratament."
+      "body": "Dacă trebuie să schimbi absorbantul sau tamponul la fiecare 1–2 ore, să folosești două produse simultan, dacă elimini cheaguri mari sau sângerezi mai mult de 7 zile, menstruația poate fi abundentă. Există opțiuni de tratament.",
+      "seeGp": "Discută cu medicul de familie dacă sângerarea îți afectează viața de zi cu zi sau dacă te simți des foarte obosită ori ai dificultăți de respirație."
     },
     "I03": {
       "title": "Un memento despre tampoane și cupele menstruale",
-      "body": "Respectă instrucțiunile produsului privind schimbarea tamponului sau golirea și curățarea cupei menstruale. Spală-te pe mâini înainte și după. Sindromul de șoc toxic este rar, dar poate fi grav."
+      "body": "Respectă instrucțiunile produsului privind schimbarea tamponului sau golirea și curățarea cupei menstruale. Spală-te pe mâini înainte și după. Sindromul de șoc toxic este rar, dar poate fi grav.",
+      "helpNow": "Dacă te simți brusc rău, cu febră, frisoane, erupție pe piele sau simptome ca de gripă în timp ce folosești un tampon sau o cupă, scoate-l și cere urgent sfatul unui medic. Sună la 112 sau mergi la Urgențe dacă apar confuzie, greutăți în respirație sau o erupție care nu dispare când apeși pe ea cu un pahar."
     },
     "I05": {
       "title": "Te simți mai obosită decât de obicei?",
-      "body": "Menstruațiile abundente pot duce uneori la deficit de fier. Printre semne se numără oboseala persistentă, dificultățile de respirație, durerile de cap sau palpitațiile. Fasolea, lintea, legumele cu frunze verzi și cerealele fortificate sunt surse de fier."
+      "body": "Menstruațiile abundente pot duce uneori la deficit de fier. Printre semne se numără oboseala persistentă, dificultățile de respirație, durerile de cap sau palpitațiile. Fasolea, lintea, legumele cu frunze verzi și cerealele fortificate sunt surse de fier.",
+      "seeGp": "Discută cu medicul de familie dacă bănuiești că ai un deficit de fier. Analizele de sânge pot ajuta la verificarea acestuia."
     },
     "I06": {
       "title": "Tiparul tău contează",
@@ -23,7 +28,8 @@
     },
     "I07": {
       "title": "Cum se calculează ciclul menstrual?",
-      "body": "Ciclul menstrual începe în prima zi a unei menstruații și se încheie cu o zi înaintea următoarei. Media este în jur de 28 de zile, iar la adulți sunt frecvente cicluri de 21–35 de zile. Menstruația durează de obicei 2–7 zile, dar contează și ritmul tău obișnuit."
+      "body": "Ciclul menstrual începe în prima zi a unei menstruații și se încheie cu o zi înaintea următoarei. Media este în jur de 28 de zile, iar la adulți sunt frecvente cicluri de 21–35 de zile. Menstruația durează de obicei 2–7 zile, dar contează și ritmul tău obișnuit.",
+      "seeGp": "Vorbește cu medicul de familie dacă ciclul tău obișnuit se schimbă, menstruațiile ies des din acest interval sau sângerarea durează mai mult de 7 zile."
     },
     "I08": {
       "title": "Screeningul de col uterin: când e recomandat?",
@@ -35,7 +41,9 @@
     },
     "I10": {
       "title": "Ai simțit o înțepătură într-o parte?",
-      "body": "Unele persoane simt o durere ușoară pe o parte a abdomenului în jurul ovulației. Poate dura câteva minute sau chiar una-două zile. Căldura poate ajuta, dar durerea nu confirmă, singură, ovulația."
+      "body": "Unele persoane simt o durere ușoară pe o parte a abdomenului în jurul ovulației. Poate dura câteva minute sau chiar una-două zile. Căldura poate ajuta, dar durerea nu confirmă, singură, ovulația.",
+      "seeGp": "Vorbește cu medicul de familie despre o durere care tot revine sau nu se ameliorează.",
+      "helpNow": "Solicită sfatul medicului fără întârziere dacă durerea abdominală este puternică, revine, nu cedează după calmante sau dacă este posibilă o sarcină."
     },
     "I11": {
       "title": "Zilele fertile sunt doar estimări",
@@ -47,11 +55,13 @@
     },
     "I13": {
       "title": "Lucruri mici care ar putea ajuta",
-      "body": "Dacă simptomele premenstruale te deranjează, încearcă lucrurile pe care le poți face fără efort prea mare: somn suficient, puțină mișcare, mese echilibrate și timp de relaxare. În zilele dificile, nu e nevoie să te forțezi."
+      "body": "Dacă simptomele premenstruale te deranjează, încearcă lucrurile pe care le poți face fără efort prea mare: somn suficient, puțină mișcare, mese echilibrate și timp de relaxare. În zilele dificile, nu e nevoie să te forțezi.",
+      "seeGp": "Vorbește cu medicul de familie dacă simptomele îți dau peste cap viața de zi cu zi sau schimbările simple nu au ajutat."
     },
     "I14": {
       "title": "Înregistrările tale pot scoate la iveală tipare",
-      "body": "Dacă îți urmărești simptomele cel puțin două cicluri, poți vedea dacă apar frecvent înainte de menstruație. Dacă îți afectează activitățile zilnice, înregistrările te pot ajuta să explici unui medic ce observi."
+      "body": "Dacă îți urmărești simptomele cel puțin două cicluri, poți vedea dacă apar frecvent înainte de menstruație. Dacă îți afectează activitățile zilnice, înregistrările te pot ajuta să explici unui medic ce observi.",
+      "seeGp": "Vorbește cu medicul de familie dacă simptomele îți afectează regulat viața de zi cu zi."
     },
     "I16": {
       "title": "Te doare capul azi?",
@@ -63,35 +73,45 @@
     },
     "I18": {
       "title": "Sâni sensibili?",
-      "body": "Dacă te simți balonată, mesele mai mici și mai dese pot ajuta uneori. Dar balonarea poate avea cauze diferite și nu este neapărat legată de ciclul menstrual."
+      "body": "Dacă te simți balonată, mesele mai mici și mai dese pot ajuta uneori. Dar balonarea poate avea cauze diferite și nu este neapărat legată de ciclul menstrual.",
+      "seeGp": "Mergi la medicul de familie dacă durerea de sâni nu se ameliorează sau observi schimbări noi ori neobișnuite la sâni.",
+      "helpNow": "Durerile de sâni pot apărea în legătură cu ciclul menstrual și se pot ameliora după menstruație. Un sutien confortabil, inclusiv noaptea dacă îți este util, poate ajuta."
     },
     "I19": {
       "title": "Puțină energie azi?",
-      "body": "Oboseala poate avea multe cauze. Dacă poți, fă-ți loc de odihnă. Dacă te simți des epuizată, mai ales când ai și menstruații abundente, medicul de familie poate verifica de ce, de exemplu dacă ai fierul scăzut."
+      "body": "Oboseala poate avea multe cauze. Dacă poți, fă-ți loc de odihnă. Dacă te simți des epuizată, mai ales când ai și menstruații abundente, medicul de familie poate verifica de ce, de exemplu dacă ai fierul scăzut.",
+      "seeGp": "Vorbește cu medicul de familie despre o oboseală care nu trece sau nu are o cauză clară, mai ales dacă ai sângerări abundente."
     },
     "I20": {
       "title": "O zi grea merită grijă",
-      "body": "Merită să recunoști când te simți tristă, anxioasă sau iritată, oricare ar fi cauza. Te-ar ajuta azi puțină odihnă, mișcare, companie sau liniște? Dacă se tot întâmplă în jurul menstruației, notițele tale te pot ajuta să vorbești despre asta cu medicul de familie."
+      "body": "Merită să recunoști când te simți tristă, anxioasă sau iritată, oricare ar fi cauza. Te-ar ajuta azi puțină odihnă, mișcare, companie sau liniște? Dacă se tot întâmplă în jurul menstruației, notițele tale te pot ajuta să vorbești despre asta cu medicul de familie.",
+      "seeGp": "Dacă observi schimbări ale dispoziției, îți poți acorda timp pentru odihnă, mișcare ușoară sau o discuție cu cineva apropiat. Nu presupunem că aceste trăiri sunt cauzate de ciclul menstrual."
     },
     "I21": {
       "title": "Sângerare în afara menstruației",
-      "body": "Sângerarea între menstruații sau după sex poate avea mai multe cauze. Adesea nu e ceva grav, dar ar trebui verificată de medicul de familie sau de un medic ginecolog."
+      "body": "Sângerarea între menstruații sau după sex poate avea mai multe cauze. Adesea nu e ceva grav, dar ar trebui verificată de medicul de familie sau de un medic ginecolog.",
+      "seeGp": "Sângerări între menstruații",
+      "helpNow": "Dacă ți-a lipsit de curând o menstruație și ai o sângerare neobișnuită cu durere de burtă sau pelviană, cere urgent ajutorul unui medic. Dacă ai o durere bruscă și puternică, leșini sau te prăbușești, sună la 112 sau mergi la Urgențe."
     },
     "I22": {
       "title": "Încă nu a venit menstruația?",
-      "body": "Menstruația este mai târziu decât estimarea?"
+      "body": "Menstruația este mai târziu decât estimarea?",
+      "seeGp": "Vorbește cu medicul de familie dacă îți lipsesc 3 menstruații la rând sau un al doilea test de sarcină e negativ și menstruația tot nu a venit."
     },
     "I23": {
       "title": "Te gândești să faci un test de sarcină?",
-      "body": "Majoritatea testelor de acasă sunt cele mai sigure din prima zi în care menstruația lipsește. Dacă testul e negativ, dar tot crezi că ai putea fi însărcinată, așteaptă câteva zile și refă-l."
+      "body": "Majoritatea testelor de acasă sunt cele mai sigure din prima zi în care menstruația lipsește. Dacă testul e negativ, dar tot crezi că ai putea fi însărcinată, așteaptă câteva zile și refă-l.",
+      "seeGp": "Aștepți momentul potrivit pentru un test?"
     },
     "I24": {
       "title": "Sângerezi mai mult decât de obicei?",
-      "body": "Menstruația durează adesea 2–7 zile. Dacă sângerezi de mai mult de 7 zile, merită să notezi asta, mai ales dacă e diferit de tiparul tău obișnuit."
+      "body": "Menstruația durează adesea 2–7 zile. Dacă sângerezi de mai mult de 7 zile, merită să notezi asta, mai ales dacă e diferit de tiparul tău obișnuit.",
+      "seeGp": "Mergi la medicul de familie dacă menstruațiile durează mai mult de 7 zile, mai ales dacă se repetă sau îți afectează viața de zi cu zi."
     },
     "I25": {
       "title": "Ciclurile tale arată diferit",
-      "body": "Ciclurile pot varia, iar stresul, contracepția și schimbările din viață le pot influența momentul. Dacă menstruațiile vin des la mai puțin de 21 sau la mai mult de 35 de zile distanță — sau s-au schimbat mult față de cum erau la tine — poate merita să vorbești cu medicul de familie."
+      "body": "Ciclurile pot varia, iar stresul, contracepția și schimbările din viață le pot influența momentul. Dacă menstruațiile vin des la mai puțin de 21 sau la mai mult de 35 de zile distanță — sau s-au schimbat mult față de cum erau la tine — poate merita să vorbești cu medicul de familie.",
+      "seeGp": "Ciclurile tale au durate diferite"
     },
     "I26": {
       "title": "Acidul folic înainte și în timpul sarcinii",
@@ -135,23 +155,31 @@
     },
     "L01": {
       "title": "Ai crampe și în afara menstruației?",
-      "body": "Crampele pelviene pot avea cauze diferite, pe care o aplicație nu le poate identifica. Poate fi util să notezi când apar și ce alte simptome observi."
+      "body": "Crampele pelviene pot avea cauze diferite, pe care o aplicație nu le poate identifica. Poate fi util să notezi când apar și ce alte simptome observi.",
+      "seeGp": "Vorbește cu medicul de familie dacă durerea pelviană revine sau nu trece.",
+      "helpNow": "Cere urgent sfatul unui medic dacă ai durere pelviană cu secreții sau sângerare neobișnuite, durere la urinare, febră sau dacă e posibilă o sarcină. Sună la 112 sau mergi la Urgențe dacă durerea pelviană e puternică sau se agravează, simți că leșini, te doare vârful umărului sau sângerezi abundent."
     },
     "L02": {
       "title": "Te doare spatele în apropierea menstruației?",
-      "body": "Durerea menstruală se poate resimți și în zona lombară ori în coapse. O pernă cu apă caldă învelită într-un prosop, o baie caldă, mișcarea ușoară sau un masaj lombar pot ajuta."
+      "body": "Durerea menstruală se poate resimți și în zona lombară ori în coapse. O pernă cu apă caldă învelită într-un prosop, o baie caldă, mișcarea ușoară sau un masaj lombar pot ajuta.",
+      "seeGp": "Mergi la medicul de familie dacă durerea îți afectează activitățile zilnice sau se agravează."
     },
     "L03": {
       "title": "Te doare spatele azi?",
-      "body": "Durerea de spate se ameliorează adesea cu timpul. Mișcarea ușoară poate ajuta; o compresă caldă sau rece, învelită, poate calma disconfortul."
+      "body": "Durerea de spate se ameliorează adesea cu timpul. Mișcarea ușoară poate ajuta; o compresă caldă sau rece, învelită, poate calma disconfortul.",
+      "seeGp": "Cere sfatul medicului de familie dacă durerea continuă, îți dă peste cap viața de zi cu zi sau e mai rea noaptea.",
+      "helpNow": "Sună la 112 sau mergi la Urgențe dacă durerea de spate vine cu slăbiciune sau amorțeală nouă în ambele picioare, pierderea sensibilității în zona intimă sau a șezutului ori probleme noi cu vezica sau intestinul."
     },
     "L04": {
       "title": "Te dor articulațiile?",
-      "body": "Durerile articulare sau musculare pot avea mai multe cauze. Dacă reapar, notează când se întâmplă, cât de intense sunt și ce alte simptome observi. Aceste detalii pot fi utile într-o discuție cu medicul."
+      "body": "Durerile articulare sau musculare pot avea mai multe cauze. Dacă reapar, notează când se întâmplă, cât de intense sunt și ce alte simptome observi. Aceste detalii pot fi utile într-o discuție cu medicul.",
+      "seeGp": "Vorbește cu medicul de familie dacă durerile tot revin sau îți afectează activitățile de zi cu zi."
     },
     "L05": {
       "title": "Te doare capul în preajma menstruației?",
-      "body": "Durerile de cap apar uneori în apropierea menstruației, dar pot avea și alte cauze. Hidratarea, mesele regulate și odihna pot ajuta; farmacistul îți poate recomanda opțiuni de calmare a durerii."
+      "body": "Durerile de cap apar uneori în apropierea menstruației, dar pot avea și alte cauze. Hidratarea, mesele regulate și odihna pot ajuta; farmacistul îți poate recomanda opțiuni de calmare a durerii.",
+      "seeGp": "Vorbește cu medicul de familie dacă durerile de cap revin regulat, se agravează sau îți afectează viața.",
+      "helpNow": "Sună la 112 sau mergi la Urgențe pentru o durere de cap bruscă și extrem de puternică, slăbiciune pe o parte a corpului, probleme de vorbire, pierderea vederii, confuzie sau convulsii."
     },
     "L06": {
       "title": "Și zilele bune contează",
@@ -159,27 +187,34 @@
     },
     "L07": {
       "title": "Dacă stările de tristețe revin",
-      "body": "Ai înregistrat de câteva ori în ultima perioadă stări de tristețe sau anxietate. Poate fi dificil. Dacă simți nevoia, poți vorbi cu cineva de încredere, poți încerca să îți îmbunătățești somnul ori poți cere sprijin."
+      "body": "Ai înregistrat de câteva ori în ultima perioadă stări de tristețe sau anxietate. Poate fi dificil. Dacă simți nevoia, poți vorbi cu cineva de încredere, poți încerca să îți îmbunătățești somnul ori poți cere sprijin.",
+      "seeGp": "Discută cu medicul de familie dacă starea de tristețe persistă mai mult de două săptămâni, îți este greu să faci față sau îți dorești sprijin. Medicul te poate orienta către servicii potrivite."
     },
     "L08": {
       "title": "Ai observat un tipar al dispoziției înainte de menstruație?",
-      "body": "Ai notat schimbări asemănătoare ale dispoziției înaintea mai multor menstruații. Dacă acestea îți afectează viața de zi cu zi, înregistrările te pot ajuta să discuți cu medicul. Există sprijin și opțiuni de tratament pentru simptomele premenstruale dificile."
+      "body": "Ai notat schimbări asemănătoare ale dispoziției înaintea mai multor menstruații. Dacă acestea îți afectează viața de zi cu zi, înregistrările te pot ajuta să discuți cu medicul. Există sprijin și opțiuni de tratament pentru simptomele premenstruale dificile.",
+      "seeGp": "Vorbește cu medicul de familie dacă simptomele premenstruale îți afectează viața de zi cu zi."
     },
     "L09": {
       "title": "Au apărut mai multe coșuri?",
-      "body": "Modificările hormonale pot contribui la apariția coșurilor, dar pot exista și alte cauze. Poți încerca un produs de curățare delicat, cosmetice non-comedogenice și să eviți stoarcerea coșurilor. Întreabă farmacistul despre opțiuni potrivite."
+      "body": "Modificările hormonale pot contribui la apariția coșurilor, dar pot exista și alte cauze. Poți încerca un produs de curățare delicat, cosmetice non-comedogenice și să eviți stoarcerea coșurilor. Întreabă farmacistul despre opțiuni potrivite.",
+      "seeGp": "Mergi la medicul de familie dacă coșurile sunt adânci, dureroase, lasă cicatrici, nu se ameliorează sau îți afectează starea de bine."
     },
     "L10": {
       "title": "Ți-e greață azi?",
-      "body": "Greața poate avea mai multe cauze. Aerul curat, înghițiturile mici de apă sau băuturile reci și mesele mici pot ajuta. Nu trebuie să afli singură cauza."
+      "body": "Greața poate avea mai multe cauze. Aerul curat, înghițiturile mici de apă sau băuturile reci și mesele mici pot ajuta. Nu trebuie să afli singură cauza.",
+      "seeGp": "Mergi la medicul de familie dacă greața durează câteva zile sau tot revine.",
+      "helpNow": "Sună la 112 dacă greața bruscă vine cu o durere în piept apăsătoare sau strânsă, durere care se întinde spre brațe, spate, gât sau maxilar, ori lipsă de aer."
     },
     "L11": {
       "title": "Ai amețeli?",
-      "body": "Stai jos sau întinde-te până trece amețeala. Ridică-te încet, bea apă și nu conduce cât timp durează. Cauzele pot fi diferite."
+      "body": "Stai jos sau întinde-te până trece amețeala. Ridică-te încet, bea apă și nu conduce cât timp durează. Cauzele pot fi diferite.",
+      "seeGp": "Mergi la medicul de familie dacă amețelile tot revin, leșini sau observi schimbări ale auzului ori vederii."
     },
     "L12": {
       "title": "Bufeuri azi?",
-      "body": "O senzație bruscă de căldură poate fi neplăcută. Hainele subțiri în straturi, un ventilator și o băutură rece pot ajuta. Bufeurile pot avea diferite cauze; schimbările din perimenopauză sunt doar una dintre ele."
+      "body": "O senzație bruscă de căldură poate fi neplăcută. Hainele subțiri în straturi, un ventilator și o băutură rece pot ajuta. Bufeurile pot avea diferite cauze; schimbările din perimenopauză sunt doar una dintre ele.",
+      "seeGp": "Mergi la medicul de familie dacă bufeurile te îngrijorează, sunt dese sau vin cu palpitații ori cu o schimbare a sângerărilor."
     },
     "L13": {
       "title": "Ai pofte alimentare azi?",
@@ -187,19 +222,23 @@
     },
     "L14": {
       "title": "Constipată?",
-      "body": "Fibrele adăugate treptat, apa suficientă și mișcarea pot ajuta. Încearcă să nu ignori nevoia de a merge la toaletă. Un farmacist îți poate sugera ceva pe termen scurt, dacă e nevoie."
+      "body": "Fibrele adăugate treptat, apa suficientă și mișcarea pot ajuta. Încearcă să nu ignori nevoia de a merge la toaletă. Un farmacist îți poate sugera ceva pe termen scurt, dacă e nevoie.",
+      "seeGp": "Mergi la medicul de familie dacă persistă, revine des sau vine cu sânge în scaun ori cu scădere în greutate neașteptată."
     },
     "L15": {
       "title": "Stomac deranjat?",
-      "body": "Dacă ai diaree, odihnește-te și bea lichide în continuare, cu înghițituri mici dacă ți-e greață. Un farmacist te poate sfătui despre rehidratare."
+      "body": "Dacă ai diaree, odihnește-te și bea lichide în continuare, cu înghițituri mici dacă ți-e greață. Un farmacist te poate sfătui despre rehidratare.",
+      "helpNow": "Contactează medicul de familie sau un centru de permanență dacă ai diaree cu sânge, diaree de peste 7 zile, semne de deshidratare deși bei lichide sau vomiți atât de des încât nu poți ține lichidele."
     },
     "L16": {
       "title": "Ți s-a schimbat pofta de mâncare?",
-      "body": "Ai notat o schimbare a apetitului. Poate avea multe cauze; dacă se tot întâmplă, notițele tale te pot ajuta să vezi când apare."
+      "body": "Ai notat o schimbare a apetitului. Poate avea multe cauze; dacă se tot întâmplă, notițele tale te pot ajuta să vezi când apare.",
+      "seeGp": "Mergi la medicul de familie dacă pofta de mâncare rămâne scăzută sau slăbești fără să încerci."
     },
     "L17": {
       "title": "Cum se schimbă secrețiile de-a lungul ciclului",
-      "body": "Secrețiile vaginale pot fi groase sau lipicioase, ori mai umede și mai alunecoase. Schimbările sunt adesea normale și contează ce e obișnuit pentru tine."
+      "body": "Secrețiile vaginale pot fi groase sau lipicioase, ori mai umede și mai alunecoase. Schimbările sunt adesea normale și contează ce e obișnuit pentru tine.",
+      "seeGp": "Mergi la medicul de familie sau la ginecolog dacă observi o schimbare îngrijorătoare a mirosului, culorii sau consistenței, ori mâncărime, usturime sau durere pelviană."
     },
     "L18": {
       "title": "Ai observat secreții elastice?",
@@ -207,19 +246,25 @@
     },
     "L19": {
       "title": "Ai observat o scădere a dorinței sexuale?",
-      "body": "Dorința sexuală diferă de la persoană la persoană și poate varia în timp. Stresul, somnul, dispoziția, medicamentele și alți factori o pot influența. Nu există o cantitate „corectă” de dorință."
+      "body": "Dorința sexuală diferă de la persoană la persoană și poate varia în timp. Stresul, somnul, dispoziția, medicamentele și alți factori o pot influența. Nu există o cantitate „corectă” de dorință.",
+      "seeGp": "Vorbește cu medicul de familie dacă o schimbare a dorinței te îngrijorează sau crezi că ar putea fi legată de un medicament sau de contracepție."
     },
     "L21": {
       "title": "Ai dormit mai puțin în ultima vreme?",
-      "body": "Ai înregistrat câteva nopți cu somn mai scurt. Mulți adulți au nevoie de aproximativ 7–9 ore de somn. Un program regulat de trezire, o rutină relaxantă seara și o cameră întunecată pot ajuta."
+      "body": "Ai înregistrat câteva nopți cu somn mai scurt. Mulți adulți au nevoie de aproximativ 7–9 ore de somn. Un program regulat de trezire, o rutină relaxantă seara și o cameră întunecată pot ajuta.",
+      "seeGp": "Mergi la medicul de familie dacă problemele de somn durează de luni de zile sau îți afectează mult viața de zi cu zi."
     },
     "C01": {
       "title": "O menstruație abundentă și dureroasă",
-      "body": "Crampele puternice împreună cu sângerarea abundentă pot face viața de zi cu zi mai grea. Căldura, odihna când ai nevoie și sfatul unui farmacist pot ajuta; există tratamente dacă se tot repetă."
+      "body": "Crampele puternice împreună cu sângerarea abundentă pot face viața de zi cu zi mai grea. Căldura, odihna când ai nevoie și sfatul unui farmacist pot ajuta; există tratamente dacă se tot repetă.",
+      "seeGp": "Mergi la medicul de familie dacă menstruațiile abundente sau dureroase îți afectează viața de zi cu zi ori se agravează.",
+      "helpNow": "Cere urgent sfatul medicului de familie sau al unui centru de permanență dacă durerea e puternică sau mai rea decât de obicei și analgezicele obișnuite nu au ajutat."
     },
     "C03": {
       "title": "Durere de cap cu greață?",
-      "body": "Durerea de cap cu greață poate apărea uneori la migrenă, deși există și alte cauze. Odihna într-o cameră liniștită și întunecată poate ajuta. Notează dacă se tot repetă."
+      "body": "Durerea de cap cu greață poate apărea uneori la migrenă, deși există și alte cauze. Odihna într-o cameră liniștită și întunecată poate ajuta. Notează dacă se tot repetă.",
+      "seeGp": "Mergi la medicul de familie dacă aceste dureri de cap se repetă, se agravează sau îți afectează activitățile.",
+      "helpNow": "Sună la 112 sau mergi la Urgențe pentru o durere de cap bruscă și extrem de puternică, confuzie, greutate în vorbire, slăbiciune pe o parte a corpului, pierderea vederii sau convulsii."
     },
     "C04": {
       "title": "Câteva schimbări înainte de menstruație",
@@ -227,15 +272,18 @@
     },
     "C05": {
       "title": "O dispoziție dificilă și nopți cu puțin somn",
-      "body": "Când te simți apăsată și dormi puțin, zilele pot deveni mai dificile. Dacă îți prinde bine, vorbește cu cineva de încredere și încearcă să-ți faci timp de relaxare înainte de culcare."
+      "body": "Când te simți apăsată și dormi puțin, zilele pot deveni mai dificile. Dacă îți prinde bine, vorbește cu cineva de încredere și încearcă să-ți faci timp de relaxare înainte de culcare.",
+      "seeGp": "Vorbește cu medicul de familie dacă tristețea durează de mai mult de două săptămâni sau somnul prost îți afectează viața de zi cu zi."
     },
     "C06": {
       "title": "Te simți obosită după câteva nopți scurte?",
-      "body": "Ai înregistrat oboseală și somn insuficient. Dacă îți permite programul, o rutină liniștită înainte de culcare te-ar putea ajuta în această seară."
+      "body": "Ai înregistrat oboseală și somn insuficient. Dacă îți permite programul, o rutină liniștită înainte de culcare te-ar putea ajuta în această seară.",
+      "seeGp": "Vorbește cu medicul de familie dacă oboseala nu trece sau vine împreună cu menstruații abundente."
     },
     "C08": {
       "title": "Stare dificilă și dorință sexuală mai scăzută",
-      "body": "Schimbările dorinței sexuale pot apărea și atunci când treci printr-o perioadă dificilă emoțional, fără ca una să fie neapărat cauza celeilalte. Ia lucrurile în ritmul tău."
+      "body": "Schimbările dorinței sexuale pot apărea și atunci când treci printr-o perioadă dificilă emoțional, fără ca una să fie neapărat cauza celeilalte. Ia lucrurile în ritmul tău.",
+      "seeGp": "Vorbește cu medicul de familie dacă schimbările de dispoziție sau de dorință te îngrijorează ori îți afectează viața de zi cu zi."
     },
     "M01": {
       "title": "A început menstruația",
@@ -267,7 +315,8 @@
     },
     "I17b": {
       "title": "Te simți balonată?",
-      "body": "Balonarea poate avea diferite cauze. Mesele mai mici și mișcarea ușoară pot ajuta; dacă nu trece sau te simți plină neobișnuit de repede, vorbește cu medicul de familie."
+      "body": "Balonarea poate avea diferite cauze. Mesele mai mici și mișcarea ușoară pot ajuta; dacă nu trece sau te simți plină neobișnuit de repede, vorbește cu medicul de familie.",
+      "seeGp": "Mergi la medicul de familie dacă balonarea nu trece, te simți repede plină sau slăbești fără o cauză clară."
     },
     "I19b": {
       "title": "Te simți fără energie azi?",

@@ -328,11 +328,11 @@ class SettingsScreen extends ConsumerWidget {
       ListTile(
         contentPadding: EdgeInsets.zero,
         leading: const Icon(Icons.auto_awesome_outlined),
-        title: Text(tr('AI-written notes')),
+        title: Text(tr('AI chat')),
         subtitle: Text(
           (ref.watch(aiNotesProvider).value ?? false)
-              ? tr('On. Your daily card is written around your own log.')
-              : tr('Off. Have your daily card written around your own log.'),
+              ? tr('On. Tap the chat bubble on Today.')
+              : tr('Off. Ask questions about your cycle and your log.'),
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => Navigator.of(context).push(

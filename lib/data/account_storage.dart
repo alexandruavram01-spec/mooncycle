@@ -63,10 +63,14 @@ class AccountStorage {
   /// this phone.
   static const dataNoticeKey = 'mooncycle.dataNotice.v1';
 
-  /// Removes this account's settings, card memory, notice and (on web) logs.
+  /// Her AI chat history, kept only on this phone.
+  static const chatKey = 'mooncycle.chat.v1';
+
+  /// Removes this account's settings, card memory, notice, AI chat and (on
+  /// web) logs.
   static Future<void> eraseKeys(String id) async {
     final prefs = await SharedPreferences.getInstance();
-    for (final base in [...legacyKeys, dataNoticeKey]) {
+    for (final base in [...legacyKeys, dataNoticeKey, chatKey]) {
       await prefs.remove(key(base, id));
     }
   }

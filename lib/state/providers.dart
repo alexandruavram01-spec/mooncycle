@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/account_storage.dart';
+import '../data/chat_store.dart';
 import '../data/insight_memory_store.dart';
 import '../data/log_repository.dart';
 import '../data/repository_factory.dart';
 import '../data/settings_store.dart';
 import '../domain/cycle_engine.dart';
 import '../domain/day_key.dart';
+import '../domain/her_chat.dart';
 import '../domain/her_insights.dart';
 import '../domain/insights.dart';
 import '../domain/models.dart';
@@ -20,6 +22,7 @@ import '../l10n/partner_messages.dart';
 import '../legal.dart';
 import '../services/account_service.dart';
 import '../services/api_client.dart';
+import '../services/her_chat_service.dart';
 import '../services/her_note_service.dart';
 import '../services/notification_service.dart';
 import '../services/partner_link_service.dart';
@@ -352,6 +355,7 @@ class SessionNotifier extends AsyncNotifier<String?> {
     await partner.forgetLocal();
     await ref.read(logsProvider.notifier).eraseAll();
     await ref.read(insightMemoryProvider.notifier).clear();
+    await ref.read(herChatProvider.notifier).clear();
     await ref.read(settingsProvider.notifier).replaceAll(const AppSettings());
   }
 
@@ -618,20 +622,6 @@ class InsightMemoryNotifier extends AsyncNotifier<InsightMemory> {
     await save(now.copyWith(pickNotes: {...now.pickNotes, pick.id: note}));
   }
 
-  /// Reports today's AI-written note for [cardId], then shows the card's
-  /// standard wording for the rest of the day (an empty note means none).
-  Future<bool> reportNote(String cardId) async {
-    final note = _current.pickNotes[cardId];
-    if (note == null || note.isEmpty) return false;
-    final sent =
-        await ref.read(herNoteServiceProvider).report(card: cardId, note: note);
-    if (sent) {
-      final now = _current;
-      await save(now.copyWith(pickNotes: {...now.pickNotes, cardId: ''}));
-    }
-    return sent;
-  }
-
   Future<void> clear() async {
     _asked.clear();
     state = const AsyncData(InsightMemory());
@@ -647,8 +637,10 @@ final insightMemoryProvider =
 final herNoteServiceProvider =
     Provider((ref) => HerNoteService(ref.watch(apiClientProvider)));
 
-/// Whether she has AI-written notes turned on: her explicit consent to the
-/// current explanation, recorded on the server. Off whenever unsure.
+/// Whether she has the AI chat turned on (it was "AI-written notes" until
+/// build 10, and the server still calls it that): her explicit consent to
+/// the current explanation, recorded on the server. Off whenever unsure.
+/// With it on, today's AI-written note opens her chat.
 class AiNotesNotifier extends AsyncNotifier<bool> {
   @override
   Future<bool> build() async {
@@ -673,6 +665,97 @@ class AiNotesNotifier extends AsyncNotifier<bool> {
 
 final aiNotesProvider =
     AsyncNotifierProvider<AiNotesNotifier, bool>(AiNotesNotifier.new);
+
+final herChatServiceProvider =
+    Provider((ref) => HerChatService(ref.watch(apiClientProvider)));
+
+/// Her AI chat, kept only on this phone, per account.
+class HerChatNotifier extends AsyncNotifier<ChatHistory> {
+  ChatStore _store = ChatStore(null);
+
+  @override
+  Future<ChatHistory> build() async {
+    _store = ChatStore(await ref.watch(accountStorageProvider.future));
+    return _store.load();
+  }
+
+  ChatHistory get _current => state.value ?? const ChatHistory();
+
+  Future<void> _save(ChatHistory history) async {
+    state = AsyncData(history);
+    await _store.save(history);
+  }
+
+  /// She opened the chat: today's message is posted once, and it counts as
+  /// read.
+  Future<void> open(ChatMessage Function() opener) async {
+    final today = DayKey.today();
+    final now = _current;
+    final posted = now.on(today).isNotEmpty;
+    await _save(
+      now.copyWith(
+        messages: posted ? null : [...now.messages, opener()],
+        openedDay: today,
+      ),
+    );
+  }
+
+  /// Sends her message and adds the answer, or a notice when there is none.
+  /// Returns how many messages she has left today, when the server said.
+  Future<int?> send(
+    String text, {
+    required String language,
+    required Map<String, Object?> context,
+  }) async {
+    final mine =
+        ChatMessage(fromHer: true, text: text.trim(), at: DateTime.now());
+    await _save(_current.copyWith(messages: [..._current.messages, mine]));
+    final answer = await ref.read(herChatServiceProvider).send(
+          language: language,
+          context: context,
+          messages: chatRequestMessages(_current.on(mine.day)),
+        );
+    final reply = answer.limitReached
+        ? ChatMessage.notice(ChatNotice.limit)
+        : answer.reply == null
+            ? ChatMessage.notice(ChatNotice.failed)
+            : ChatMessage(
+                fromHer: false,
+                text: answer.reply!,
+                at: DateTime.now(),
+                ai: true,
+                urgent: answer.urgent,
+                suggestions: answer.suggestions,
+              );
+    await _save(_current.copyWith(messages: [..._current.messages, reply]));
+    return answer.limitReached ? 0 : answer.remaining;
+  }
+
+  /// Reports the AI answer [message], then marks it so it is not reported
+  /// twice. True when the server has it.
+  Future<bool> report(ChatMessage message) async {
+    final sent = await ref.read(herChatServiceProvider).report(message.text);
+    if (sent) {
+      await _save(
+        _current.copyWith(
+          messages: [
+            for (final m in _current.messages)
+              identical(m, message) ? m.copyWith(reported: true) : m,
+          ],
+        ),
+      );
+    }
+    return sent;
+  }
+
+  Future<void> clear() async {
+    state = const AsyncData(ChatHistory());
+    await _store.clear();
+  }
+}
+
+final herChatProvider =
+    AsyncNotifierProvider<HerChatNotifier, ChatHistory>(HerChatNotifier.new);
 
 /// Every card that applies today. Worked out on her phone from her logs.
 final herInsightCandidatesProvider = Provider<List<InsightCandidate>>((ref) {

@@ -4,6 +4,7 @@ const http = require('node:http');
 const crypto = require('node:crypto');
 const { Pool } = require('pg');
 const herNotes = require('./her-notes');
+const herChat = require('./her-chat');
 
 const PORT = Number(process.env.PORT || 8787);
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -496,6 +497,17 @@ setInterval(() => {
   for (const [key, entry] of attempts) if (now > entry.resetAt) attempts.delete(key);
 }, 60 * 1000).unref();
 
+// AI chat messages used today, per account. In memory: a restart gives
+// everyone a fresh count, which is fine for a daily allowance.
+const CHAT_PER_DAY = 20;
+const chatCounts = new Map();
+const chatKey = (userId) => `${userId}:${new Date().toISOString().slice(0, 10)}`;
+const chatUsed = (userId) => chatCounts.get(chatKey(userId)) ?? 0;
+setInterval(() => {
+  const today = new Date().toISOString().slice(0, 10);
+  for (const key of chatCounts.keys()) if (!key.endsWith(today)) chatCounts.delete(key);
+}, 60 * 60 * 1000).unref();
+
 const routes = {
   'GET /api/health': async () => ({ ok: true }),
 
@@ -613,6 +625,53 @@ const routes = {
       console.error('her note failed:', error?.constructor?.name, error?.status ?? '');
       return { note: null };
     }
+  },
+
+  // One answer in her AI chat. Only with her consent, and 20 messages a day
+  // (counted per UTC day). Neither her messages nor the answer are stored
+  // or logged: her chat history is on her phone.
+  'POST /api/her-chat': async (req) => {
+    const { userId } = await authenticate(req);
+    const { rows } = await pool.query(
+      'SELECT ai_notes_consent_at FROM users WHERE id = $1',
+      [userId],
+    );
+    if (!rows[0].ai_notes_consent_at) throw httpError(403, 'AI chat is off.');
+    const body = await readJson(req);
+    const used = chatUsed(userId);
+    if (used >= CHAT_PER_DAY) {
+      return { reply: null, limit: true, remaining: 0 };
+    }
+    chatCounts.set(chatKey(userId), used + 1);
+    const remaining = CHAT_PER_DAY - used - 1;
+    try {
+      const answer = await herChat.reply(body);
+      if (answer.reason) console.log('her chat fixed answer:', answer.reason);
+      return { reply: answer.reply, urgent: answer.urgent, suggestions: answer.suggestions, remaining };
+    } catch (error) {
+      // A message she could not have sent from the app does not count.
+      if (error instanceof herChat.NoteRefused) {
+        chatCounts.set(chatKey(userId), used);
+        throw httpError(400, 'bad chat request');
+      }
+      // Only what kind of failure, never what was in the request.
+      console.error('her chat failed:', error?.constructor?.name, error?.status ?? '');
+      chatCounts.set(chatKey(userId), used);
+      return { reply: null, remaining: remaining + 1 };
+    }
+  },
+
+  // She reports an answer from the chat (the Google Play rule for
+  // AI-generated content). Only the answer is kept, without her account or
+  // her messages, for 90 days.
+  'POST /api/her-chat/report': async (req) => {
+    const { userId } = await authenticate(req);
+    throttle(`chat-report:${userId}`, 10, 24 * 60 * 60 * 1000);
+    const body = await readJson(req);
+    const answer = String(body.answer || '').trim();
+    if (answer.length === 0 || answer.length > 1500) throw httpError(400, 'bad answer');
+    await pool.query('INSERT INTO ai_note_reports (card, note) VALUES ($1, $2)', ['CHAT', answer]);
+    return { ok: true };
   },
 
   // Agreeing to new terms, or for accounts made before consent was recorded.

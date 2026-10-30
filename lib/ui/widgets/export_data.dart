@@ -13,8 +13,9 @@ Future<void> exportMyData(BuildContext context, WidgetRef ref) async {
   final logs = await ref.read(logsProvider.future);
   final settings =
       ref.read(settingsProvider).value ?? const AppSettings();
+  final chat = await ref.read(herChatProvider.future);
   try {
-    final saved = await DataExport.share(logs, settings);
+    final saved = await DataExport.share(logs, settings, chat: chat);
     if (saved) {
       messenger.showSnackBar(
         SnackBar(content: Text(tr('Your data was saved.'))),
