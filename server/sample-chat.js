@@ -27,8 +27,8 @@ const context = {
 };
 
 const OPENER = {
-  en: 'Today\'s card is "Easing period pain". Want to know more about it?',
-  ro: 'Cardul de azi este „Ce te poate ajuta când ai dureri menstruale”. Vrei să afli mai multe?',
+  en: 'Today\'s note is about "Easing period pain". Want to know more about it?',
+  ro: 'Notița de azi este despre „Ce te poate ajuta când ai dureri menstruale”. Vrei să afli mai multe?',
 };
 
 const QUESTIONS = {

@@ -1263,14 +1263,14 @@ const Map<String, String> uiRo = {
       'Chat MoonCycle',
   'AI · general information, not medical advice':
       'AI · informații generale, nu sfaturi medicale',
-  'Answers are written by AI from MoonCycle\'s reviewed cards and your log. They are general information, not medical advice. Your chat is kept only on this phone.':
-      'Răspunsurile sunt scrise de AI pe baza cardurilor verificate MoonCycle și a notărilor tale. Sunt informații generale, nu sfaturi medicale. Chatul tău rămâne doar pe acest telefon.',
+  'Answers are written by AI from MoonCycle\'s reviewed notes and your log. They are general information, not medical advice. Your chat is kept only on this phone.':
+      'Răspunsurile sunt scrise de AI pe baza notițelor verificate MoonCycle și a notărilor tale. Sunt informații generale, nu sfaturi medicale. Chatul tău rămâne doar pe acest telefon.',
   'Want to know more about it?':
       'Vrei să afli mai multe?',
   'Yes, tell me more':
       'Da, spune-mi mai multe',
-  'Today\'s card is "{title}". Want to know more about it?':
-      'Cardul de azi este „{title}”. Vrei să afli mai multe?',
+  'Today\'s note is about "{title}". Want to know more about it?':
+      'Notița de azi este despre „{title}”. Vrei să afli mai multe?',
   'You\'re on day {n} of your cycle, in the {phase} phase. Want to know more about what that can mean?':
       'Ești în ziua {n} a ciclului, în faza {phase}. Vrei să afli mai multe despre ce poate însemna asta?',
   'Hi. You can ask me about your cycle or anything you have logged. What would you like to know?':

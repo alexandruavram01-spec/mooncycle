@@ -55,7 +55,7 @@ ChatMessage todaysOpener(WidgetRef ref) {
       return ChatMessage(
         fromHer: false,
         text: trf(
-          'Today\'s card is "{title}". Want to know more about it?',
+          'Today\'s note is about "{title}". Want to know more about it?',
           {'title': card.title},
         ),
         at: now,
@@ -452,7 +452,7 @@ class _Disclaimer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       child: Text(
-        tr('Answers are written by AI from MoonCycle\'s reviewed cards and '
+        tr('Answers are written by AI from MoonCycle\'s reviewed notes and '
             'your log. They are general information, not medical advice. '
             'Your chat is kept only on this phone.'),
         textAlign: TextAlign.center,
