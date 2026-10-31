@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../services/partner_link_service.dart';
 import '../../state/providers.dart';
 import '../../l10n/ui.dart';
+import 'partner_chat_screen.dart';
 
 class PartnerScreen extends ConsumerWidget {
   const PartnerScreen({super.key});
@@ -45,9 +47,43 @@ class PartnerScreen extends ConsumerWidget {
                     contentPadding: EdgeInsets.zero,
                     value: sharing.enabled,
                     title: Text(tr('Sharing on')),
-                    onChanged: (v) => ref
-                        .read(settingsProvider.notifier)
-                        .updateSharing(sharing.copyWith(enabled: v)),
+                    onChanged: (v) async {
+                      // Turning sharing off disconnects him; connecting
+                      // again later is a new (paid) connection, so she is
+                      // told first.
+                      if (!v && (ref.read(pairingProvider).value?.linked ??
+                          false)) {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(tr('Turn sharing off?')),
+                            content: Text(
+                              tr('Your partner is disconnected straight away '
+                                  'and your chat with them is deleted. Your '
+                                  'first partner connection was free; '
+                                  'connecting again will be a one-time '
+                                  'payment.'),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text(tr('Cancel')),
+                              ),
+                              FilledButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text(tr('Turn off')),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed != true) return;
+                      }
+                      await ref
+                          .read(settingsProvider.notifier)
+                          .updateSharing(sharing.copyWith(enabled: v));
+                    },
                   ),
                 ],
               ),
@@ -56,6 +92,7 @@ class PartnerScreen extends ConsumerWidget {
           if (sharing.enabled) ...[
             const SizedBox(height: 16),
             const _PairingCard(),
+            const PartnerChatButton(),
             const SizedBox(height: 8),
             Text(
               tr('Nudges to them and their offers to you are on the Today tab.'),
@@ -184,11 +221,49 @@ class _PairingCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final pairing = ref.watch(pairingProvider);
 
-    // Issuing a code also disconnects whoever is paired, so one action serves
-    // both "new code" and "disconnect".
-    Future<void> issueNewCode() async {
+    Future<void> issueNewCode({bool continueFree = false}) async {
       try {
-        await ref.read(partnerLinkServiceProvider).newCode();
+        await ref
+            .read(partnerLinkServiceProvider)
+            .newCode(continueFree: continueFree);
+      } on PairingPaymentNeeded {
+        // The card shows the payment screen after the refresh below.
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('$e')));
+        }
+      }
+      if (context.mounted) ref.invalidate(pairingProvider);
+    }
+
+    // Disconnecting always works: the link, the snapshot and their chat go
+    // from the server. Connecting again then uses a new connection.
+    Future<void> disconnect() async {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(tr('Disconnect your partner?')),
+          content: Text(
+            tr('They stop seeing your summary straight away, and your chat '
+                'with them is deleted. Your first partner connection was '
+                'free; connecting again will be a one-time payment.'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(tr('Cancel')),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(tr('Disconnect')),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+      try {
+        await ref.read(partnerLinkServiceProvider).revoke();
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context)
@@ -208,7 +283,11 @@ class _PairingCard extends ConsumerWidget {
             const SizedBox(height: 8),
             pairing.when(
               loading: () => const LinearProgressIndicator(),
-              error: (e, _) => Row(
+              error: (e, _) => e is PairingPaymentNeeded
+                  ? _PaymentNeeded(
+                      onContinue: () => issueNewCode(continueFree: true),
+                    )
+                  : Row(
                 children: [
                   Expanded(child: Text('$e')),
                   IconButton(
@@ -229,7 +308,7 @@ class _PairingCard extends ConsumerWidget {
                         child: Text(tr('Your partner is connected.')),
                       ),
                       TextButton(
-                        onPressed: issueNewCode,
+                        onPressed: disconnect,
                         child: Text(tr('Disconnect')),
                       ),
                     ],
@@ -285,6 +364,68 @@ class _PairingCard extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Her free partner connection is used. Connecting again will be a one-time
+/// payment for a new pairing code; until payments exist, she continues for
+/// free. Nothing is chosen for her.
+class _PaymentNeeded extends StatefulWidget {
+  const _PaymentNeeded({required this.onContinue});
+
+  final Future<void> Function() onContinue;
+
+  @override
+  State<_PaymentNeeded> createState() => _PaymentNeededState();
+}
+
+class _PaymentNeededState extends State<_PaymentNeeded> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.favorite_outline, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                tr('Connect a partner again'),
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          tr('Your first partner connection was free. Connecting again is a '
+              'one-time payment for a new pairing code.'),
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          tr('While MoonCycle is new, it is free.'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 12),
+        FilledButton(
+          onPressed: _busy
+              ? null
+              : () async {
+                  setState(() => _busy = true);
+                  await widget.onContinue();
+                  if (mounted) setState(() => _busy = false);
+                },
+          child: Text(tr('Continue for free')),
+        ),
+      ],
     );
   }
 }

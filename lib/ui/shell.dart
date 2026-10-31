@@ -7,7 +7,7 @@ import 'screens/home_screen.dart';
 import 'screens/insights_screen.dart';
 import 'screens/partner_screen.dart';
 import 'screens/settings_screen.dart';
-import 'widgets/export_data.dart';
+import 'widgets/data_notice.dart';
 import '../l10n/ui.dart';
 
 class AppShell extends ConsumerStatefulWidget {

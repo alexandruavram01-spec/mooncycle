@@ -5,7 +5,6 @@ import '../../domain/quiz.dart';
 import '../../legal.dart';
 import '../../state/providers.dart';
 import '../widgets/account_sheet.dart';
-import '../widgets/export_data.dart';
 import '../widgets/links.dart';
 import 'ai_notes_screen.dart';
 import 'get_help_screen.dart';
@@ -227,27 +226,17 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             tr('Your logs and quiz answers are stored only on this phone, not on '
-                'our servers. If you uninstall MoonCycle or lose your phone, they '
-                'cannot be recovered, so save a copy from time to time with '
-                'Export my data. Your account holds only your email and your '
-                'partner connection. If you turn on partner sharing, only the '
-                'summary you choose is sent to the server.'),
+                'our servers. Your phone\'s own backup (iCloud or your Google '
+                'account) can keep a copy; without it, they cannot be recovered '
+                'if you uninstall MoonCycle or lose your phone. Your account '
+                'holds only your email and your partner connection. If you turn '
+                'on partner sharing, only the summary you choose is sent to the '
+                'server.'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.download_outlined),
-            title: Text(tr('Export my data')),
-            subtitle: Text(
-              tr('Save a copy of your logs and quiz answers to Drive, email or '
-                  'your files: a spreadsheet and a full copy.'),
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => exportMyData(context, ref),
-          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.delete_outline),

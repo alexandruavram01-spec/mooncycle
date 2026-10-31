@@ -31,6 +31,15 @@ const OFFERS = [...codes('O', 1, 12), ...codes('O', 17, 26)];
 const OFFER_REPLIES = codes('O', 13, 16);
 const INTERACTION_TTL_HOURS = 24;
 
+// Paying for another partner connection. Off until the store products
+// exist: she is shown the payment screen and can continue for free.
+const PAIRING_PAYMENTS = process.env.PAIRING_PAYMENTS === 'on';
+
+// Partner chat: emojis only (any, no letters or numbers), or a card code.
+const CHAT_REACTIONS = ['like', 'love'];
+const EMOJI_ONLY = /^(?:\p{Extended_Pictographic}|\p{Regional_Indicator}|\p{Emoji_Modifier}|\u200d|\ufe0f|\u20e3|[\u{E0020}-\u{E007F}]| )+$/u;
+const HAS_EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
+
 // Codes of the daily tips (T01...) in the app's language files.
 const TIP_CODE = /^T\d{2,3}$/;
 
@@ -163,7 +172,54 @@ const SCHEMA = `
     note        text NOT NULL,
     reported_at timestamptz NOT NULL DEFAULT now()
   );
+
+  -- Partner connections (31 October 2026). Every account's first one is
+  -- free: pairing_allowance starts at 1, and pairings_used counts partners
+  -- who joined with her code. Connecting again needs a one-time payment,
+  -- which will add 1 to the allowance once the stores confirm it; until
+  -- payments exist she can continue for free, counted in pairing_free_passes.
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS pairing_allowance integer NOT NULL DEFAULT 1;
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS pairings_used integer NOT NULL DEFAULT 0;
+  ALTER TABLE users ADD COLUMN IF NOT EXISTS pairing_free_passes integer NOT NULL DEFAULT 0;
+  -- Whoever was already connected before this has used her free one.
+  UPDATE users SET pairings_used = 1
+   WHERE pairings_used = 0
+     AND id IN (SELECT owner_id FROM pairings WHERE partner_id IS NOT NULL);
+
+  -- The chat between her and her partner: only the fixed cards (by code)
+  -- and emojis, never free text. Kept 90 days, and gone with the pairing.
+  CREATE TABLE IF NOT EXISTS partner_messages (
+    id           bigserial PRIMARY KEY,
+    owner_id     uuid NOT NULL REFERENCES pairings(owner_id) ON DELETE CASCADE,
+    from_her     boolean NOT NULL,
+    kind         text NOT NULL,
+    body         text NOT NULL,
+    sent_at      timestamptz NOT NULL DEFAULT now(),
+    her_reaction text,
+    his_reaction text
+  );
+  CREATE INDEX IF NOT EXISTS partner_messages_owner_idx ON partner_messages (owner_id, id);
 `;
+
+// Adds a card to the partner chat of the pairing [ownerId].
+async function addChat(ownerId, fromHer, body) {
+  await pool.query(
+    "INSERT INTO partner_messages (owner_id, from_her, kind, body) VALUES ($1, $2, 'card', $3)",
+    [ownerId, fromHer, body],
+  );
+}
+
+// The pairing this user is in, as her or as him, with someone connected.
+async function chatPairing(userId) {
+  const { rows } = await pool.query(
+    `SELECT owner_id, owner_id = $1 AS her FROM pairings
+      WHERE (owner_id = $1 OR partner_id = $1) AND partner_id IS NOT NULL
+      LIMIT 1`,
+    [userId],
+  );
+  if (rows.length === 0) throw httpError(409, 'Connect with your partner first.');
+  return { ownerId: rows[0].owner_id, her: rows[0].her };
+}
 
 const sha256 = (text) => crypto.createHash('sha256').update(text).digest('hex');
 const newCode = () =>
@@ -465,6 +521,7 @@ async function authenticate(req) {
 const CLEAN_UPS = [
   ['sign-ins', `DELETE FROM sessions WHERE last_used_at < now() - interval '${SESSION_IDLE_DAYS} days'`],
   ['note reports', "DELETE FROM ai_note_reports WHERE reported_at < now() - interval '90 days'"],
+  ['partner chat', "DELETE FROM partner_messages WHERE sent_at < now() - interval '90 days'"],
   ['pairing codes', 'UPDATE pairings SET code = NULL, code_expires_at = NULL WHERE code_expires_at < now()'],
   ['asks', `UPDATE pairings SET ask = NULL, ask_at = NULL, reaction = NULL, reaction_at = NULL
              WHERE ask_at <= ${FRESH}`],
@@ -892,6 +949,26 @@ const routes = {
   // She asks for a fresh code. Any previous partner link and snapshot are dropped.
   'POST /api/pairings': async (req) => {
     const { userId } = await authenticate(req);
+    const body = await readJson(req);
+    // Her first partner connection is free. After a partner has joined, a
+    // new connection needs a one-time payment (402); until payments exist,
+    // she can continue for free from the payment screen.
+    const { rows: [account] } = await pool.query(
+      'SELECT pairing_allowance, pairings_used FROM users WHERE id = $1',
+      [userId],
+    );
+    if (account.pairings_used >= account.pairing_allowance) {
+      if (PAIRING_PAYMENTS || body.continueFree !== true) {
+        throw httpError(402, 'A new partner connection needs a one-time payment.');
+      }
+      await pool.query(
+        `UPDATE users SET pairing_allowance = pairing_allowance + 1,
+                          pairing_free_passes = pairing_free_passes + 1
+          WHERE id = $1`,
+        [userId],
+      );
+    }
+    await pool.query('DELETE FROM partner_messages WHERE owner_id = $1', [userId]);
     const code = newCode();
     await pool.query(
       `INSERT INTO pairings (owner_id, code, code_expires_at)
@@ -938,6 +1015,7 @@ const routes = {
       [userId, ask],
     );
     if (rowCount === 0) throw httpError(409, 'Connect with a partner first.');
+    if (ask) await addChat(userId, true, ask);
     return { ok: true };
   },
 
@@ -953,6 +1031,7 @@ const routes = {
       [userId, reply],
     );
     if (rowCount === 0) throw httpError(409, 'That offer has expired.');
+    if (reply) await addChat(userId, true, reply);
     return { ok: true };
   },
 
@@ -986,12 +1065,17 @@ const routes = {
     const { userId } = await authenticate(req);
     const body = await readJson(req);
     const code = String(body.code || '').trim().toUpperCase();
-    const { rowCount } = await pool.query(
+    const { rows } = await pool.query(
       `UPDATE pairings SET partner_id = $1, code = NULL, code_expires_at = NULL
-       WHERE code = $2 AND code_expires_at > now() AND owner_id <> $1`,
+       WHERE code = $2 AND code_expires_at > now() AND owner_id <> $1
+       RETURNING owner_id`,
       [userId, code],
     );
-    if (rowCount === 0) throw httpError(404, 'code not found or expired');
+    if (rows.length === 0) throw httpError(404, 'code not found or expired');
+    // Her connection is used.
+    await pool.query('UPDATE users SET pairings_used = pairings_used + 1 WHERE id = $1', [
+      rows[0].owner_id,
+    ]);
     return { ok: true };
   },
 
@@ -999,14 +1083,19 @@ const routes = {
   'PUT /api/ask/reaction': async (req) => {
     const { userId } = await authenticate(req);
     const reaction = optionalKey((await readJson(req)).reaction, REACTIONS);
-    const { rowCount } = await pool.query(
+    const { rows } = await pool.query(
       `UPDATE pairings
           SET reaction = $2,
               reaction_at = CASE WHEN $2::text IS NULL THEN NULL ELSE now() END
-        WHERE partner_id = $1 AND ask IS NOT NULL AND ask_at > ${FRESH}`,
+        WHERE partner_id = $1 AND ask IS NOT NULL AND ask_at > ${FRESH}
+        RETURNING owner_id, ask`,
       [userId, reaction],
     );
-    if (rowCount === 0) throw httpError(409, 'That ask has expired.');
+    if (rows.length === 0) throw httpError(409, 'That ask has expired.');
+    // "special" is the reply written for her ask, so the chat keeps which.
+    if (reaction) {
+      await addChat(rows[0].owner_id, false, reaction === 'special' ? `special:${rows[0].ask}` : reaction);
+    }
     return { ok: true };
   },
 
@@ -1015,24 +1104,29 @@ const routes = {
   'PUT /api/offer': async (req) => {
     const { userId } = await authenticate(req);
     const offer = optionalKey((await readJson(req)).offer, OFFERS);
-    const { rowCount } = await pool.query(
+    const { rows } = await pool.query(
       `UPDATE pairings
           SET offer = $2, offer_at = CASE WHEN $2::text IS NULL THEN NULL ELSE now() END,
               offer_reply = NULL, offer_reply_at = NULL
-        WHERE partner_id = $1`,
+        WHERE partner_id = $1
+        RETURNING owner_id`,
       [userId, offer],
     );
-    if (rowCount === 0) throw httpError(409, 'Connect with her first.');
+    if (rows.length === 0) throw httpError(409, 'Connect with her first.');
+    if (offer) await addChat(rows[0].owner_id, false, offer);
     return { ok: true };
   },
 
   // He disconnects, for example to enter a different code.
   'POST /api/pairings/leave': async (req) => {
     const { userId } = await authenticate(req);
-    await pool.query(
-      'UPDATE pairings SET partner_id = NULL, partner_tone = NULL WHERE partner_id = $1',
+    const { rows } = await pool.query(
+      'UPDATE pairings SET partner_id = NULL, partner_tone = NULL WHERE partner_id = $1 RETURNING owner_id',
       [userId],
     );
+    for (const row of rows) {
+      await pool.query('DELETE FROM partner_messages WHERE owner_id = $1', [row.owner_id]);
+    }
     return { ok: true };
   },
 
@@ -1045,6 +1139,57 @@ const routes = {
       userId,
       tone,
     ]);
+    return { ok: true };
+  },
+
+  // ---- Partner chat --------------------------------------------------------
+  // Both of them read the same chat: the last 90 days, oldest first.
+
+  'GET /api/chat': async (req) => {
+    const { userId } = await authenticate(req);
+    const { ownerId, her } = await chatPairing(userId);
+    const { rows } = await pool.query(
+      `SELECT id, from_her AS "fromHer", kind, body, sent_at AS "sentAt",
+              her_reaction AS "herReaction", his_reaction AS "hisReaction"
+         FROM (SELECT * FROM partner_messages
+                WHERE owner_id = $1 AND sent_at > now() - interval '90 days'
+                ORDER BY id DESC LIMIT 500) recent
+        ORDER BY id`,
+      [ownerId],
+    );
+    return { me: her ? 'her' : 'him', messages: rows.map((m) => ({ ...m, id: Number(m.id) })) };
+  },
+
+  // Emojis only; the cards go through the ask and offer routes above.
+  'POST /api/chat': async (req) => {
+    const { userId } = await authenticate(req);
+    throttle(`chat:${userId}`, 200, 24 * 60 * 60 * 1000);
+    const { ownerId, her } = await chatPairing(userId);
+    const emoji = String((await readJson(req)).emoji ?? '').trim();
+    if (emoji.length === 0 || emoji.length > 40 || !EMOJI_ONLY.test(emoji) || !HAS_EMOJI.test(emoji)) {
+      throw httpError(400, 'Only emojis can be sent.');
+    }
+    await pool.query(
+      "INSERT INTO partner_messages (owner_id, from_her, kind, body) VALUES ($1, $2, 'emoji', $3)",
+      [ownerId, her, emoji],
+    );
+    return { ok: true };
+  },
+
+  // Either of them likes or loves any message, or takes it back with null.
+  'PUT /api/chat/reaction': async (req) => {
+    const { userId } = await authenticate(req);
+    const { ownerId, her } = await chatPairing(userId);
+    const body = await readJson(req);
+    const id = Number(body.id);
+    if (!Number.isSafeInteger(id) || id <= 0) throw httpError(400, 'unknown message');
+    const reaction = optionalKey(body.reaction, CHAT_REACTIONS);
+    const column = her ? 'her_reaction' : 'his_reaction';
+    const { rowCount } = await pool.query(
+      `UPDATE partner_messages SET ${column} = $3 WHERE id = $1 AND owner_id = $2`,
+      [id, ownerId, reaction],
+    );
+    if (rowCount === 0) throw httpError(404, 'unknown message');
     return { ok: true };
   },
 

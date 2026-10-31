@@ -7,6 +7,16 @@ import '../domain/models.dart';
 import '../domain/profile.dart';
 import 'api_client.dart';
 
+/// Her free partner connection has been used: connecting a partner again
+/// needs the one-time payment (until payments exist, she can continue for
+/// free from the payment screen).
+class PairingPaymentNeeded implements Exception {
+  const PairingPaymentNeeded();
+
+  @override
+  String toString() => 'A new partner connection needs a one-time payment.';
+}
+
 /// Where her side of the pairing stands.
 class PairingState {
   const PairingState.linked({
@@ -113,10 +123,17 @@ class PartnerLinkService {
     return PairingState.waiting(await newCode());
   }
 
-  /// Issues a fresh code. The server drops any connected partner and the
-  /// stored snapshot when it does this, so it doubles as "disconnect".
-  Future<String> newCode() async {
-    final response = await _api.send('POST', '/pairings');
+  /// Issues a fresh code. The server drops any connected partner, the stored
+  /// snapshot and their chat when it does this. Throws [PairingPaymentNeeded]
+  /// once her free connection is used, unless [continueFree] (her choice on
+  /// the payment screen, while payments do not exist yet).
+  Future<String> newCode({bool continueFree = false}) async {
+    final response = await _api.send(
+      'POST',
+      '/pairings',
+      body: continueFree ? {'continueFree': true} : null,
+    );
+    if (response.statusCode == 402) throw const PairingPaymentNeeded();
     if (response.statusCode != 200) throw ApiClient.failure(response);
     final json = ApiClient.json(response);
     final code = json['code'] as String;

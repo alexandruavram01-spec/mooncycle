@@ -371,7 +371,7 @@ const Map<String, String> uiRo = {
   'Partner sharing stays as you set it on the Partner tab.':
       'Opțiunile de partajare rămân cele alese de tine în secțiunea Partener.',
   'Private: nothing is shared with anyone.':
-      'Privat: nu partajezi informații cu nimeni.',
+      'Privat: informațiile tale nu sunt vizibile altor persoane.',
   '{n} more question for later. Pick up where you left off from Settings.':
       'Mai ai {n} întrebare de completat. Poți continua din Setări.',
   '{n} more questions for later. Pick up where you left off from Settings.':
@@ -1321,4 +1321,63 @@ const Map<String, String> uiRo = {
       'Deschide chatul AI',
   'Open the AI chat. A new message is waiting.':
       'Deschide chatul AI. Te așteaptă un mesaj nou.',
+  // ---- Build 11: partner chat, paid re-pairing, no export ----
+  'Chat · new message':
+      'Chat · mesaj nou',
+  'Chat':
+      'Chat',
+  'Only emojis can be sent here.':
+      'Aici poți trimite doar emoji.',
+  'Answer their offer':
+      'Răspunde la oferta lui',
+  'Ask':
+      'Cere ceva',
+  'Reply to her':
+      'Răspunde-i',
+  'Offer':
+      'Oferă ceva',
+  'Connect with your partner to chat.':
+      'Conectează-te cu partenerul ca să puteți vorbi pe chat.',
+  'No messages yet. Send a card or an emoji.':
+      'Încă nu aveți mesaje. Trimite un card sau un emoji.',
+  'Send an ask':
+      'Trimite o cerere',
+  'Send an offer':
+      'Trimite o ofertă',
+  'Emojis only 😊':
+      'Doar emoji 😊',
+  'Like':
+      'Îmi place',
+  'Love':
+      'Ador',
+  'Turn sharing off?':
+      'Oprești partajarea?',
+  'Your partner is disconnected straight away and your chat with them is deleted. Your first partner connection was free; connecting again will be a one-time payment.':
+      'Partenerul este deconectat imediat, iar chatul vostru este șters. Prima conectare cu un partener a fost gratuită; o nouă conectare va fi o plată unică.',
+  'Turn off':
+      'Oprește',
+  'Disconnect your partner?':
+      'Deconectezi partenerul?',
+  'They stop seeing your summary straight away, and your chat with them is deleted. Your first partner connection was free; connecting again will be a one-time payment.':
+      'Partenerul nu îți mai vede rezumatul, iar chatul vostru este șters. Prima conectare cu un partener a fost gratuită; o nouă conectare va fi o plată unică.',
+  'Connect a partner again':
+      'Conectează din nou un partener',
+  'Your first partner connection was free. Connecting again is a one-time payment for a new pairing code.':
+      'Prima conectare cu un partener a fost gratuită. O nouă conectare înseamnă o plată unică pentru un cod nou de conectare.',
+  'While MoonCycle is new, it is free.':
+      'Cât timp MoonCycle este nou, este gratuit.',
+  'Continue for free':
+      'Continuă gratuit',
+  'Track your own cycle instead?':
+      'Vrei să îți urmărești propriul ciclu?',
+  'You will be disconnected from her and your chat will be deleted. To connect again, she would need to create a new code, which is a one-time payment for her.':
+      'Vei fi deconectat de ea, iar chatul vostru va fi șters. Pentru a vă conecta din nou, ea ar trebui să creeze un cod nou, care pentru ea este o plată unică.',
+  'Switch':
+      'Schimbă',
+  'Use a different code?':
+      'Folosești alt cod?',
+  'What you log is stored only on this phone, not on our servers. That keeps it private. Your phone\'s own backup (iCloud or your Google account) can keep a copy; without it, uninstalling MoonCycle or losing your phone means your logs cannot be recovered.':
+      'Ce notezi este stocat doar pe acest telefon, nu pe serverele noastre. Așa datele tale rămân private. Backupul telefonului (iCloud sau contul Google) poate păstra o copie; fără el, dacă dezinstalezi MoonCycle sau pierzi telefonul, notările nu mai pot fi recuperate.',
+  'Your logs and quiz answers are stored only on this phone, not on our servers. Your phone\'s own backup (iCloud or your Google account) can keep a copy; without it, they cannot be recovered if you uninstall MoonCycle or lose your phone. Your account holds only your email and your partner connection. If you turn on partner sharing, only the summary you choose is sent to the server.':
+      'Notările și răspunsurile tale la chestionar sunt stocate doar pe acest telefon, nu pe serverele noastre. Backupul telefonului (iCloud sau contul Google) poate păstra o copie; fără el, nu mai pot fi recuperate dacă dezinstalezi MoonCycle sau pierzi telefonul. Contul tău păstrează doar adresa de e-mail și conexiunea cu partenerul. Dacă pornești partajarea cu partenerul, pe server ajunge doar rezumatul pe care îl alegi.',
 };

@@ -7,6 +7,7 @@ import '../../domain/enums.dart';
 import '../../domain/partner_tips.dart';
 import '../../domain/profile.dart';
 import '../../l10n/partner_messages.dart';
+import '../../services/api_client.dart';
 import '../../services/partner_link_service.dart';
 import '../../state/providers.dart';
 import '../theme.dart';
@@ -16,6 +17,7 @@ import '../widgets/partner_preview.dart';
 import '../widgets/partner_stickers.dart';
 import '../widgets/text_size.dart';
 import 'language_screen.dart';
+import 'partner_chat_screen.dart';
 import 'partner_settings_screen.dart';
 import 'tip_library_screen.dart';
 import '../../l10n/ui.dart';
@@ -49,7 +51,10 @@ class _RefreshOnResumeState extends ConsumerState<_RefreshOnResume> {
   void initState() {
     super.initState();
     _listener = AppLifecycleListener(
-      onResume: () => ref.invalidate(_sharedSnapshotProvider),
+      onResume: () {
+        ref.invalidate(_sharedSnapshotProvider);
+        ref.invalidate(partnerChatProvider);
+      },
     );
   }
 
@@ -88,6 +93,49 @@ class PartnerViewScreen extends ConsumerWidget {
     );
   }
 
+  /// He switches to tracking his own cycle, only after confirming: it
+  /// disconnects him from her, their chat is deleted, and connecting again
+  /// takes a new code from her (a paid connection for her).
+  static Future<void> _switchToTracking(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(tr('Track your own cycle instead?')),
+        content: Text(
+          tr('You will be disconnected from her and your chat will be '
+              'deleted. To connect again, she would need to create a new '
+              'code, which is a one-time payment for her.'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(tr('Cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(tr('Switch')),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await ref.read(partnerLinkServiceProvider).leave();
+    } on ApiException {
+      // Not connected, or offline: her side can still disconnect him.
+    }
+    final current = ref.read(settingsProvider).value ?? const AppSettings();
+    await ref.read(settingsProvider.notifier).replaceAll(
+          current.copyWith(
+            onboardingComplete: false,
+            profile: const UserProfile(),
+          ),
+        );
+  }
+
   Widget _buildScaffold(
     BuildContext context,
     WidgetRef ref,
@@ -107,7 +155,10 @@ class PartnerViewScreen extends ConsumerWidget {
             IconButton(
               tooltip: tr('Refresh'),
               icon: const Icon(Icons.refresh),
-              onPressed: () => ref.invalidate(_sharedSnapshotProvider),
+              onPressed: () {
+                ref.invalidate(_sharedSnapshotProvider);
+                ref.invalidate(partnerChatProvider);
+              },
             ),
           if (profile.role == AppRole.partner)
             PopupMenuButton<String>(
@@ -135,15 +186,7 @@ class PartnerViewScreen extends ConsumerWidget {
                     ),
                   );
                 } else {
-                  // Back to the first question, as someone tracking a cycle.
-                  final current = ref.read(settingsProvider).value ??
-                      const AppSettings();
-                  ref.read(settingsProvider.notifier).replaceAll(
-                        current.copyWith(
-                          onboardingComplete: false,
-                          profile: const UserProfile(),
-                        ),
-                      );
+                  _switchToTracking(context, ref);
                 }
               },
               itemBuilder: (_) => [
@@ -540,11 +583,35 @@ class _SharedView extends ConsumerWidget {
                   ],
                 ),
         ),
+        const PartnerChatButton(),
         const SizedBox(height: 16),
         Align(
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(tr('Use a different code?')),
+                  content: Text(
+                    tr('You will be disconnected from her and your chat will '
+                        'be deleted. To connect again, she would need to '
+                        'create a new code, which is a one-time payment for '
+                        'her.'),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(tr('Cancel')),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text(tr('Disconnect')),
+                    ),
+                  ],
+                ),
+              );
+              if (confirmed != true) return;
               try {
                 await ref.read(partnerLinkServiceProvider).leave();
                 if (context.mounted) ref.invalidate(_joinedProvider);

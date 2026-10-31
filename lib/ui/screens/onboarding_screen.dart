@@ -173,10 +173,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _error = null;
       if (_journey!.partner && _partnerStep == 1) {
         _partnerStep = 0;
+        _answers
+          ..remove('understand')
+          ..remove('tone');
       } else if (_step == 0) {
         _journey = null;
       } else {
         _step--;
+        // Back undoes the choice: the answer on the question she returns
+        // to, and every answer after it, so nothing she changed her mind
+        // about stays behind (e.g. "Trying to conceive" after she went back
+        // and chose "Understand fertility"). She picks again from nothing.
+        for (final question in _questions.skip(_step)) {
+          _answers.remove(question.id);
+        }
+        if (_resumeAt != null && _step < _resumeAt!) _resumeAt = null;
       }
       _syncDays();
     });
